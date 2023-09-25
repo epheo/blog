@@ -1,0 +1,64 @@
+﻿apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  name: fedora35
+  namespace: epheo
+spec:
+  running: true
+  template:
+    metadata:
+      labels:
+        kubevirt.io/domain: fedora35
+    spec:
+      domain:
+        cpu:
+          cores: 8
+          sockets: 2
+          threads: 1
+        features:
+          acpi: {}
+          smm:
+            enabled: true 
+        firmware:
+          bootloader:
+            efi:
+              secureBoot: true
+        devices:
+          disks:
+            - bootOrder: 1
+              disk:
+                bus: virtio
+              name: pvdisk
+            - disk:
+                bus: virtio
+              name: cloudinitdisk
+          autoattachGraphicsDevice: false
+          gpus:
+            - deviceName: nvidia.com/GEFORCE_RTX_3080
+              name: gpuvideo
+          hostDevices:
+            - deviceName: devices.kubevirt.io/USB3_Controller
+              name: usbcontroller
+          interfaces:
+            - masquerade: {}
+              name: default
+          networkInterfaceMultiqueue: true
+          rng: {}
+        resources:
+          requests:
+            memory: 32G
+      hostname: fedora35
+      networks:
+        - name: default
+          pod: {}
+      terminationGracePeriodSeconds: 0
+      volumes:
+        - persistentVolumeClaim:
+            claimName: 'fedora35'
+          name: pvdisk
+        - cloudInitNoCloud:
+            userData: |-
+              #cloud-config
+              password: fedora
+              chpasswd: { expire: False }
+          name: cloudinitdisk
