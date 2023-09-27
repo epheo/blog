@@ -2,47 +2,47 @@
 OpenShift Workstation with Single GPU passthrough
 *************************************************
 
+.. admonition:: Date and Author
+   :class: note
+   
+   Thibaut Lapierre | February 27, 2024
+   
 
 Introduction
 ============
 
-This arcticle discribes a way to run OpenShift as a workstation with GPU PCI 
-passthrough and using Container Native Virtualization (CNV) in order to provide
-a virtualized Desktop experience running on a single OpenShift node.
-
-This is used to run Microsoft FlightSimulator in a Windows VM with performances
-close from a Bare metal Windows installation.
-
+This article describes how to run OpenShift as a workstation with GPU PCI passthrough 
+and Container Native Virtualization (CNV) to provide a virtualized desktop experience 
+on a single OpenShift node. 
+This is useful to provide a virtual desktop experience with a single GPU, and is used 
+to run Microsoft FlightSimulator in a Windows VM with performances close from a Bare 
+metal Windows installation.
 
 
 Hardware description
 --------------------
 
-The workstation in use for this demo is a compact, mini-ITX workstation with the
-following hardware: 
+The workstation used for this demo has the following hardware:
 
 - AMD Ryzen 9 3950X 16-Core 32-Threads
-- 64GB DDR4
-- Nvidia RTX 3080
-- 2x NVMe Disks
-- 1x SSD Disk
-- Single NIC 1GB
-
+- 64GB DDR4 3200MHz
+- Nvidia RTX 3080 10GB
+- 2x NVMe Disks (2TB each)
+- 1x SSD Disk (128GB root system)
+- Mellanox ConnectX-3 Pro 10Gbps Ethernet
 
 
 Backup of existing system partitions
 ------------------------------------
 
-In order to avoid boot order conflicts, the OpenShift assisted installer will
-format the 512 first bytes of any disks that contains a bootable partition.
+To avoid boot order conflicts, the OpenShift assisted installer will format the first 
+512 bytes of any disks that contain a bootable partition. Therefore, it is important to 
+backup and remove any existing partition table that you would like to preserve.
 
 .. seealso::
 
    https://github.com/openshift/assisted-service/blob/d37ac44051be76e95676f33b8361c04eae290357/internal/host/hostcommands/install_cmd.go#L232
   
-Therefore, in order to avoid loosing any existing system it is important to
-backup and remove any existing EFI/BIOS and boot partitions from already 
-existing disks.
 
 
 Installing OpenShift SNO
@@ -64,11 +64,11 @@ volumes belonging to a same Volume Group and we will use the SSD disk for the
 OpenShift operating system.
 
 
-.. literalinclude:: /openshift-workstation/install/get-ocp-binaries.sh
+.. literalinclude:: /articles/openshift-workstation/install/get-ocp-binaries.sh
     :language: bash
     :linenos:
 
-.. literalinclude:: /openshift-workstation/install/install-config.yaml
+.. literalinclude:: /articles/openshift-workstation/install/install-config.yaml
     :language: yaml
     :linenos:
     :caption: install-config.yaml
@@ -100,14 +100,14 @@ workstation node and install OpenShift Container Platform.
 Install CNV Operator
 --------------------
 
-Activate Intel VT or AMD-V hardware virtualization extensions in BIOS.
+Activate Intel VT or AMD-V hardware virtualization extensions in BIOS or UEFI.
 
 .. seealso::
 
    https://docs.openshift.com/container-platform/4.10/virt/install/installing-virt-cli.html
 
 
-.. literalinclude:: /openshift-workstation/install/cnv-resources.yaml
+.. literalinclude:: /articles/openshift-workstation/install/cnv-resources.yaml
     :language: yaml
     :linenos:
     :caption: cnv-resources.yaml
@@ -167,7 +167,7 @@ https://www.reddit.com/r/VFIO/comments/mx5td8/bar_3_cant_reserve_mem_0xc00000000
     https://docs.kernel.org/fb/fbcon.html
 
 
-.. literalinclude:: /openshift-workstation/machineconfig/100-sno-kernelargs.yaml
+.. literalinclude:: /articles/openshift-workstation/machineconfig/100-sno-kernelargs.yaml
     :language: yaml
     :linenos:
     :caption: 100-sno-kernelargs.yaml
@@ -191,7 +191,7 @@ We first gather the PCI Vendor and product IDs from `pciutils`.
     lspci -nn |grep VGA
 
 
-.. literalinclude:: /openshift-workstation/machineconfig/100-sno-vfiopci.bu
+.. literalinclude:: /articles/openshift-workstation/machineconfig/100-sno-vfiopci.bu
     :caption: 100-sno-vfiopci.bu
     :language: yaml
     :linenos:
@@ -212,7 +212,7 @@ Unbinding VTConsole at boot time
     https://docs.kernel.org/fb/fbcon.html
 
 
-.. literalinclude:: /openshift-workstation/machineconfig/98-sno-vtconsole-unbind.yaml
+.. literalinclude:: /articles/openshift-workstation/machineconfig/98-sno-vtconsole-unbind.yaml
     :caption: 98-sno-vtconsole-unbind.yaml
     :language: yaml
     :linenos:
@@ -230,6 +230,16 @@ Add GPU as Hardware Device of your node
 
     oc edit hyperconverged kubevirt-hyperconverged -n openshift-cnv
 
+
+# FILEPATH: c:\Users\epheo\Documents\blog\openshift-workstation\index.rst
+
+
+This YAML code block defines a HyperConverged object in Kubernetes/OpenShift. It 
+specifies the name and namespace of the object, as well as the permitted host devices. 
+In this case, it allows two NVIDIA GeForce RTX 3080 devices to be used, along with 
+their respective audio devices. The `pciDeviceSelector` field specifies the vendor ID 
+and device ID of the PCI device, while the `resourceName` field specifies the name of 
+the resource that will be created in Kubernetes/OpenShift.
 
 .. code-block:: yaml
     :linenos:
@@ -331,7 +341,7 @@ Binding the USB Controller to VFIO-PCI driver at boot time
    https://www.reddit.com/r/VFIO/comments/bjbes0/how_to_force_usb_30_controller_to_bind_to_vfio/
 
 
-.. literalinclude:: /openshift-workstation/machineconfig/98-sno-xhci-unbind.yaml
+.. literalinclude:: /articles/openshift-workstation/machineconfig/98-sno-xhci-unbind.yaml
     :language: yaml
     :linenos:
     :caption: 98-sno-xhci-unbind.yaml
@@ -358,7 +368,7 @@ Create PV and PV Claim out of local LVM disks
   
 Binding PV and PVC by label https://docs.openshift.com/container-platform/3.3/install_config/storage_examples/binding_pv_by_label.html
 
-.. literalinclude:: /openshift-workstation/pv/fedora35.yaml
+.. literalinclude:: /articles/openshift-workstation/pv/fedora35.yaml
     :language: yaml
     :linenos:
     :caption: fedora35.yaml
@@ -378,7 +388,7 @@ The virtual machines we will use as Desktops comes with a few specities:
   | Ref: https://docs.openshift.com/container-platform/4.10/virt/virtual_machines/advanced_vm_management/virt-efi-mode-for-vms.html
     
 
-.. literalinclude:: /openshift-workstation/vms/fedora35.yaml
+.. literalinclude:: /articles/openshift-workstation/vms/fedora35.yaml
     :language: yaml
     :linenos:
     :caption: fedora35.yaml

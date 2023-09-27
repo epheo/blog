@@ -1,13 +1,25 @@
+# This file contains the configuration for an OpenShift cluster installation.
+
 apiVersion: v1
+
+# The base domain for the cluster.
 baseDomain: epheo.eu
+
+# Configuration for the compute nodes.
 compute:
 - name: worker
   replicas: 0 
+
+# Configuration for the control plane nodes.
 controlPlane:
   name: master
   replicas: 1 
+
+# Metadata for the cluster.
 metadata:
   name: da2
+
+# Networking configuration for the cluster.
 networking:
   networkType: OVNKubernetes
   clusterNetwork:
@@ -15,10 +27,18 @@ networking:
     hostPrefix: 23
   serviceNetwork:
   - 172.30.0.0/16
+
+# Platform configuration for the cluster.
 platform:
   none: {}
+
+# Configuration for bootstrapping the cluster.
 bootstrapInPlace:
   installationDisk: /dev/sda
+
+# Pull secret for accessing the OpenShift registry.
 pullSecret: '{"auths":{"cloud.openshift.com":{"auth":"XXXXXXXX"}}}' 
+
+# SSH key for accessing the cluster nodes.
 sshKey: |
   ssh-rsa AAAAB3XXXXXXXXXXXXXXXXXXXXXXXXX

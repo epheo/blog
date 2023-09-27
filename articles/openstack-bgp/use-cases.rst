@@ -33,7 +33,7 @@ In this section, we delve into real-world case studies and practical use cases t
    
      This example illustrates how BGP is employed to create redundancy and load balancing for critical services hosted within Red Hat OpenStack. We'll showcase the configuration of BGP route reflectors and the use of multiple BGP paths to optimize traffic distribution.
 
-   - **Example 3: Interconnecting OpenStack Regions**
+   - **Example 3: Interconnecting OpenStack Platforms**
    
      In multi-region OpenStack deployments, BGP is utilized to interconnect regions, enabling resource mobility and disaster recovery. We'll examine the implementation of BGP peering between regions and the benefits it offers in terms of resource management and redundancy.
 

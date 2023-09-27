@@ -1,1 +1,35 @@
 _build/*
+
+# Compiled Python files
+*.pyc
+
+# Compiled C extensions
+*.so
+
+# Virtual environment
+venv/
+Include/
+Lib/
+Scripts/
+pyvenv.cfg
+
+# Log files
+*.log
+
+# Cache files
+__pycache__/
+
+# Build artifacts
+build/
+dist/
+
+# IDE files
+.vscode/
+.idea/
+
+# Compiled documentation
+_build/
+
+# Other
+.DS_Store
+Thumbs.db

@@ -3,12 +3,19 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-.. include:: /openshift-workstation/index.rst
+"You can't unleash new things in closed sources"
+================================================
+
+That's with those words in mind that I decided to start this blog around 2008. Altough 
+the original blog was in french, and most original posts are not available here anymore.
 
 
-Indices and tables
-==================
+Latest Posts
+------------
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+.. toctree::
+   :maxdepth: 1
+
+   articles/openstack-bgp/index
+   articles/openshift-workstation/index
+   articles/defms/index

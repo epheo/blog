@@ -1,3 +1,7 @@
+# This YAML file contains Kubernetes resources for installing the KubeVirt Hyperconverged Operator (HCO) on the OpenShift Container Platform.
+# It creates a namespace named "openshift-cnv", an operator group named "kubevirt-hyperconverged-group" in the "openshift-cnv" namespace, and a subscription named "hco-operatorhub" in the "openshift-cnv" namespace.
+# The subscription specifies the source, source namespace, name, starting CSV, and channel for the KubeVirt Hyperconverged Operator.
+
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -22,4 +26,4 @@ spec:
   sourceNamespace: openshift-marketplace
   name: kubevirt-hyperconverged
   startingCSV: kubevirt-hyperconverged-operator.v4.10.0
-  channel: "stable" 
+  channel: "stable"

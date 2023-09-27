@@ -1,6 +1,7 @@
 Understanding BGP Basics
 ========================
 
+
 BGP Fundamentals
 ----------------
 
@@ -12,16 +13,18 @@ BGP (Border Gateway Protocol) is a standardized exterior gateway protocol that p
 
 - **BGP Peers**: BGP routers establish peering sessions with other BGP routers (peers). Peering is typically done using TCP connections. BGP routers exchange routing updates and route information with their peers.
 
+
 BGP Use Cases in OpenStack
 ---------------------------
 
-In the context of OpenStack, BGP plays a crucial role in network management. Some common use cases for BGP in OpenStack environments include:
+In the context of OpenStack, BGP plays a crucial role in network management. Some use cases for BGP in OpenStack environments include:
 
-1. **External Connectivity**: BGP is used to connect OpenStack environments to external networks, such as the Internet or private data centers. This enables the routing of traffic between OpenStack instances and the outside world.
+1. **External Connectivity**: BGP is used to connect OpenStack environments to external networks, such as the Internet or private data centers. This enables the routing of traffic between OpenStack instances and the outside world by advertising routes to floating IPs and VLAN provider IPs to external routers.
 
-2. **Dynamic Route Management**: BGP allows for dynamic route management within an OpenStack environment. It can dynamically advertise and withdraw routes as instances are created, moved, or removed. This flexibility is vital for cloud scalability.
+2. **Dynamic Route Management**: BGP allows for dynamic route management within an OpenStack environment. It can dynamically advertise and withdraw routes as instances are created, moved, or removed.
 
 3. **High Availability**: BGP is instrumental in achieving high availability and redundancy by allowing traffic to be rerouted in the event of network failures. This ensures minimal downtime for critical applications.
+
 
 Benefits of Dynamic Routing with BGP
 -------------------------------------
@@ -38,4 +41,4 @@ Dynamic routing with BGP offers several benefits in the context of OpenStack:
 
 - **Interoperability**: BGP is a widely accepted standard, ensuring compatibility with various networking devices and cloud platforms.
 
-In the following sections, we will delve deeper into configuring and managing BGP in Red Hat OpenStack, exploring its various features and advanced use cases.
+In the following sections, we will go deeper into configuring and managing BGP in Red Hat OpenStack, exploring its various features and advanced use cases.
