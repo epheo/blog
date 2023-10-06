@@ -7,7 +7,7 @@
 ================================================
 
 That's with those words in mind that I decided to start this blog around 2008. Altough 
-the original blog was in french, and most original posts are not available here anymore.
+the original blog was in french, and original posts aren't available here anymore.
 
 
 Latest Posts

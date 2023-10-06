@@ -1,40 +1,67 @@
-.. _case_studies_use_cases_section:
 
 Case Studies and Use Cases
 ==========================
 
-In this section, we delve into real-world case studies and practical use cases that illustrate the significance of BGP deployment in Red Hat OpenStack. These scenarios exemplify how BGP serves as a versatile and powerful tool within cloud networking.
 
-1. **Real-World Scenarios**
+Real-World Scenarios
+--------------------
 
-   Let's explore some real-world scenarios where BGP plays a pivotal role within Red Hat OpenStack deployments:
+Let's explore some real-world scenarios where BGP plays a pivotal role within Red Hat 
+OpenStack deployments:
 
-   - **Scenario 1: Multi-Cloud Connectivity**
-   
-     In a multi-cloud environment, organizations often leverage Red Hat OpenStack alongside other cloud providers. BGP enables seamless connectivity between these disparate cloud platforms, ensuring efficient data transfer and redundancy. Case studies in this scenario can illustrate how BGP optimizes multi-cloud operations.
+- **Scenario 1: Control Plane VIP**
 
-   - **Scenario 2: High Availability and Failover**
-   
-     Ensuring high availability is paramount in mission-critical applications. BGP is instrumental in creating redundant network paths and facilitating automatic failover when network or hardware failures occur. Real-world examples can demonstrate how BGP contributes to uninterrupted services.
+  In this scenario, BGP is used to advertise the control plane VIP to external BGP 
+  peers. This allows the control plane to be accessed from outside, enabling 
+  remote management of the OpenStack environment.
 
-   - **Scenario 3: Scaling OpenStack Infrastructure**
-   
-     As OpenStack environments expand, managing network routing becomes increasingly complex. BGP simplifies this process by dynamically adjusting routing tables as new resources are added. Case studies in this context can showcase the scalability benefits of BGP.
+  Controllers could be in separated sites, edge locations or Availability Zones (AZs).
 
-2. **Examples of BGP Deployment in OpenStack**
+  In the following example the controllers are located in separated racks with 
+  different subnets which provides resilience against power disruptions.
+  
+  Rather than relying on traditional L2-based methods like keepalived or VRRP for 
+  failover detection, we leverage Pacemaker with L3 IP to determine the liveliness of 
+  controllers.
 
-   Now, let's examine some concrete examples of how BGP is deployed within Red Hat OpenStack:
+  Controller-1, operating as the active node, utilizes BGP to announce the external 
+  VIP 192.1.1.1 to Leaf/ToR1
 
-   - **Example 1: External Connectivity**
-   
-     In this example, we'll explore how BGP is configured to establish connectivity between a Red Hat OpenStack cloud and external networks, including the Internet. We'll delve into the steps involved in announcing OpenStack resources to external BGP peers, allowing traffic to flow in and out of the cloud.
+  The OpenStack client connects to the Controller-1 VIP and the OpenStack API services 
+  are load balanced by the HAproxy service of the Controller-1.
 
-   - **Example 2: Redundancy and Load Balancing**
-   
-     This example illustrates how BGP is employed to create redundancy and load balancing for critical services hosted within Red Hat OpenStack. We'll showcase the configuration of BGP route reflectors and the use of multiple BGP paths to optimize traffic distribution.
 
-   - **Example 3: Interconnecting OpenStack Platforms**
-   
-     In multi-region OpenStack deployments, BGP is utilized to interconnect regions, enabling resource mobility and disaster recovery. We'll examine the implementation of BGP peering between regions and the benefits it offers in terms of resource management and redundancy.
+.. figure:: bgp.controlplane.png
+   :width: 100%
+   :align: center
 
-By exploring these case studies and examples, you'll gain valuable insights into how BGP can be effectively applied to address complex networking challenges and enhance the performance and reliability of your cloud infrastructure in Red Hat OpenStack.
+
+- **Scenario 2: Multi-Cloud Connectivity**
+
+  BGP can be utilized to interconnect multiple OpenStack clouds, facilitating resources 
+  inter-connectivity within a same datacenter or accross SD-WAN using Calico or AWS 
+  interconnect.
+  
+.. figure:: bgp.multicloud.png
+   :width: 100%
+   :align: center
+
+
+- **Scenario 3: Bonding and Loadbalancing with ECMP** 
+
+  BGP can be employed to create redundancy and load balancing for critical services 
+  hosted within Red Hat OpenStack. 
+  
+  Equal-Cost Multi-Path (ECMP) load balancing allows for the simultaneous use of 
+  multiple network paths for load distribution, optimizing resource utilization, and 
+  enhancing network resilience.
+
+  BGP can help creating redundant network paths and facilite automatic failover when 
+  network or hardware failures occur.
+
+- **Scenario 4: Scaling OpenStack Infrastructure**
+
+  As OpenStack environments expand, managing network routing becomes increasingly complex. 
+  BGP simplifies this process by dynamically adjusting routing tables as new resources 
+  are added. 
+  

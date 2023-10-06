@@ -5,11 +5,21 @@
 BGP Implementation in Red Hat OpenStack using FRR
 *************************************************
 
+.. article-info::
+    :date: Sept 24, 2023
+    :read-time: 5 min read
+
+
 Introduction
 ============
 
-The Border Gateway Protocol (BGP) stands as a cornerstone of the internet for managing routes and enabling efficient data transfer within large-scale environments. 
-Red Hat OpenStack, acknowledges the critical role of BGP in modern networking and has incorporated the Free Range Routing (FRR) suite into its offerings to provide BGP capabilities.
+The Border Gateway Protocol (BGP) is widely used over the internet for managing routes 
+and enabling efficient data transfer within large-scale environments. 
+
+Red Hat OpenStack, has incorporated the Free Range Routing (FRR) suite into its 
+offerings to provide BGP capabilities.
+
+This document provides an overview of the BGP implementation in Red Hat OpenStack using FRR.
 
 
 .. contents::
@@ -17,6 +27,5 @@ Red Hat OpenStack, acknowledges the critical role of BGP in modern networking an
    :depth: 2
 
 .. include:: bgp-basics.rst
-.. include:: managing-bgp-routes.rst
-.. include:: use-cases.rst
 .. include:: why-frr.rst   
+.. include:: use-cases.rst

@@ -13,7 +13,7 @@ author = 'Thibaut Lapierre'
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = []
+extensions = [ 'sphinx_design' ]
 
 templates_path = ['_templates']
 exclude_patterns = [
@@ -23,6 +23,7 @@ exclude_patterns = [
     'Lib',
     'Scripts',
     'Include',
+    '.venv',
 ]
 
 
@@ -34,6 +35,7 @@ html_theme = 'furo'
 html_static_path = ['_static']
 
 html_title = "epheo"
+html_logo = "_static/logo.jpg"
 
 html_theme_options = {
     "source_repository": "https://github.com/epheo/blog/",

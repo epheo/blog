@@ -2,11 +2,10 @@
 OpenShift Workstation with Single GPU passthrough
 *************************************************
 
-.. admonition:: Date and Author
-   :class: note
-   
-   Thibaut Lapierre | February 27, 2024
-   
+.. article-info::
+    :date: Feb 27, 2023
+    :read-time: 25 min read
+
 
 Introduction
 ============

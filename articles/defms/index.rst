@@ -1,10 +1,10 @@
 DEFMS: For a distributed, encrypted and free email delivery network
 ====================================================================
 
-.. admonition:: Date and Author
-   :class: note
-   
-   Thibaut Lapierre | February 24, 2018
+.. article-info::
+    :date: Feb 24, 2018
+    :read-time: 5 min read
+
    
 Let’s have a closer look at the current implementation of our global email delivery 
 system.
