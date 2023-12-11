@@ -81,7 +81,7 @@ RestartSec=5
 WantedBy=multi-user.target
 EOF
 
-sudo mv kube-controller-manager.kubeconfig /var/lib/kubernetes/
+sudo cp kube-controller-manager.kubeconfig /var/lib/kubernetes/
 
 cat <<EOF | sudo tee /etc/systemd/system/kube-controller-manager.service
 [Unit]
@@ -111,7 +111,7 @@ EOF
 
 # Setting up the Kubernetes Scheduler
 
-sudo mv kube-scheduler.kubeconfig /var/lib/kubernetes/
+sudo cp kube-scheduler.kubeconfig /var/lib/kubernetes/
 sudo mkdir -p /etc/kubernetes/config/
 
 cat <<EOF | sudo tee /etc/kubernetes/config/kube-scheduler.yaml
@@ -147,10 +147,10 @@ sudo systemctl start kube-apiserver kube-controller-manager kube-scheduler
 
 sudo dnf install -y nginx
 
-cat <<EOF | sudo tee /etc/nginx/sites-available/kubernetes.default.svc.${cluster_domain}
+cat <<EOF | sudo tee /etc/nginx/conf.d/kubernetes.default.svc.${cluster_domain}
 server {
   listen 80;
-  server_name kubernetes.default.svc.cluster.local;
+  server_name kubernetes.default.svc.${cluster_domain};
 
   location /healthz {
      proxy_pass https://127.0.0.1:6443/healthz;
@@ -158,8 +158,6 @@ server {
   }
 }
 EOF
-
-sudo ln -s /etc/nginx/sites-available/kubernetes.default.svc.${cluster_domain} /etc/nginx/sites-enabled/
 
 sudo systemctl restart nginx
 sudo systemctl enable nginx
@@ -169,7 +167,7 @@ sudo systemctl enable nginx
 kubectl cluster-info --kubeconfig admin.kubeconfig
 #> Kubernetes control plane is running at https://127.0.0.1:6443
 
-curl -H "Host: kubernetes.default.svc.cluster.local" -i http://127.0.0.1/healthz
+curl -H "Host: kubernetes.default.svc.${cluster_domain}" -i http://127.0.0.1/healthz
 
 # RBAC for Kubelet Authorization
 

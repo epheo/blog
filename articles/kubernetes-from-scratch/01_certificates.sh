@@ -234,7 +234,7 @@ EOF
 
 KUBERNETES_HOSTNAMES=kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster,kubernetes.svc.${cluster_domain}
 
-KUBERNETES_HOSTNAMES="${KUBERNETES_HOSTNAMES},${ip_address}"
+KUBERNETES_HOSTNAMES="${KUBERNETES_HOSTNAMES},${ip_address}",127.0.0.1
 
 cfssl gencert \
   -ca=ca.pem \
