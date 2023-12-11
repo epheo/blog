@@ -68,7 +68,7 @@ cat <<EOF | sudo tee /etc/cni/net.d/10-bridge.conf
     "ipam": {
         "type": "host-local",
         "ranges": [
-          [{"subnet": "${pod_network_cidr}"}]
+          [{"subnet": "${cluster_network}"}]
         ],
         "routes": [{"dst": "0.0.0.0/0"}]
     }
@@ -123,8 +123,8 @@ EOF
 
 # Configure Kubelet
 
-sudo mv ${HOSTNAME}-key.pem ${HOSTNAME}.pem /var/lib/kubelet/
-sudo mv ${HOSTNAME}.kubeconfig /var/lib/kubelet/kubeconfig
+sudo mv ${hostname}-key.pem ${hostname}.pem /var/lib/kubelet/
+sudo mv ${hostname}.kubeconfig /var/lib/kubelet/kubeconfig
 sudo mv ca.pem /var/lib/kubernetes/
 
 cat <<EOF | sudo tee /var/lib/kubelet/kubelet-config.yaml
@@ -139,14 +139,14 @@ authentication:
     clientCAFile: "/var/lib/kubernetes/ca.pem"
 authorization:
   mode: Webhook
-clusterDomain: "cluster.local"
+clusterDomain: "${cluster_domain}"
 clusterDNS:
-  - "10.32.0.10"
-podCIDR: "${POD_CIDR}"
+  - "${cluster_dns}"
+podCIDR: "${cluster_network}"
 resolvConf: "/run/systemd/resolve/resolv.conf"
 runtimeRequestTimeout: "15m"
-tlsCertFile: "/var/lib/kubelet/${HOSTNAME}.pem"
-tlsPrivateKeyFile: "/var/lib/kubelet/${HOSTNAME}-key.pem"
+tlsCertFile: "/var/lib/kubelet/${hostname}.pem"
+tlsPrivateKeyFile: "/var/lib/kubelet/${hostname}-key.pem"
 EOF
 
 cat <<EOF | sudo tee /etc/systemd/system/kubelet.service
@@ -183,7 +183,7 @@ apiVersion: kubeproxy.config.k8s.io/v1alpha1
 clientConnection:
   kubeconfig: "/var/lib/kube-proxy/kubeconfig"
 mode: "iptables"
-clusterCIDR: "10.200.0.0/16"
+clusterCIDR: ${cluster_network}
 EOF
 
 cat <<EOF | sudo tee /etc/systemd/system/kube-proxy.service

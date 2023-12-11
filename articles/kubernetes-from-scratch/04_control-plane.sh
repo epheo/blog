@@ -69,7 +69,7 @@ ExecStart=/usr/local/bin/kube-apiserver \\
   --service-account-key-file=/var/lib/kubernetes/service-account.pem \\
   --service-account-signing-key-file=/var/lib/kubernetes/service-account-key.pem \\
   --service-account-issuer=https://${ip_address}:6443 \\
-  --service-cluster-ip-range=10.32.0.0/24 \\
+  --service-cluster-ip-range=${service_network} \\
   --service-node-port-range=30000-32767 \\
   --tls-cert-file=/var/lib/kubernetes/kubernetes.pem \\
   --tls-private-key-file=/var/lib/kubernetes/kubernetes-key.pem \\
@@ -91,7 +91,7 @@ Documentation=https://github.com/kubernetes/kubernetes
 [Service]
 ExecStart=/usr/local/bin/kube-controller-manager \\
   --bind-address=0.0.0.0 \\
-  --cluster-cidr=10.200.0.0/16 \\
+  --cluster-cidr=${cluster_network} \\
   --cluster-name=kubernetes \\
   --cluster-signing-cert-file=/var/lib/kubernetes/ca.pem \\
   --cluster-signing-key-file=/var/lib/kubernetes/ca-key.pem \\
@@ -99,7 +99,7 @@ ExecStart=/usr/local/bin/kube-controller-manager \\
   --leader-elect=true \\
   --root-ca-file=/var/lib/kubernetes/ca.pem \\
   --service-account-private-key-file=/var/lib/kubernetes/service-account-key.pem \\
-  --service-cluster-ip-range=10.32.0.0/24 \\
+  --service-cluster-ip-range=${service_network} \\
   --use-service-account-credentials=true \\
   --v=2
 Restart=on-failure
@@ -148,11 +148,11 @@ sudo dnf install -y nginx
 
 cat <<EOF | sudo tee /etc/nginx/nginx.conf
 server {
-  listen      80;
+  listen 80;
   server_name kubernetes.default.svc.cluster.local;
 
   location /healthz {
-     proxy_pass                    https://127.0.0.1:6443/healthz;
+     proxy_pass https://127.0.0.1:6443/healthz;
      proxy_ssl_trusted_certificate /var/lib/kubernetes/ca.pem;
   }
 }
@@ -169,7 +169,7 @@ sudo systemctl enable nginx
 # Verification
 
 kubectl cluster-info --kubeconfig admin.kubeconfig
-Kubernetes control plane is running at https://127.0.0.1:6443
+#> Kubernetes control plane is running at https://127.0.0.1:6443
 
 curl -H "Host: kubernetes.default.svc.cluster.local" -i http://127.0.0.1/healthz
 

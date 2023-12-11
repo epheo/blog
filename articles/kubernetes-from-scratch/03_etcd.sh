@@ -3,7 +3,7 @@
 
 source _common.sh
 
-#Installing etcd
+# Installing etcd
 
 uninstall_etcd() {
     sudo systemctl stop etcd
@@ -19,13 +19,16 @@ version=$(github_latest ${url})
 github_download ${url} ${version} etcd-v${version}-linux-amd64.tar.gz
 
 tar xvf etcd-v${version}-linux-amd64.tar.gz
+rm -f etcd-v${version}-linux-amd64.tar.gz
 sudo mv etcd-v${version}-linux-amd64/etcd* /usr/local/bin/
+rm -rf etcd-v${version}-linux-amd64
+sudo chmod +x /usr/local/bin/etcd*
 
 sudo mkdir -p /etc/etcd /var/lib/etcd
 sudo chmod 700 /var/lib/etcd
 sudo cp ca.pem kubernetes-key.pem kubernetes.pem /etc/etcd/
 
-#Setting up the etcd Server
+# Setting up the etcd Server
 
 cat <<EOF | sudo tee /etc/systemd/system/etcd.service
 [Unit]
@@ -49,7 +52,7 @@ ExecStart=/usr/local/bin/etcd \\
   --listen-client-urls https://${ip_address}:2379,https://127.0.0.1:2379 \\
   --advertise-client-urls https://${ip_address}:2379 \\
   --initial-cluster-token etcd-cluster-0 \\
-  --initial-cluster controller-0=https://${ip_address}:2380 \\
+  --initial-cluster ${hostname}=https://${ip_address}:2380 \\
   --initial-cluster-state new \\
   --data-dir=/var/lib/etcd
 Restart=on-failure
@@ -59,15 +62,15 @@ RestartSec=5
 WantedBy=multi-user.target
 EOF
 
-#Starting up the etcd Server
+# Starting up the etcd Server
 
 sudo systemctl daemon-reload
 sudo systemctl enable etcd
-sudo systemctl start etcd
+sudo systemctl restart etcd
 
-#Verification
+# Verification
 
-sudo ETCDCTL_API=3 etcdctl member list \
+sudo ETCDCTL_API=3 /usr/local/bin/etcdctl member list \
   --endpoints=https://${ip_address}:2379 \
   --cacert=/etc/etcd/ca.pem \
   --cert=/etc/etcd/kubernetes.pem \
