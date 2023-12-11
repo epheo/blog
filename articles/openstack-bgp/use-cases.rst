@@ -6,8 +6,7 @@ Case Studies and Use Cases
 Real-World Scenarios
 --------------------
 
-Let's explore some real-world scenarios where BGP plays a pivotal role within Red Hat 
-OpenStack deployments:
+Let's explore some real-world scenarios using BGP plays Red Hat OpenStack deployments:
 
 - **Scenario 1: Control Plane VIP**
 
@@ -34,6 +33,7 @@ OpenStack deployments:
 .. figure:: bgp.controlplane.png
    :width: 100%
    :align: center
+
 
 
 - **Scenario 2: Multi-Cloud Connectivity**

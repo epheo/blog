@@ -1,5 +1,9 @@
 _build/*
 
+*.code-workspace
+blog/articles/kubernetes-from-scratch/kubernetesh/
+blog/articles/kubernetes-from-scratch/kubernetesh
+
 # Compiled Python files
 *.pyc
 
