@@ -232,7 +232,7 @@ cat > kubernetes-csr.json <<EOF
 }
 EOF
 
-KUBERNETES_HOSTNAMES=kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster,kubernetes.svc.cluster.local
+KUBERNETES_HOSTNAMES=kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster,kubernetes.svc.${cluster_domain}
 
 KUBERNETES_HOSTNAMES="${KUBERNETES_HOSTNAMES},${ip_address}"
 
