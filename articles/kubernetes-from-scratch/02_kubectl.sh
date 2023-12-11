@@ -19,7 +19,7 @@ sudo mv kubectl /usr/local/bin/
 
 # Setting up the Kubernetes Worker Node
 
-instance=worker-0
+instance=${worker_hostname}
 
 kubectl config set-cluster ${cluster_name} \
   --certificate-authority=ca.pem \

@@ -40,14 +40,14 @@ mv runc.amd64 runc
 
 url=https://github.com/containernetworking/plugins
 version=$(github_latest ${url})
-github_download ${url} ${version} cni-plugins-linux-amd64-${version}.tgz
-tar -xvf cni-plugins-linux-amd64-${version}.tgz -C /opt/cni/bin/
+github_download ${url} ${version} cni-plugins-linux-amd64-v${version}.tgz
+sudo tar -xvf cni-plugins-linux-amd64-v${version}.tgz -C /opt/cni/bin/
 
 url=https://github.com/containerd/containerd
 version=$(github_latest ${url})
-github_download ${url} ${version} containerd-${version}.linux-amd64.tar.gz
-mkdir containerd
-tar -xvf containerd-${version}.linux-amd64.tar.gz -C containerd
+github_download ${url} ${version} containerd-${version}-linux-amd64.tar.gz
+mkdir -p containerd
+tar -xvf containerd-${version}-linux-amd64.tar.gz -C containerd
 
 # Install the worker binaries
 
@@ -123,8 +123,8 @@ EOF
 
 # Configure Kubelet
 
-sudo cp worker-0-key.pem worker-0.pem /var/lib/kubelet/
-sudo cp worker-0.kubeconfig /var/lib/kubelet/kubeconfig
+sudo cp ${worker_hostname}-key.pem ${worker_hostname}.pem /var/lib/kubelet/
+sudo cp ${worker_hostname}.kubeconfig /var/lib/kubelet/kubeconfig
 sudo cp ca.pem /var/lib/kubernetes/
 
 cat <<EOF | sudo tee /var/lib/kubelet/kubelet-config.yaml
@@ -145,8 +145,8 @@ clusterDNS:
 podCIDR: "${cluster_network}"
 resolvConf: "/run/systemd/resolve/resolv.conf"
 runtimeRequestTimeout: "15m"
-tlsCertFile: "/var/lib/kubelet/${hostname}.pem"
-tlsPrivateKeyFile: "/var/lib/kubelet/${hostname}-key.pem"
+tlsCertFile: "/var/lib/kubelet/${worker_hostname}.pem"
+tlsPrivateKeyFile: "/var/lib/kubelet/${worker_hostname}-key.pem"
 EOF
 
 cat <<EOF | sudo tee /etc/systemd/system/kubelet.service
@@ -159,11 +159,8 @@ Requires=containerd.service
 [Service]
 ExecStart=/usr/local/bin/kubelet \\
   --config=/var/lib/kubelet/kubelet-config.yaml \\
-  --container-runtime=remote \\
   --container-runtime-endpoint=unix:///var/run/containerd/containerd.sock \\
-  --image-pull-progress-deadline=2m \\
   --kubeconfig=/var/lib/kubelet/kubeconfig \\
-  --network-plugin=cni \\
   --register-node=true \\
   --v=2
 Restart=on-failure

@@ -90,7 +90,7 @@ rm admin.csr admin-csr.json
 
 # Generating the kubelet client certificates
 
-instance=worker-0
+instance=${worker_hostname}
 
 cat > ${instance}-csr.json <<EOF
 {
@@ -232,15 +232,15 @@ cat > kubernetes-csr.json <<EOF
 }
 EOF
 
-KUBERNETES_HOSTNAMES=kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster,kubernetes.svc.${cluster_domain}
+kubernetes_hostnames=kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster,kubernetes.svc.${cluster_domain}
 
-KUBERNETES_HOSTNAMES="${KUBERNETES_HOSTNAMES},${ip_address}",127.0.0.1
+kubernetes_hostnames="${kubernetes_hostnames},${ip_address}",127.0.0.1
 
 cfssl gencert \
   -ca=ca.pem \
   -ca-key=ca-key.pem \
   -config=ca-config.json \
-  -hostname=${KUBERNETES_HOSTNAMES} \
+  -hostname=${kubernetes_hostnames} \
   -profile=kubernetes \
   kubernetes-csr.json | cfssljson -bare kubernetes
 

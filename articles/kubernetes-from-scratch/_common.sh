@@ -52,4 +52,6 @@ cluster_dns="10.32.0.10"
 
 # Get the hostname
 hostname=$(hostname -s)
+worker_hostname=$(hostname -s)
+
 echo "Hostname is ${hostname}"
