@@ -59,7 +59,7 @@ sudo mv containerd/bin/* /bin/
 
 cat <<EOF | sudo tee /etc/cni/net.d/10-bridge.conf
 {
-    "cniVersion": "0.4.0",
+    "cniVersion": "1.0.0",
     "name": "bridge",
     "type": "bridge",
     "bridge": "cnio0",
@@ -79,7 +79,7 @@ EOF
 
 cat <<EOF | sudo tee /etc/cni/net.d/99-loopback.conf
 {
-    "cniVersion": "0.4.0",
+    "cniVersion": "1.0.0",
     "name": "lo",
     "type": "loopback"
 }
@@ -123,9 +123,9 @@ EOF
 
 # Configure Kubelet
 
-sudo mv ${hostname}-key.pem ${hostname}.pem /var/lib/kubelet/
-sudo mv ${hostname}.kubeconfig /var/lib/kubelet/kubeconfig
-sudo mv ca.pem /var/lib/kubernetes/
+sudo cp worker-0-key.pem worker-0.pem /var/lib/kubelet/
+sudo cp worker-0.kubeconfig /var/lib/kubelet/kubeconfig
+sudo cp ca.pem /var/lib/kubernetes/
 
 cat <<EOF | sudo tee /var/lib/kubelet/kubelet-config.yaml
 kind: KubeletConfiguration
@@ -175,7 +175,7 @@ EOF
 
 # Configure the Kubernetes Proxy
 
-sudo mv kube-proxy.kubeconfig /var/lib/kube-proxy/kubeconfig
+sudo cp kube-proxy.kubeconfig /var/lib/kube-proxy/kubeconfig
 
 cat <<EOF | sudo tee /var/lib/kube-proxy/kube-proxy-config.yaml
 kind: KubeProxyConfiguration
@@ -205,7 +205,7 @@ EOF
 
 sudo systemctl daemon-reload
 sudo systemctl enable containerd kubelet kube-proxy
-sudo systemctl start containerd kubelet kube-proxy
+sudo systemctl restart containerd kubelet kube-proxy
 
 
 # Get back to the root directory as the next script will be executed from there and

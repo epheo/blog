@@ -141,13 +141,13 @@ EOF
 
 sudo systemctl daemon-reload
 sudo systemctl enable kube-apiserver kube-controller-manager kube-scheduler
-sudo systemctl start kube-apiserver kube-controller-manager kube-scheduler
+sudo systemctl restart kube-apiserver kube-controller-manager kube-scheduler
 
 # Enable HTTP Health Checks
 
 sudo dnf install -y nginx
 
-cat <<EOF | sudo tee /etc/nginx/conf.d/kubernetes.default.svc.${cluster_domain}
+cat <<EOF | sudo tee /etc/nginx/conf.d/kubernetes.default.svc.${cluster_domain}.conf
 server {
   listen 80;
   server_name kubernetes.default.svc.${cluster_domain};
