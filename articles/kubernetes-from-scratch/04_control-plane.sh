@@ -147,10 +147,10 @@ sudo systemctl start kube-apiserver kube-controller-manager kube-scheduler
 
 sudo dnf install -y nginx
 
-cat <<EOF | sudo tee /etc/nginx/nginx.conf
+cat <<EOF | sudo tee /etc/nginx/sites-available/kubernetes.default.svc.${cluster_domain}
 server {
   listen 80;
-  server_name kubernetes.default.svc.${cluster_domain};
+  server_name kubernetes.default.svc.cluster.local;
 
   location /healthz {
      proxy_pass https://127.0.0.1:6443/healthz;
@@ -158,9 +158,6 @@ server {
   }
 }
 EOF
-
-sudo mv kubernetes.default.svc.${cluster_domain} \
-  /etc/nginx/sites-available/kubernetes.default.svc.${cluster_domain}
 
 sudo ln -s /etc/nginx/sites-available/kubernetes.default.svc.${cluster_domain} /etc/nginx/sites-enabled/
 
@@ -172,7 +169,7 @@ sudo systemctl enable nginx
 kubectl cluster-info --kubeconfig admin.kubeconfig
 #> Kubernetes control plane is running at https://127.0.0.1:6443
 
-curl -H "Host: kubernetes.default.svc.${cluster_domain}" -i http://127.0.0.1/healthz
+curl -H "Host: kubernetes.default.svc.cluster.local" -i http://127.0.0.1/healthz
 
 # RBAC for Kubelet Authorization
 
