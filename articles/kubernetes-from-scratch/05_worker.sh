@@ -5,9 +5,14 @@ source _common.sh
 
 # Prerequisites
 
-sudo dnf install -y socat conntrack ipset 
+sudo dnf install -y socat conntrack ipset iptables systemd-resolved
 
 sudo swapoff -a
+
+sudo modprobe ip_conntrack
+
+sudo systemctl enable systemd-resolved
+sudo systemctl restart systemd-resolved
 
 # Create the installation directories
 
@@ -89,15 +94,8 @@ EOF
 
 sudo mkdir -p /etc/containerd/
 
-cat << EOF | sudo tee /etc/containerd/config.toml
-[plugins]
-  [plugins.cri.containerd]
-    snapshotter = "overlayfs"
-    [plugins.cri.containerd.default_runtime]
-      runtime_type = "io.containerd.runtime.v1.linux"
-      runtime_engine = "/usr/local/bin/runc"
-      runtime_root = ""
-EOF
+containerd config default | sudo tee /etc/containerd/config.toml
+sudo sed -i "s/SystemdCgroup = false/SystemdCgroup = true/" /etc/containerd/config.toml
 
 cat <<EOF | sudo tee /etc/systemd/system/containerd.service
 [Unit]
@@ -147,6 +145,7 @@ resolvConf: "/run/systemd/resolve/resolv.conf"
 runtimeRequestTimeout: "15m"
 tlsCertFile: "/var/lib/kubelet/${worker_hostname}.pem"
 tlsPrivateKeyFile: "/var/lib/kubelet/${worker_hostname}-key.pem"
+cgroupDriver: systemd
 EOF
 
 cat <<EOF | sudo tee /etc/systemd/system/kubelet.service
@@ -176,7 +175,7 @@ sudo cp kube-proxy.kubeconfig /var/lib/kube-proxy/kubeconfig
 
 cat <<EOF | sudo tee /var/lib/kube-proxy/kube-proxy-config.yaml
 kind: KubeProxyConfiguration
-apiVersion: kubeproxy.config.k8s.io/v1alpha1
+apiVersion: kubeproxy.config.k8s.io/v1
 clientConnection:
   kubeconfig: "/var/lib/kube-proxy/kubeconfig"
 mode: "iptables"

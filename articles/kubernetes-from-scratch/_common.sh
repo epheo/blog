@@ -48,6 +48,7 @@ cluster_domain="ksh.epheo.eu"
 
 # the range of IP addresses used for service ClusterIPs
 service_network="10.32.0.0/24"
+cluster_ip="10.32.0.1"
 cluster_dns="10.32.0.10"
 
 # Get the hostname

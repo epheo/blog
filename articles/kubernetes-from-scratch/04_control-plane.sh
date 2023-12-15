@@ -164,8 +164,12 @@ sudo systemctl enable nginx
 
 # Verification
 
+sleep 20
+
 kubectl cluster-info --kubeconfig admin.kubeconfig
 #> Kubernetes control plane is running at https://127.0.0.1:6443
+
+sleep 10
 
 curl -H "Host: kubernetes.default.svc.${cluster_domain}" -i http://127.0.0.1/healthz
 

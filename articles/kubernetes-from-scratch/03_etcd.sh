@@ -24,6 +24,9 @@ sudo mv etcd-v${version}-linux-amd64/etcd* /usr/local/bin/
 rm -rf etcd-v${version}-linux-amd64
 sudo chmod +x /usr/local/bin/etcd*
 
+sudo /sbin/restorecon -v /usr/local/bin/etcd
+sudo /sbin/restorecon -v /usr/local/bin/etcdctl
+
 sudo mkdir -p /etc/etcd /var/lib/etcd
 sudo chmod 700 /var/lib/etcd
 sudo cp ca.pem kubernetes-key.pem kubernetes.pem /etc/etcd/
