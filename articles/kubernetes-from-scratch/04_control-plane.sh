@@ -115,7 +115,7 @@ sudo cp kube-scheduler.kubeconfig /var/lib/kubernetes/
 sudo mkdir -p /etc/kubernetes/config/
 
 cat <<EOF | sudo tee /etc/kubernetes/config/kube-scheduler.yaml
-apiVersion: kubescheduler.config.k8s.io/v1alpha1
+apiVersion: kubescheduler.config.k8s.io/v1
 kind: KubeSchedulerConfiguration
 clientConnection:
   kubeconfig: "/var/lib/kubernetes/kube-scheduler.kubeconfig"
