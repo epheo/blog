@@ -57,8 +57,8 @@ tar -xvf containerd-${version}-linux-amd64.tar.gz -C containerd
 # Install the worker binaries
 
 chmod +x crictl kubectl kube-proxy kubelet runc 
-sudo mv crictl kubectl kube-proxy kubelet runc /usr/local/bin/
-sudo mv containerd/bin/* /bin/
+sudo install crictl kubectl kube-proxy kubelet runc /usr/local/bin/
+sudo install containerd/bin/* /bin/
 
 # Create the bridge network configuration file
 
@@ -175,7 +175,7 @@ sudo cp kube-proxy.kubeconfig /var/lib/kube-proxy/kubeconfig
 
 cat <<EOF | sudo tee /var/lib/kube-proxy/kube-proxy-config.yaml
 kind: KubeProxyConfiguration
-apiVersion: kubeproxy.config.k8s.io/v1
+apiVersion: kubeproxy.config.k8s.io/v1alpha1
 clientConnection:
   kubeconfig: "/var/lib/kube-proxy/kubeconfig"
 mode: "iptables"

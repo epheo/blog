@@ -18,13 +18,12 @@ version=$(github_latest ${url})
 
 github_download ${url} ${version} etcd-v${version}-linux-amd64.tar.gz
 
-tar xvf etcd-v${version}-linux-amd64.tar.gz
-rm -f etcd-v${version}-linux-amd64.tar.gz
-sudo mv etcd-v${version}-linux-amd64/etcd* /usr/local/bin/
-rm -rf etcd-v${version}-linux-amd64
-sudo chmod +x /usr/local/bin/etcd*
+tar xvf etcd-v${version}-linux-amd64.tar.gz && rm -f etcd-v${version}-linux-amd64.tar.gz
 
-sudo /sbin/restorecon -v /usr/local/bin/etcd
+sudo install etcd-v${version}-linux-amd64/etcd* /usr/local/bin/
+rm -rf etcd-v${version}-linux-amd64
+
+sudo /sbin/restorecon -v /usr/local/bin/etcd # is this still needed ?
 sudo /sbin/restorecon -v /usr/local/bin/etcdctl
 
 sudo mkdir -p /etc/etcd /var/lib/etcd

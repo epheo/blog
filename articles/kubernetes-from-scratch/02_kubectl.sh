@@ -15,7 +15,7 @@ version=$(curl -s ${url}/stable.txt)
 curl -LO ${url}/${version}/bin/linux/amd64/kubectl
 
 chmod +x kubectl
-sudo mv kubectl /usr/local/bin/
+sudo install kubectl /usr/local/bin/
 
 # Setting up the Kubernetes Worker Node
 

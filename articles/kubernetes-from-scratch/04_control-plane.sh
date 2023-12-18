@@ -29,7 +29,7 @@ curl -LO ${url}/${version}/bin/linux/amd64/kube-scheduler
 curl -LO ${url}/${version}/bin/linux/amd64/kubectl
 
 chmod +x kube-apiserver kube-controller-manager kube-scheduler kubectl
-sudo mv kube-apiserver kube-controller-manager kube-scheduler kubectl /usr/local/bin/
+sudo install kube-apiserver kube-controller-manager kube-scheduler kubectl /usr/local/bin/
 
 #Setting up the Kubernetes API Server
 
@@ -73,6 +73,7 @@ ExecStart=/usr/local/bin/kube-apiserver \\
   --service-node-port-range=30000-32767 \\
   --tls-cert-file=/var/lib/kubernetes/kubernetes.pem \\
   --tls-private-key-file=/var/lib/kubernetes/kubernetes-key.pem \\
+  --requestheader-client-ca-file=/var/lib/kubernetes/ca.pem \\
   --v=2
 Restart=on-failure
 RestartSec=5

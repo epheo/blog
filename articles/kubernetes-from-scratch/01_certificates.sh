@@ -19,7 +19,8 @@ mv cfssl_${version}_linux_amd64 cfssl
 mv cfssljson_${version}_linux_amd64 cfssljson
 
 chmod +x cfssl cfssljson
-sudo mv cfssl cfssljson /usr/local/bin/
+sudo install cfssl /usr/local/bin/
+sudo install cfssljson /usr/local/bin/
 
 # Generating the CA configuration file, certificate, and private key
 
@@ -56,7 +57,10 @@ cat > ca-csr.json <<EOF
 }
 EOF
 
-cfssl gencert -initca ca-csr.json |cfssljson -bare ca
+
+if [ -f ca.pem && ! -f ca-key.pem ]; then
+    cfssl gencert -initca ca-csr.json |cfssljson -bare ca
+fi
 
 rm ca.csr ca-csr.json
 
