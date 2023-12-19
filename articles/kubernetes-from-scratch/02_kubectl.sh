@@ -124,12 +124,11 @@ kubectl config set-context default \
 
 kubectl config use-context default --kubeconfig=admin.kubeconfig
 
-# Generate an encryption key:
 
-ENCRYPTION_KEY=$(head -c 32 /dev/urandom | base64)
-
+if [ ! -f encryption-config.yaml ]; then
 # Create the encryption-config.yaml encryption config file:
-
+echo "Encryption key not found, generating a new one"
+ENCRYPTION_KEY=$(head -c 32 /dev/urandom | base64)
 cat > encryption-config.yaml <<EOF
 kind: EncryptionConfig
 apiVersion: v1
@@ -143,6 +142,8 @@ resources:
               secret: ${ENCRYPTION_KEY}
       - identity: {}
 EOF
+fi
+
 
 # Get back to the root directory as the next script will be executed from there and
 # _common.sh cd's into the cluster directory

@@ -3,6 +3,8 @@
 
 source _common.sh
 
+sudo dnf install tar -y
+
 # Installing etcd
 
 uninstall_etcd() {

@@ -44,7 +44,7 @@ echo "IP address is ${ip_address} and subnet is ${subnet}"
 
 # the range of IP addresses used for pods
 cluster_network="10.200.0.0/16"
-cluster_domain="ksh.epheo.eu"
+cluster_domain="cluster.local"
 
 # the range of IP addresses used for service ClusterIPs
 service_network="10.32.0.0/24"

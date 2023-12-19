@@ -12,6 +12,7 @@ sudo swapoff -a
 sudo dnf remove zram-generator-defaults -y
 
 sudo modprobe nf_conntrack
+sudo modprobe br_netfilter
 
 echo "br_netfilter" |sudo tee /etc/modules-load.d/netfilter.conf
 
