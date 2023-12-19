@@ -6,10 +6,14 @@ source _common.sh
 # Prerequisites
 
 sudo dnf install -y socat conntrack ipset iptables systemd-resolved
+sudo dnf install container-selinux -y # https://github.com/kubevirt/kubevirt/issues/7314
 
 sudo swapoff -a
+sudo dnf remove zram-generator-defaults -y
 
-sudo modprobe ip_conntrack
+sudo modprobe nf_conntrack
+
+echo "br_netfilter" |sudo tee /etc/modules-load.d/netfilter.conf
 
 sudo systemctl enable systemd-resolved
 sudo systemctl restart systemd-resolved

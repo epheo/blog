@@ -57,12 +57,12 @@ cat > ca-csr.json <<EOF
 }
 EOF
 
-
-if [ -f ca.pem && ! -f ca-key.pem ]; then
+if [ ! -f ca.pem ]; then
     cfssl gencert -initca ca-csr.json |cfssljson -bare ca
+    rm ca.csr
 fi
 
-rm ca.csr ca-csr.json
+rm ca-csr.json
 
 cat > admin-csr.json <<EOF
 {
@@ -125,7 +125,7 @@ cfssl gencert \
 
 rm ${instance}.csr ${instance}-csr.json
 
-#Generating the kube-controller-manager client certificate
+# Generating the kube-controller-manager client certificate
 
 cat > kube-controller-manager-csr.json <<EOF
 {
@@ -155,7 +155,7 @@ cfssl gencert \
 
 rm kube-controller-manager.csr kube-controller-manager-csr.json
 
-#Generating the kube-proxy client certificate
+# Generating the kube-proxy client certificate
 
 cat > kube-proxy-csr.json <<EOF
 {
@@ -185,7 +185,7 @@ cfssl gencert \
 
 rm kube-proxy.csr kube-proxy-csr.json
 
-#Generating the kube-scheduler client certificate
+# Generating the kube-scheduler client certificate
 
 cat > kube-scheduler-csr.json <<EOF
 {
@@ -215,7 +215,7 @@ cfssl gencert \
 
 rm kube-scheduler.csr kube-scheduler-csr.json
 
-#Generating the Kubernetes API Server certificate
+# Generating the Kubernetes API Server certificate
 
 cat > kubernetes-csr.json <<EOF
 {

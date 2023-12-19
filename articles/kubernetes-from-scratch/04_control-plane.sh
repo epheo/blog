@@ -160,6 +160,8 @@ server {
 }
 EOF
 
+sudo setsebool httpd_can_network_connect 1 -P
+
 sudo systemctl restart nginx
 sudo systemctl enable nginx
 
