@@ -1,0 +1,3 @@
+[submodule "articles/openshift-ollama"]
+	path = articles/openshift-ollama
+	url = https://github.com/epheo/openshift-ollama

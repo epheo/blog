@@ -29,3 +29,4 @@ This document provides an overview of the BGP implementation in Red Hat OpenStac
 .. include:: bgp-basics.rst
 .. include:: why-frr.rst   
 .. include:: use-cases.rst
+.. include:: managing-bgp-routes.rst

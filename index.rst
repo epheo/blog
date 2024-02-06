@@ -15,6 +15,7 @@ Latest Posts
 .. toctree::
    :maxdepth: 1
 
+   articles/openshift-ollama
    articles/openstack-bgp/index
    articles/openshift-workstation/index
    articles/defms/index
