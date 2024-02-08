@@ -1,18 +1,20 @@
 ﻿apiVersion: kubevirt.io/v1
 kind: VirtualMachine
 metadata:
-  name: fedora35
+  name: fedora
   namespace: epheo
 spec:
-  running: true
+  runStrategy: Halted
   template:
     metadata:
       labels:
-        kubevirt.io/domain: fedora35
+        kubevirt.io/domain: fedora
     spec:
+      architecture: amd64
       domain:
         cpu:
           cores: 8
+          model: host-passthrough
           sockets: 2
           threads: 1
         features:
@@ -22,7 +24,7 @@ spec:
         firmware:
           bootloader:
             efi:
-              secureBoot: true
+              secureBoot: false # For Nvidia Driver...
         devices:
           disks:
             - bootOrder: 1
@@ -34,23 +36,35 @@ spec:
               name: cloudinitdisk
           autoattachGraphicsDevice: false
           gpus:
-            - deviceName: nvidia.com/GEFORCE_RTX_3080
-              name: gpuvideo
+          - deviceName: nvidia.com/GA102_GEFORCE_RTX_3080
+            name: gpuvideo
           hostDevices:
-            - deviceName: devices.kubevirt.io/USB3_Controller
-              name: usbcontroller
+          - deviceName: devices.kubevirt.io/USB3_Controller
+            name: usbcontroller
+          - deviceName: devices.kubevirt.io/USB3_Controller
+            name: usbcontroller2
+          - deviceName: intel.com/WIFI_Controller
+            name: wificontroller
           interfaces:
-            - masquerade: {}
-              name: default
+          - masquerade: {}
+            name: default
+          - bridge: {}
+            model: virtio
+            name: nic-0
           networkInterfaceMultiqueue: true
           rng: {}
+        machine:
+          type: q35
         resources:
           requests:
-            memory: 32G
-      hostname: fedora35
+            memory: 16G
+      hostname: fedora
       networks:
-        - name: default
-          pod: {}
+      - name: default
+        pod: {}
+      - multus:
+          networkName: br1
+        name: nic-0
       terminationGracePeriodSeconds: 0
       volumes:
         - persistentVolumeClaim:

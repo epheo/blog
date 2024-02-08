@@ -25,10 +25,10 @@ The workstation used for this demo has the following hardware:
 
 - AMD Ryzen 9 3950X 16-Core 32-Threads
 - 64GB DDR4 3200MHz
-- Nvidia RTX 3080 10GB
-- 2x NVMe Disks (2TB each)
-- 1x SSD Disk (128GB root system)
-- Mellanox ConnectX-3 Pro 10Gbps Ethernet
+- Nvidia RTX 3080 FE 10GB
+- 2x 2TB NVMe Disks (guests)
+- 1x 500GB SSD Disk (root system)
+- 10Gbase-CX4 Mellanox Ethernet
 
 
 Backup of existing system partitions
@@ -144,7 +144,7 @@ required.
 We will use MachineConfig to configure our node accordingly.
 
 All MachineConfig are applied on the master machineset because we have a single
-node OpenShift. With a multi nodes cluster those would be applied to worker
+node OpenShift. With a multi nodes cluster those would be applied to workers
 instead.
 
 .. seealso::
@@ -153,68 +153,128 @@ instead.
 
 
 
-Adding IOMMU and VGA off Kernel arguments
------------------------------------------
+Passing kernel arguments at boot time
+-------------------------------------
 
-To prevent Host system to bind console to GPU
+Multiple Kernel arguments have to be passed at boot time in order to configure our node 
+for GPU passthrough. 
+This can be done using the MachineConfigOperator. 
 
-https://www.reddit.com/r/VFIO/comments/cktnhv/bar_0_cant_reserve/
-https://www.reddit.com/r/VFIO/comments/mx5td8/bar_3_cant_reserve_mem_0xc00000000xc1ffffff_64bit/
+
+- **amd_iommu=on**: Enables IOMMU (Input/Output Memory Management Unit) support for AMD 
+  platforms, allowing for direct memory access (DMA) by PCI devices without going 
+  through the CPU. This improves performance and reduces overhead.
+- **vga=off**: Disables VGA (Video Graphics Array) console output during boot time. 
+- **rdblaclist=nouveau**: Enables the blacklisting of the Nouveau open-source NVIDIA 
+  driver.
+- **video=efifb:off**: Disables the EFI (Extensible Firmware Interface) framebuffer 
+  console output during boot time. 
 
 .. seealso::
+
+    https://www.reddit.com/r/VFIO/comments/cktnhv/bar_0_cant_reserve/
+    https://www.reddit.com/r/VFIO/comments/mx5td8/bar_3_cant_reserve_mem_0xc00000000xc1ffffff_64bit/
 
     https://docs.kernel.org/fb/fbcon.html
 
 
-.. literalinclude:: /articles/openshift-workstation/machineconfig/100-sno-kernelargs.yaml
+.. literalinclude:: /articles/openshift-workstation/machineconfig/build/vfio-prepare.bu
     :language: yaml
+    :lines: 1-6,41-46
     :linenos:
-    :caption: 100-sno-kernelargs.yaml
+    :caption: Setting Kernel Arguments at boot time.
 
+
+.. code-block:: bash
+    :linenos:
+
+    cd articles/openshift-workstation/machineconfig/build
+    butane -d . vfio-prepare.bu -o ../vfio-prepare.yaml
+    oc patch MachineConfig 100-vfio --type=merge -p ../vfio-prepare.yaml
 
 .. note::
 
     If you're using an Intel CPU you'll have to set intel_iommu=on instead.
 
-We deactivate the EFI Frambuffer with efifb:off
+
+Installing and configuring the NVidia GPU Operator
+---------------------------------------------------
+
+Install the GPU Operator using OLM / OpenShift Marketplace.
+
+When deploying the operator's ClusterPolicy we have to set ``sandboxWorkloads.enabled`` 
+to ``true`` to enable the sandbox-device-plugin and vfio-manager.
 
 
-Binding GPU to VFIO Driver at boot time
----------------------------------------
+.. code-block:: yaml
+    :linenos:
+    :caption: sandboxWorkloadsEnabled.yaml
 
-
-We first gather the PCI Vendor and product IDs from `pciutils`.
+    kind: ClusterPolicy
+    metadata:
+      name: gpu-cluster-policy
+    spec:
+      sandboxWorkloads:
+        defaultWorkload: container
+        enabled: true
 
 .. code-block:: bash
 
-    lspci -nn |grep VGA
+    oc patch ClusterPolicy gpu-cluster-policy --type=merge -p sandboxWorkloadsEnabled.yaml
 
 
-.. literalinclude:: /articles/openshift-workstation/machineconfig/100-sno-vfiopci.bu
-    :caption: 100-sno-vfiopci.bu
+As the Nvidia GPU Operator does not supports consumer grade GPUs it does not take the
+audio device into consideration and therefore doesn't bind it to vfiopci driver.
+This has to be done manually but can be achieved once at boot time using the following 
+machine config.
+
+
+.. literalinclude:: /articles/openshift-workstation/machineconfig/build/vfio-prepare.bu
     :language: yaml
+    :lines: 1-6,7-18,25-40
     :linenos:
+    :caption: vfio-prepare.bu
+
+
+.. literalinclude:: /articles/openshift-workstation/machineconfig/build/vfio-prepare.sh
+    :language: bash
+    :lines: 1-16
+    :linenos:
+    :caption: vfio-prepare.sh
 
 
 .. code-block:: bash
-
-    dnf install butane
-    butane 100-sno-vfiopci.bu -o 100-sno-vfiopci.yaml
-    oc apply -f 100-sno-vfiopci.yaml
-
-
-Unbinding VTConsole at boot time
---------------------------------
-
-.. seealso::
-
-    https://docs.kernel.org/fb/fbcon.html
-
-
-.. literalinclude:: /articles/openshift-workstation/machineconfig/98-sno-vtconsole-unbind.yaml
-    :caption: 98-sno-vtconsole-unbind.yaml
-    :language: yaml
     :linenos:
+
+    cd articles/openshift-workstation/machineconfig/build
+    butane -d . vfio-prepare.bu -o ../vfio-prepare.yaml
+    oc patch MachineConfig 100-vfio --type=merge -p ../vfio-prepare.yaml
+
+
+Changing the driver binded to the GPU
+-------------------------------------
+
+- This workstation only have a single GPU.
+- I'd like to use it for both Virtual Machines and AI/ML workload.
+- Containers requires the GPU device to bind to the Nvidia driver.
+- Virtual machines requires the GPU device to bind to the VFIO-PCI driver.
+- I'd like an efficient way to bind / unbind the GPU to a driver without reboot.
+
+We can label the node in order to configure it with the GPU bound to Nvidia kernel 
+driver in order to satisky container workloads.
+
+.. code-block:: bash
+
+   oc label node da2 --overwrite nvidia.com/gpu.workload.config=container
+
+Or to bind the GPU to the vfio-pci driver to satisfy Virtual Machines workloads with 
+PCI passthrough.
+
+.. code-block:: bash
+
+   oc label node da2 --overwrite nvidia.com/gpu.workload.config=vm-passthrough
+
+The whole operation takes a few minutes.
 
 
 Add GPU as Hardware Device of your node
@@ -225,41 +285,44 @@ Add GPU as Hardware Device of your node
     https://github.com/kubevirt/kubevirt/blob/main/docs/devel/host-devices-and-device-plugins.md
 
 
+We indentify the Vendor and Product ID of the GPU
+
 .. code-block:: bash
 
-    oc edit hyperconverged kubevirt-hyperconverged -n openshift-cnv
+    lspci -nnk |grep VGA
 
+We indentify the device name provided by the gpu-feature-discovery.
 
-# FILEPATH: c:\Users\epheo\Documents\blog\openshift-workstation\index.rst
+.. code-block:: bash
 
-
-This YAML code block defines a HyperConverged object in Kubernetes/OpenShift. It 
-specifies the name and namespace of the object, as well as the permitted host devices. 
-In this case, it allows two NVIDIA GeForce RTX 3080 devices to be used, along with 
-their respective audio devices. The `pciDeviceSelector` field specifies the vendor ID 
-and device ID of the PCI device, while the `resourceName` field specifies the name of 
-the resource that will be created in Kubernetes/OpenShift.
+    oc get nodes da2 -ojson |jq .status.capacity |grep nvidia
 
 .. code-block:: yaml
     :linenos:
 
-    apiVersion: hco.kubevirt.io/v1
     kind: HyperConverged
     metadata:
       name: kubevirt-hyperconverged
       namespace: openshift-cnv
     spec:
-      permittedHostDevices: 
-        pciHostDevices: 
-        - pciDeviceSelector: "10DE:2206"
-          resourceName: "nvidia.com/GEFORCE_RTX_3080" 
-        - pciDeviceSelector: "10DE:1AEF"
-          resourceName: "nvidia.com/GEFORCE_RTX_3080_AUDIO" 
+      permittedHostDevices:
+        pciHostDevices:
+        - externalResourceProvider: true
+          pciDeviceSelector: 10DE:2206
+          resourceName: nvidia.com/GA102_GEFORCE_RTX_3080
 
- 
+.. code-block:: bash
 
-Passthrough one of the USB Host Controller to the VM
-====================================================
+    oc patch hyperconverged kubevirt-hyperconverged -n openshift-cnv  --type=merge -d hyperconverged.yaml 
+
+The `pciDeviceSelector` field specifies the vendor ID and device ID of the PCI device, 
+while the `resourceName` field specifies the name of the resource that will be created 
+in Kubernetes/OpenShift.
+
+
+
+Passthrough the USB Host Controllers to the VM
+===============================================
 
 In order to directly connect a mouse, keyboard, audio device etc directly to 
 the VM we passthrough one if the USB controller directly to the VM.
@@ -311,55 +374,57 @@ However, as we will only bind the one we are interested in to the VFIO-PCI
 driver the other ones will not be available for pci passthrough.
 
 
-.. code-block:: sh
-
-    oc edit hyperconverged kubevirt-hyperconverged -n openshift-cnv
-
-
 .. code-block:: yaml
     :linenos:
 
-    apiVersion: hco.kubevirt.io/v1
     kind: HyperConverged
     metadata:
       name: kubevirt-hyperconverged
       namespace: openshift-cnv
     spec:
-      permittedHostDevices: 
-        pciHostDevices: 
-        - pciDeviceSelector: "1222:164F"
-          resourceName: "amd.com/XHCI_USB3_Controller" 
-    ...
+      permittedHostDevices:
+        pciHostDevices:
+          - pciDeviceSelector: 1022:149C
+            resourceName: devices.kubevirt.io/USB3_Controller
+          - pciDeviceSelector: 8086:2723
+            resourceName: intel.com/WIFI_Controller
+
+.. code-block:: bash
+
+    oc patch hyperconverged kubevirt-hyperconverged -n openshift-cnv  --type=merge -d hyperconverged.yaml 
 
 
 Binding the USB Controller to VFIO-PCI driver at boot time
 ----------------------------------------------------------
 
-.. seealso::
 
-   https://www.reddit.com/r/VFIO/comments/bjbes0/how_to_force_usb_30_controller_to_bind_to_vfio/
-
-
-.. literalinclude:: /articles/openshift-workstation/machineconfig/98-sno-xhci-unbind.yaml
+.. literalinclude:: /articles/openshift-workstation/machineconfig/build/vfio-prepare.bu
     :language: yaml
     :linenos:
-    :caption: 98-sno-xhci-unbind.yaml
+    :caption: vfio-prepare.bu
+
+Create a bash script to unbind specific PCI devices and bind them to the VFIO-PCI 
+driver.
+
+.. literalinclude:: /articles/openshift-workstation/machineconfig/build/vfio-prepare.sh
+    :language: bash
+    :linenos:
+    :caption: vfio-prepare.sh
 
 
-.. warning::
+.. code-block:: bash
+    :linenos:
 
-    Double backslash with systemd in pci device id path
-    https://www.freedesktop.org/software/systemd/man/systemd.syntax.html
+    cd articles/openshift-workstation/machineconfig/build
+    butane -d . vfio-prepare.bu -o ../vfio-prepare.yaml
+    oc patch MachineConfig 100-vfio --type=merge -p ../vfio-prepare.yaml
 
 
-
-
-Creating the Virtual Machine
+Creating a Virtual Machine
 ============================
 
 The virtual machine will use existing LVM Logical volumes, here we will assume
 we already have the Operating System installed on the LV with a UEFI boot.
-
 
 
 Create PV and PV Claim out of local LVM disks
@@ -382,22 +447,73 @@ The virtual machines we will use as Desktops comes with a few specities:
   | Ref: https://kubevirt.io/2021/intel-vgpu-kubevirt.html
 - We will remove the existing default virtual VGA
   | Ref: https://kubevirt.io/api-reference/master/definitions.html#_v1_devices
-- We will passthrough en entire USB controller
+- We will passthrough an entire USB controller
 - We will use UEFI boot to be closer from typical BareMetal
   | Ref: https://docs.openshift.com/container-platform/4.10/virt/virtual_machines/advanced_vm_management/virt-efi-mode-for-vms.html
     
 
-.. literalinclude:: /articles/openshift-workstation/vms/fedora35.yaml
+.. literalinclude:: /articles/openshift-workstation/vms/fedora.yaml
     :language: yaml
     :linenos:
-    :caption: fedora35.yaml
+    :caption: fedora.yaml
+
+
+.. literalinclude:: /articles/openshift-workstation/vms/windows.yaml
+    :language: yaml
+    :linenos:
+    :caption: windows.yaml
+
+
+Unused anymore, for reference only
+==================================
+
+Binding GPU to VFIO Driver at boot time
+---------------------------------------
+
+We first gather the PCI Vendor and product IDs from `pciutils`.
+
+.. code-block:: bash
+
+    lspci -nn |grep VGA
+
+
+.. literalinclude:: /articles/openshift-workstation/machineconfig/100-sno-vfiopci.bu
+    :caption: 100-sno-vfiopci.bu
+    :language: yaml
+    :linenos:
+
+
+.. code-block:: bash
+
+    dnf install butane
+    butane 100-sno-vfiopci.bu -o 100-sno-vfiopci.yaml
+    oc apply -f 100-sno-vfiopci.yaml
+
+.. literalinclude:: /articles/openshift-workstation/machineconfig/98-sno-xhci-unbind.yaml
+    :language: yaml
+    :linenos:
+    :caption: 98-sno-xhci-unbind.yaml
+
+
+Unbinding VTConsole at boot time
+--------------------------------
+
+.. seealso::
+
+    https://docs.kernel.org/fb/fbcon.html
+
+
+.. literalinclude:: /articles/openshift-workstation/machineconfig/98-sno-vtconsole-unbind.yaml
+    :caption: 98-sno-vtconsole-unbind.yaml
+    :language: yaml
+    :linenos:
 
 
 
 What's next
 ===========
 
-This chapter is used as reference to the furture improvements to be thought about.
+This chapter is kept as a reference for furture possible improvements.
 
 - Reducing the Control Plane footprint by relaying on microshift instead.
 - Using GPU from containers instead of virtual machines for Linux Desktop.
@@ -407,14 +523,6 @@ Replace node prep by qemu hooks
 -------------------------------
 
 - https://github.com/kubevirt/kubevirt/blob/main/examples/vmi-with-sidecar-hook.yaml
-
-
-Network Interfaces
-------------------
-
-- https://docs.openshift.com/container-platform/4.2/cnv/cnv_users_guide/cnv-attaching-vm-multiple-networks.html
-- https://docs.openshift.com/container-platform/4.10/virt/node_network/virt-troubleshooting-node-network.html
-- https://docs.openshift.com/container-platform/4.10/networking/multiple_networks/configuring-additional-network.html#nw-multus-bridge-object_configuring-additional-network
 
 
 Enabling dedicated resources for virtual machines

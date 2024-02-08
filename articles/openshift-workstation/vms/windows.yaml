@@ -7,12 +7,13 @@ metadata:
     vm.kubevirt.io/os: windows10
     vm.kubevirt.io/workload: desktop
 spec:
-  runStrategy: RerunOnFailure
+  runStrategy: Manual
   template:
     metadata:
       labels:
         kubevirt.io/domain: windows
     spec:
+      architecture: amd64
       domain:
         clock:
           timer:
@@ -26,6 +27,7 @@ spec:
           utc: {}
         cpu:
           cores: 8
+          model: host-passthrough
           sockets: 2
           threads: 1
         features:
@@ -66,23 +68,34 @@ spec:
               name: pvdisk1
           autoattachGraphicsDevice: false
           gpus:
-            - deviceName: nvidia.com/GEFORCE_RTX_3080
-              name: gpuvideo
+          - deviceName: nvidia.com/GA102_GEFORCE_RTX_3080
+            name: gpuvideo
           hostDevices:
-            - deviceName: devices.kubevirt.io/USB3_Controller
-              name: usbcontroller
+          - deviceName: devices.kubevirt.io/USB3_Controller
+            name: usbcontroller
+          - deviceName: devices.kubevirt.io/USB3_Controller
+            name: usbcontroller2
+          - deviceName: intel.com/WIFI_Controller
+            name: wificontroller
           interfaces:
-            - masquerade: {}
-              name: default
+          - masquerade: {}
+            name: default
+          - bridge: {}
+            model: virtio
+            name: nic-0
           networkInterfaceMultiqueue: true
           rng: {}
         resources:
           requests:
             memory: 32G
+      evictionStrategy: None
       hostname: windows
       networks:
-        - name: default
-          pod: {}
+      - name: default
+        pod: {}
+      - multus:
+          networkName: br1
+        name: nic-0
       terminationGracePeriodSeconds: 0
       volumes:
         - containerDisk:
