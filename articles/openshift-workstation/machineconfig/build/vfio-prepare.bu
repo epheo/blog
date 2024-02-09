@@ -1,0 +1,47 @@
+variant: openshift
+version: 4.10.0
+metadata:
+  name: 100-vfio
+  labels:
+    machineconfiguration.openshift.io/role: master
+storage:
+  files:
+  - path: /usr/local/bin/vfio-prepare
+    mode: 0755
+    overwrite: true
+    contents:
+      local: ./vfio-prepare.sh
+  - path: /etc/modules-load.d/vfio-pci.conf
+    mode: 0644
+    overwrite: true
+    contents:
+      inline: vfio-pci
+  - path: /etc/modprobe.d/vfio.conf
+    mode: 0644
+    overwrite: true
+    contents:
+      inline: |
+        options vfio-pci ids=8086:2723,1022:149c
+systemd:
+  units:
+    - name: vfioprepare.service
+      enabled: true
+      contents: |
+       [Unit]
+       Description=Prepare vfio devices
+       After=ignition-firstboot-complete.service
+       Before=kubelet.service crio.service
+
+       [Service]
+       Type=oneshot
+       ExecStart=/usr/local/bin/vfio-prepare
+
+       [Install]
+       WantedBy=kubelet.service
+openshift:
+  kernel_arguments:
+    - amd_iommu=on
+    - vga=off
+    - rdblaclist=nouveau
+    - 'video=efifb:off'
+
