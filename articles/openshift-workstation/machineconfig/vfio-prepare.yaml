@@ -13,7 +13,7 @@ spec:
       files:
         - contents:
             compression: gzip
-            source: data:;base64,H4sIAAAAAAAC/7SRT28TMRDF7/4Uj7SH9lDsTSJSLQpSaCXohQsqlySKHHsWjwh2ZDtbobbfHTm7/GsRtIdcrd8b/97M0Qu5Zi/XOjkh2obDSuesjcPJKW4FwA3mOGswOL7d6uzupY3cUpQ7v2ZvB1i+RnbkBQCQcQHH2tpIKeEN/hoRQMOih8uHZ1vDj+BVaClGtiQej5XpW5LrXZJbwz2e5I9JpY3F3R0WP5Nef6X/xjzdrLgEc9yRuBfiCErXSr2sMNtZDrDUsiHM1ViNljU+fLq6vJrhIsRtiDpz8Hg3q9QQ7/mzwyU17Hn/2qUvgs8xbDYUMa+UpbrS1CxxEqmFrk5F326qlFJ1/7EoC5n+qb2XSLJgi1rpRQeWhtNBmYtq/Goy+P2Qpcn1fvO4/vgW6YazcdDewmlvN4SW9a87fKHoaYNuPQ+sJk+0mjywGo9wPjHqkFaj51sNh6jG5+ZAVuaJVmbRgf+0gvgeAAD///EoQY6mAwAA
+            source: data:;base64,H4sIAAAAAAAC/7yST08bMRDF7/4UrwsHOND1JlFDU6VSAKnNgfZQpZckihx7lh01tSPbuwgB371y/lBKIpFLuVrvzfzeGx+9y+ds87kKlRBNyW6mYlS6wskp7gXAJcY4K5Ed3y9VrB5z47khn9d2ztZkmH5CrMgKACBdORwrYzyFgM/YaxFAyWIjTgvPlpp3xDPXkPdsSOyOzcNdyOd1yJeaN/KQbyelNAYPD5g8Oa36Ta/aLN3OOBmjr0k8CnEEqXpSvi8wqA07GGpYE8ayI9vTHr79HF4NB7h0fum8iuwsvgwK2cJXvqlwRSVbXr2u3ZfORu8WC/IYF9JQr1BUTnHiqYEqTsUmXV9KKXubxSIV0v8XewUR8iSb9KSarIUpYT9Lc1F0PnSz54dMSS5SJ1kdaEEhZNso8Vn/0SGoyKG8w/D79fUIN97VyxdY3bRNvo7VnayFW6xOG+ddLXewRqsPgdGPC4RbjrqCsgaVsmZBaFj9xftF3tIC66vtoyoOpSrekqp9KFX7iarVQtH5qP8TlT6QSu+jOn9BBfEnAAD//66DaOg9BAAA
           mode: 493
           overwrite: true
           path: /usr/local/bin/vfio-prepare

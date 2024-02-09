@@ -137,12 +137,11 @@ Pulling OpenHermes 2.5
     }'
 
 
-
 Interacting with the LLM
 ========================
 
-A Python Telegram Bot to test the API
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A simple Python Telegram Bot to test the API
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 To first test interaction with the running model we will consume the Ollama APIs from a 
 small Python script and expose it in a Telegram Bot. Let's call it **Tellama**

@@ -509,7 +509,6 @@ Unbinding VTConsole at boot time
     :linenos:
 
 
-
 What's next
 ===========
 
@@ -540,3 +539,19 @@ Using MicroShift and RHEL for Edge
 - https://next.redhat.com/2022/01/19/introducing-microshift/
 - https://github.com/redhat-et/microshift
 - https://community.ibm.com/community/user/cloud/blogs/alexei-karve/2022/03/07/microshift-11
+
+
+Troubleshooting
+===============
+
+.. code-block:: bash
+
+    {"component":"virt-launcher","kind":"","level":"error","msg":"Failed to start VirtualMachineInstance with flags 0.","name":"windows","namespace":"epheo","pos":"manager.go:1027","reason":"virError(Code=1, Domain=10, Message='internal error: qemu unexpectedly closed the monitor: 2024-02-08T13:10:06.726594Z qemu-kvm: -device {\"driver\":\"vfio-pci\",\"host\":\"0000:07:00.1\",\"id\":\"ua-hostdevice-usbcontroller\",\"bus\":\"pci.9\",\"addr\":\"0x0\"}: vfio 0000:07:00.1: group 19 is not viable\nPlease ensure all devices within the iommu_group are bound to their vfio bus driver.')","timestamp":"2024-02-08T13:10:07.353704Z","uid":"cc6fa39c-db31-4f2e-bba1-42dfc4b6efad"}
+    {"component":"virt-launcher","kind":"","level":"error","msg":"Failed to sync vmi","name":"windows","namespace":"epheo","pos":"server.go:202","reason":"virError(Code=1, Domain=10, Message='internal error: qemu unexpectedly closed the monitor: 2024-02-08T13:10:06.726594Z qemu-kvm: -device {\"driver\":\"vfio-pci\",\"host\":\"0000:07:00.1\",\"id\":\"ua-hostdevice-usbcontroller\",\"bus\":\"pci.9\",\"addr\":\"0x0\"}: vfio 0000:07:00.1: group 19 is not viable\nPlease ensure all devices within the iommu_group are bound to their vfio bus driver.')","timestamp":"2024-02-08T13:10:07.353770Z","uid":"cc6fa39c-db31-4f2e-bba1-42dfc4b6efad"}
+
+    [core@da2 ~]$ ls /sys/kernel/iommu_groups/19/devices/
+    0000:03:08.0  0000:07:00.0  0000:07:00.1  0000:07:00.3
+
+    [core@da2 ~]$ lspci -nnks 07:00.0
+    07:00.0 Non-Essential Instrumentation [1300]: Advanced Micro Devices, Inc. [AMD] Starship/Matisse Reserved SPP [1022:1485]
+    	Subsystem: ASUSTeK Computer Inc. Device [1043:87c0]
