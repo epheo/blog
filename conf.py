@@ -13,7 +13,7 @@ author = 'Thibaut Lapierre'
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = [ 'sphinx_design' ]
+extensions = [ 'sphinx_design','sphinx_sitemap' ]
 
 templates_path = ['_templates']
 exclude_patterns = [
@@ -30,6 +30,10 @@ exclude_patterns = [
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
+
+html_baseurl = 'https://blog.epheo.eu/'
+sitemap_locales = [None]
+sitemap_url_scheme = '{link}'
 
 html_theme = 'furo'
 html_static_path = ['_static']
