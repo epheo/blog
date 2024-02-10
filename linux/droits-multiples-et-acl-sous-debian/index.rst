@@ -46,6 +46,7 @@ Pour vous y retrouver:
   disques SCSI ou SATA.
 - La troisième au numéro du disque “a” pour le premier, “b” pour le deuxieme etc…
 - Et le numéro final correspond à celui de la partition sur le disque.
+
 Ensuite éditez le fichier “fstab”
 
 .. code-block:: bash

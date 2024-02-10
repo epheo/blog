@@ -41,6 +41,8 @@ html_static_path = ['_static']
 html_title = "epheo"
 html_logo = "_static/logo.jpg"
 
+html_extra_path = [ "robots.txt" ]
+
 html_theme_options = {
     "source_repository": "https://github.com/epheo/blog/",
     "source_branch": "main",
