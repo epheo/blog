@@ -1,3 +1,12 @@
+.. meta::
+   :description:
+      how to run OpenShift as a workstation with GPU PCI passthrough 
+      and Container Native Virtualization (CNV) to provide a virtualized desktop 
+      experience on a single OpenShift node (SNO). 
+   :keywords:
+      GPU passtrough, VFIO-PCI, OpenShift, Kubevirt, SNO, Nvidia
+
+
 *************************************************
 OpenShift Workstation with Single GPU passthrough
 *************************************************

@@ -1,3 +1,11 @@
+.. meta::
+   :description:
+      How to run run your local LLM model with Ollama on your OpenShift cluster.
+ 
+   :keywords:
+      Mistral, Mistral:7b, ollama, OpenShift, LLM
+
+
 ***********************************
 Running Mistral:7b LLM on OpenShift 
 ***********************************

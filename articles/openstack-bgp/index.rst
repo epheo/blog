@@ -1,3 +1,10 @@
+.. meta::
+   :description:
+      Discover the BGP Implementation in Red Hat OpenStack using FRR
+ 
+   :keywords:
+      OpenStack, RedHat, BGP, FRR
+
 
 .. _intro_section:
 

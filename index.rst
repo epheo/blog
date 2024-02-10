@@ -1,6 +1,10 @@
-.. blog.epheo.eu documentation master file, created by
-   sphinx-quickstart on Mon Aug 21 21:28:23 2023.
-
+.. meta::
+   :description:
+      Discover a collection of how-to, technical notes and insights on OpenShift, 
+      OpenStack, Linux, and AI at blog.epheo.eu.
+   :keywords:
+      OpenShift, OpenStack, LLM, Kubevirt, VFIO-PCI, Selfhosted, 
+      Cloud Computing, Virtualization, Technology Blog
 
 "You can't unleash new things in closed sources"
 ================================================
