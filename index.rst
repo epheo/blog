@@ -6,11 +6,12 @@
       OpenShift, OpenStack, LLM, Kubevirt, VFIO-PCI, Selfhosted, 
       Cloud Computing, Virtualization, Technology Blog
 
+
 "You can't unleash new things in closed sources"
 ================================================
 
-That's with those words in mind that I decided to start this blog around 2008. Altough, 
-the original blog was in french and original posts aren't available here anymore.
+That's with those words in mind that I started this blog in 2008. Altough, the original 
+blog was in french and original posts aren't referenced here anymore.
 
 
 Latest Posts
@@ -23,3 +24,11 @@ Latest Posts
    articles/openstack-bgp/index
    articles/openshift-workstation/index
    articles/defms/index
+
+Links
+-----
+
+https://epheo.eu
+https://dropz.cloud
+https://def.ms
+https://shaddock.epheo.eu

@@ -3,10 +3,10 @@ DEFMS: For a distributed, encrypted and free email delivery network
 
 .. article-info::
     :date: Feb 24, 2018
-    :read-time: 5 min read
+    :read-time: 2 min read
 
    
-Let’s have a closer look at the current implementation of our global email delivery 
+Let's have a closer look at the current implementation of our global email delivery 
 system.
 
 It scaled out from the very early stage of our network while all mail addresses was 

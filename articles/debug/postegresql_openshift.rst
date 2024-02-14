@@ -1,3 +1,5 @@
+
+
 Sometimes when starting Postgres POD in OpenShift following error code is being shown
 
    pg_ctl: another server might be running; trying to start server anyway

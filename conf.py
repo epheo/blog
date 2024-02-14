@@ -38,7 +38,7 @@ sitemap_url_scheme = '{link}'
 html_theme = 'furo'
 html_static_path = ['_static']
 
-html_title = "epheo"
+html_title = "epheo - personal how-to, technical notes and insights"
 html_logo = "_static/logo.jpg"
 
 html_extra_path = [ "robots.txt", "_static/favicon.ico" ]
