@@ -1,11 +1,10 @@
-﻿apiVersion: kubevirt.io/v1
+apiVersion: kubevirt.io/v1
 kind: VirtualMachine
 metadata:
-  name: windows
-  namespace: epheo
   annotations:
     vm.kubevirt.io/os: windows10
     vm.kubevirt.io/workload: desktop
+  name: windows
 spec:
   runStrategy: Manual
   template:
@@ -27,46 +26,22 @@ spec:
           utc: {}
         cpu:
           cores: 8
-          model: host-passthrough
+          dedicatedCpuPlacement: true
           sockets: 2
           threads: 1
-        features:
-          acpi: {}
-          apic: {}
-          hyperv:
-            reenlightenment: {}
-            ipi: {}
-            synic: {}
-            synictimer:
-              direct: {}
-            spinlocks:
-              spinlocks: 8191
-            reset: {}
-            relaxed: {}
-            vpindex: {}
-            runtime: {}
-            tlbflush: {}
-            frequencies: {}
-            vapic: {}
-          smm:
-            enabled: true 
-        firmware:
-          bootloader:
-            efi:
-              secureBoot: true
         devices:
-          disks:
-            - cdrom:
-                bus: sata
-              name: windows-guest-tools
-            - bootOrder: 1
-              disk:
-                bus: virtio
-              name: pvdisk
-            - disk:
-                bus: virtio
-              name: pvdisk1
           autoattachGraphicsDevice: false
+          disks:
+          - cdrom:
+              bus: sata
+            name: windows-guest-tools
+          - bootOrder: 1
+            disk:
+              bus: virtio
+            name: pvdisk
+          - disk:
+              bus: virtio
+            name: pvdisk1
           gpus:
           - deviceName: nvidia.com/GA102_GEFORCE_RTX_3080
             name: gpuvideo
@@ -78,33 +53,57 @@ spec:
           - deviceName: intel.com/WIFI_Controller
             name: wificontroller
           interfaces:
-          - masquerade: {}
-            name: default
           - bridge: {}
             model: virtio
             name: nic-0
           networkInterfaceMultiqueue: true
           rng: {}
+          tpm: {}
+        features:
+          acpi: {}
+          apic: {}
+          hyperv:
+            frequencies: {}
+            ipi: {}
+            reenlightenment: {}
+            relaxed: {}
+            reset: {}
+            runtime: {}
+            spinlocks:
+              spinlocks: 8191
+            synic: {}
+            synictimer:
+              direct: {}
+            tlbflush: {}
+            vapic: {}
+            vpindex: {}
+          smm: {}
+        firmware:
+          bootloader:
+            efi:
+              secureBoot: true
+        machine:
+          type: q35
+        memory:
+          hugepages:
+            pageSize: 1Gi
         resources:
           requests:
-            memory: 32G
+            memory: 32Gi
       evictionStrategy: None
       hostname: windows
       networks:
-      - name: default
-        pod: {}
       - multus:
           networkName: br1
         name: nic-0
-      terminationGracePeriodSeconds: 0
+      terminationGracePeriodSeconds: 3600
       volumes:
-        - containerDisk:
-            image: >-
-              registry.redhat.io/container-native-virtualization/virtio-win@sha256:64c840592a167a530579b6f47f937c54140125b207d9e60f57d6472b5b99ea55
-          name: windows-guest-tools
-        - persistentVolumeClaim:
-            claimName: 'windows'
-          name: pvdisk
-        - persistentVolumeClaim:
-            claimName: 'windowsdata'
-          name: pvdisk1
+      - containerDisk:
+          image: registry.redhat.io/container-native-virtualization/virtio-win-rhel9@sha256:0c536c7aba76eb9c1e75a8f2dc2bbfa017e90314d55b242599ea41f42ba4434f
+        name: windows-guest-tools
+      - name: pvdisk
+        persistentVolumeClaim:
+          claimName: windows
+      - name: pvdisk1
+        persistentVolumeClaim:
+          claimName: windowsdata
