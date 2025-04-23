@@ -3,16 +3,6 @@ Articles
 
 This section contains technical articles on various topics including OpenShift, OpenStack, and other cloud technologies.
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-
-   openshift-layer2-udn/index
-   openshift-localnet/index
-   openshift-ollama/index
-   openshift-workstation/index
-   openstack-bgp/index
-
 Latest Articles
 ---------------
 
@@ -33,3 +23,16 @@ OpenShift
 OpenStack
 ^^^^^^^^^
 * :doc:`OpenStack BGP </articles/openstack-bgp/index>`
+
+
+Complete Article Index
+----------------------
+
+.. toctree::
+   :maxdepth: 2
+
+   openshift-layer2-udn/index
+   openshift-localnet/index
+   openshift-ollama/index
+   openshift-workstation/index
+   openstack-bgp/index

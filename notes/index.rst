@@ -3,14 +3,6 @@ Notes
 
 This section contains technical notes, tips, and how-to guides on various topics including Linux and container technologies.
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-
-   podman
-   defms/index
-   linux/droits-multiples-et-acl/index
-
 Latest Notes
 ------------
 
@@ -28,3 +20,14 @@ Container and Linux
 Occasional thoughts
 ^^^^^^^^^^^^^^^^^^^^^
 * :doc:`Defms </notes/defms/index>` - A Distributed, Encrypted and Free Mail System
+
+
+Complete Notes Index
+----------------------
+
+.. toctree::
+   :maxdepth: 2
+
+   podman
+   defms/index
+   linux/droits-multiples-et-acl/index
