@@ -16,6 +16,7 @@ sphinx-sitemap = "^2.5.1"
 sphinxext-opengraph = "^0.10.0"
 sphinx-autobuild = "^2024.10.3"
 sphinx-copybutton = "^0.5.2"
+sphinx-reredirects = "^0.1.6"
 
 
 [build-system]

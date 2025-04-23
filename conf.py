@@ -19,6 +19,7 @@ extensions = [
     'sphinx_copybutton', 
     'sphinxext.opengraph',
     'sphinx.ext.imgmath',  # For optimizing math images if you have any
+    'sphinx_reredirects',
 ]
 
 # Image settings for better optimization
@@ -65,4 +66,8 @@ html_theme_options = {
     "source_repository": "https://github.com/epheo/blog/",
     "source_branch": "main",
     "source_directory": "/",
+}
+
+redirects = {
+    "articles/openshift-ollama": "articles/openshift-ollama/index.html",
 }

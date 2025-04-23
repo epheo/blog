@@ -629,6 +629,20 @@ theme-rtd = ["sphinx-rtd-theme (>=1.0,<2.0)"]
 theme-sbt = ["sphinx-book-theme (>=1.0,<2.0)"]
 
 [[package]]
+name = "sphinx-reredirects"
+version = "0.1.6"
+description = "Handles redirects for moved pages in Sphinx documentation projects"
+optional = false
+python-versions = ">=3.5"
+files = [
+    {file = "sphinx_reredirects-0.1.6-py3-none-any.whl", hash = "sha256:efd50c766fbc5bf40cd5148e10c00f2c00d143027de5c5e48beece93cc40eeea"},
+    {file = "sphinx_reredirects-0.1.6.tar.gz", hash = "sha256:c491cba545f67be9697508727818d8626626366245ae64456fe29f37e9bbea64"},
+]
+
+[package.dependencies]
+sphinx = ">=7.1"
+
+[[package]]
 name = "sphinx-sitemap"
 version = "2.6.0"
 description = "Sitemap generator for Sphinx"
@@ -984,4 +998,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "80f6b95dcee79ccc5ddf76dada71cf23056a40100f6ad063e4f98d2b71fb1a15"
+content-hash = "9d3a5391adeae98b736c1385e2ca9b32eecbe863b8aee633ca37598c06047234"
