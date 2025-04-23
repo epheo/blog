@@ -288,7 +288,8 @@ Resource Management
 -------------------
 * Apply the NodeNetworkConfigurationPolicy only to specific nodes if you want to limit which nodes can host VMs with external connectivity
 
-# Conclusion
+Conclusion
+--------------
 
 Using OpenShift's localnet configuration provides a straightforward way to give virtual machines direct access to your baremetal network without requiring dedicated physical interfaces. This approach is particularly useful for:
 
