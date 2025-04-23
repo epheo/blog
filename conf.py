@@ -69,5 +69,5 @@ html_theme_options = {
 }
 
 redirects = {
-    "articles/openshift-ollama": "articles/openshift-ollama/index.html",
+    "articles/openshift-ollama": "openshift-ollama/index.html",
 }
