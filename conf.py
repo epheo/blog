@@ -13,7 +13,20 @@ author = 'Thibaut Lapierre'
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = [ 'sphinx_design','sphinx_sitemap' ]
+extensions = [ 
+    'sphinx_design', 
+    'sphinx_sitemap', 
+    'sphinx_copybutton', 
+    'sphinxext.opengraph',
+    'sphinx.ext.imgmath',  # For optimizing math images if you have any
+]
+
+# Image settings for better optimization
+imgmath_image_format = 'svg'  # Use SVG for math rendering if applicable
+images_config = {
+    'override_image_directive': True,
+    'default_image_width': '100%',
+}
 
 templates_path = ['_templates']
 exclude_patterns = [
@@ -26,14 +39,19 @@ exclude_patterns = [
     '.venv',
 ]
 
-
-
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
 html_baseurl = 'https://blog.epheo.eu/'
 sitemap_locales = [None]
 sitemap_url_scheme = '{link}'
+
+# OpenGraph and social media settings
+ogp_site_url = "https://blog.epheo.eu/"
+ogp_image = "_static/logo.jpg"
+ogp_site_name = "epheo - personal how-to, technical notes and insights"
+ogp_description_length = 300
+ogp_type = "website"
 
 html_theme = 'furo'
 html_static_path = ['_static']

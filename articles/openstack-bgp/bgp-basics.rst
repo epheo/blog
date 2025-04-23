@@ -5,8 +5,8 @@ Understanding BGP Basics
 BGP Fundamentals
 ----------------
 
-BGP (Border Gateway Protocol) is a standardized gateway protocol that plays a 
-central role in how the global routing of Internet traffic is performed. 
+BGP (Border Gateway Protocol) is a standardized exterior gateway protocol (EGP) defined in RFC 4271 that plays a 
+central role in how the global routing of Internet traffic is performed. It is considered the routing protocol of the Internet and enables routing across administrative domains.
 
 Here are some fundamental concepts of BGP:
 
@@ -60,13 +60,20 @@ Benefits of Dynamic Routing with BGP
 Dynamic routing with BGP offers several benefits in the context of OpenStack:
 
 - **Scalability**: BGP scales seamlessly, making it suitable for growing OpenStack 
-  environments. New networks and FIP can be routed without manual configuration.
+  environments. New networks and floating IPs (FIPs) can be routed without manual configuration,
+  allowing for easier expansion of your cloud infrastructure.
 
-- **Load Balancing**: BGP can distribute traffic across multiple paths, optimizing 
-  network utilization and ensuring efficient load balancing.
+- **Load Balancing**: BGP supports equal-cost multi-path routing (ECMP), which can distribute 
+  traffic across multiple paths, optimizing network utilization and ensuring efficient load balancing.
 
-- **Redundancy**: BGP provides redundancy by automatically rerouting traffic in case of 
-  network failures, reducing the risk of service interruptions.
+- **Redundancy**: BGP provides high availability by automatically rerouting traffic in case of 
+  network failures, reducing the risk of service interruptions. This is especially important
+  for controllers deployed across availability zones with separate L2 segments or physical sites.
 
 - **Interoperability**: BGP is a widely accepted standard, ensuring compatibility with 
-  various networking devices and cloud platforms.
+  various networking devices and cloud platforms. This simplifies integration with existing
+  network infrastructure.
+  
+- **Simplified L3 Architecture**: Deploying clusters in a pure Layer 3 (L3) data center with BGP
+  overcomes the scaling issues of traditional Layer 2 (L2) infrastructures such as large failure domains,
+  high volume broadcast traffic, or long convergence times during failure recoveries.

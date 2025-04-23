@@ -1,12 +1,12 @@
-DEFMS: For a distributed, encrypted and free email delivery network
-====================================================================
+*********************************************************
+DEFMS: Distributed, Encrypted and Free Mail System
+*********************************************************
 
 .. article-info::
     :date: Feb 24, 2018
     :read-time: 2 min read
 
-   
-Let's have a closer look at the current implementation of our global email delivery 
+Let’s have a closer look at the current implementation of our global email delivery 
 system.
 
 It scaled out from the very early stage of our network while all mail addresses was 
@@ -40,5 +40,3 @@ remaining pain-point is in the compatibility with our existing systems and proto
 Such a compatibility with actual mail protocols will be achieved by non-ditributed 
 gateway servers, this long-term temporary solution will encrypt and forward all email 
 from standard MX systems to and from DEFMS.
-
-https://def.ms
