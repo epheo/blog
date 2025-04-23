@@ -45,18 +45,6 @@ Latest Content
 * :doc:`OpenShift Workstation </articles/openshift-workstation/index>` - Setting up a virtual workstation in OpenShift with VFIO passthrough
 * :doc:`OpenStack OVN Networking </debug/openstack-ovn>` - OVN Deep Dive and Debugging
 
-Beyond Tech
-~~~~~~~~~~~~
-
-When not immersed in code and cloud architecture, I'm often seeking adventure elsewhere:
-
-* **Skydiving**: Free-falling through the clouds (sometimes competing)
-* **Skiing**: Racing down slopes
-* **Urban Exploration**: Navigating the hidden network of Paris catacombs
-
-These pursuits, are somewhat very much alike open source development, they involve calculated 
-risk, continuous learning, and a community of passionate individuals sharing knowledge and experiences.
-
 Source Code
 ~~~~~~~~~~~~
 
