@@ -15,9 +15,6 @@ Setting up a virtual workstation in OpenShift with VFIO passthrough
     :date: Feb 27, 2023
     :read-time: 25 min read
 
-Introduction
-============
-
 This article provides a detailed guide on how to configure OpenShift as a workstation 
 with GPU PCI passthrough and Container Native Virtualization (CNV) on a single OpenShift 
 node (SNO). 
@@ -35,22 +32,30 @@ while still enjoying near-native performance for GPU-intensive applications.
 In testing, this configuration successfully ran Microsoft Flight Simulator in a Windows VM 
 with performance smiliar to a bare metal Windows installation. 
 
-
-Hardware description
---------------------
-
 The workstation used for this demo has the following hardware:
 
-- **CPU**: AMD Ryzen 9 3950X 16-Core 32-Threads
-- **Memory**: 64GB DDR4 3200MHz
-- **GPU**: Nvidia RTX 3080 FE 10GB
-- **Storage**:
-  - 2x 2TB NVMe Disks (for virtual machine storage)
-  - 1x 500GB SSD Disk (for OpenShift root system)
-- **Network**: 10Gbase-CX4 Mellanox Ethernet
+.. list-table:: 
+   :header-rows: 1
+   :widths: 20 80
+
+   * - Component
+     - Specification
+   * - **CPU**
+     - AMD Ryzen 9 3950X 16-Core 32-Threads
+   * - **Memory**
+     - 64GB DDR4 3200MHz
+   * - **GPU**
+     - Nvidia RTX 3080 FE 10GB
+   * - **Storage**
+     - | 2x 2TB NVMe Disks (for virtual machine storage)
+       | 1x 500GB SSD Disk (for OpenShift root system)
+   * - **Network**
+     - 10Gbase-CX4 Mellanox Ethernet
 
 Similar configurations with equivalent Intel CPUs should work with minor adjustments noted throughout the guide.
 
+Installing OpenShift SNO
+========================
 
 Backup of existing system partitions
 -------------------------------------
@@ -64,8 +69,8 @@ backup and remove any existing partition table that you would like to preserve.
    https://github.com/openshift/assisted-service/blob/d37ac44051be76e95676f33b8361c04eae290357/internal/host/hostcommands/install_cmd.go#L232
   
 
-Installing OpenShift SNO
-========================
+OpenShift Installation
+----------------------
 
 Before proceeding with the installation, ensure you've completed the backup steps for any existing partitions.
 
