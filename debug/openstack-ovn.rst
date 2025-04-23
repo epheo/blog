@@ -1,6 +1,10 @@
 OpenStack OVN Networking - Deep Dive and Debugging
 ==================================================
 
+.. article-info::
+    :date: Aug 22, 2025
+    :read-time: 12 min read
+
 OVN (Open Virtual Network) provides advanced networking capabilities for OpenStack environments. 
 This article explores how to debug, analyze and understand OVN's networking components within an OpenStack 
 deployment, helping you troubleshoot and gain deeper insights into the networking layer.
