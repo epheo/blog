@@ -35,13 +35,15 @@ Areas of Focus
    debug/index
    notes/index
 
-Latest Articles
+Latest Content
 ~~~~~~~~~~~~~~~
 
 * :doc:`OpenShift Layer 2 UDN </articles/openshift-layer2-udn/index>` - Layer 2 User Defined Networking in OpenShift
 * :doc:`OpenShift LocalNet </articles/openshift-localnet/index>` - Local Network integration for OpenShift
+* :doc:`OpenShift Ollama </articles/openshift-ollama/index>` - Running Mistral:7b LLM on OpenShift
 * :doc:`OpenStack BGP </articles/openstack-bgp/index>` - Border Gateway Protocol in OpenStack
-* :doc:`OpenShift Workstation </articles/openshift-workstation/index>` - Setting up a developer workstation in OpenShift
+* :doc:`OpenShift Workstation </articles/openshift-workstation/index>` - Setting up a virtual workstation in OpenShift with VFIO passthrough
+* :doc:`OpenStack OVN Networking </debug/openstack-ovn>` - OVN Deep Dive and Debugging
 
 Beyond Tech
 ~~~~~~~~~~~~
@@ -52,7 +54,7 @@ When not immersed in code and cloud architecture, I'm often seeking adventure el
 * **Skiing**: Racing down slopes
 * **Urban Exploration**: Navigating the hidden network of Paris catacombs
 
-These pursuits, somewhat are very much alike open source development, they involve calculated 
+These pursuits, are somewhat very much alike open source development, they involve calculated 
 risk, continuous learning, and a community of passionate individuals sharing knowledge and experiences.
 
 Source Code

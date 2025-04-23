@@ -7,9 +7,9 @@
       experience on a single OpenShift node (SNO). 
 
 
-*************************************************
-OpenShift Workstation with Single GPU passthrough
-*************************************************
+*******************************************************************
+Setting up a virtual workstation in OpenShift with VFIO passthrough
+*******************************************************************
 
 .. article-info::
     :date: Feb 27, 2023
@@ -20,7 +20,9 @@ Introduction
 
 This article provides a detailed guide on how to configure OpenShift as a workstation 
 with GPU PCI passthrough and Container Native Virtualization (CNV) on a single OpenShift 
-node (SNO). This setup allows you to leverage Kubernetes orchestration capabilities 
+node (SNO). 
+
+This setup allows you to leverage Kubernetes orchestration capabilities 
 while still enjoying near-native performance for GPU-intensive applications.
 
 **Why this approach?**
@@ -31,20 +33,8 @@ while still enjoying near-native performance for GPU-intensive applications.
 * Maintain the flexibility and power of Kubernetes/OpenShift for other workloads
 
 In testing, this configuration successfully ran Microsoft Flight Simulator in a Windows VM 
-with performance smiliar to a bare metal Windows installation, 
-demonstrating the effectiveness of this approach for high-performance applications.
+with performance smiliar to a bare metal Windows installation. 
 
-
-Prerequisites
--------------
-
-Before proceeding with this guide, ensure you have:
-
-1. Basic knowledge of OpenShift/Kubernetes and virtualization concepts
-2. Experience with Linux system administration
-3. An OpenShift Container Platform 4.10+ subscription
-4. A system with hardware virtualization support (Intel VT-x/AMD-V enabled in BIOS)
-5. Access to your system's BIOS/UEFI for enabling IOMMU
 
 Hardware description
 --------------------
@@ -73,7 +63,6 @@ backup and remove any existing partition table that you would like to preserve.
 
    https://github.com/openshift/assisted-service/blob/d37ac44051be76e95676f33b8361c04eae290357/internal/host/hostcommands/install_cmd.go#L232
   
-
 
 Installing OpenShift SNO
 ========================
@@ -156,20 +145,6 @@ Activate Intel VT or AMD-V hardware virtualization extensions in BIOS or UEFI.
     subscription-manager repos --enable cnv-4.10-for-rhel-8-x86_64-rpms
     dnf install kubevirt-virtctl
 
-
-  
-Remove Local Storage operator (if installed)
---------------------------------------------
-
-As we do not need to manage LVM volumes automatically we would like to avoid
-automatically formating Logical Volumes once they are deleted from OpenShift.
-
-While this could lead to data leak in a multi-tenant environment, removing the
-Local Storage Operator also avoid loosing your Virtual Machine partitions once
-you delete it.
-
-
-
 Configure OpenShift for single GPU passthrough
 ==============================================
 
@@ -185,7 +160,6 @@ instead.
 .. seealso::
 
     https://github.com/openshift/machine-config-operator/blob/master/docs/SingleNodeOpenShift.md
-
 
 
 Passing kernel arguments at boot time
@@ -277,7 +251,7 @@ to ``true`` to enable the sandbox-device-plugin and vfio-manager components, whi
     oc patch ClusterPolicy gpu-cluster-policy --type=merge -p sandboxWorkloadsEnabled.yaml
 
 
-As the Nvidia GPU Operator does not supports consumer grade GPUs it does not take the
+As the Nvidia GPU Operator does not officialy supports consumer grade GPUs it does not take the
 audio device into consideration and therefore doesn't bind it to vfiopci driver.
 This has to be done manually but can be achieved once at boot time using the following 
 machine config.
@@ -308,7 +282,8 @@ machine config.
 Dynamically Switching GPU Drivers
 -------------------------------------
 
-One of the key advantages of this setup is the ability to use a single GPU for both container workloads and virtual machines without rebooting the system.
+One of the key advantages of this setup is the ability to use a single GPU for both container 
+workloads and virtual machines without rebooting the system.
 
 Use Case Scenario
 ~~~~~~~~~~~~~~~~~
@@ -321,7 +296,8 @@ Use Case Scenario
 Driver Switching Using Node Labels
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The NVIDIA GPU Operator with sandbox workloads enabled provides a convenient way to switch driver bindings using node labels:
+The NVIDIA GPU Operator with sandbox workloads enabled provides a convenient way to switch 
+driver bindings using node labels:
 
 **For container workloads (NVIDIA driver):**
 
@@ -343,7 +319,8 @@ Notes on Driver Switching
 * The driver switching process takes a few minutes to complete
 * You can verify the current driver binding with ``lspci -nnk | grep -A3 NVIDIA``
 * All GPU workloads must be stopped before switching drivers
-* No system reboot is required for the switch to take effect
+* No system reboot isually required for the switch to take effect
+* This have prouved to be a bit unreliable and may require a reboot
 
 
 Add GPU as Hardware Device of your node
@@ -393,7 +370,10 @@ in Kubernetes/OpenShift.
 Passthrough USB Host Controllers to the VM
 ===============================================
 
-For a complete desktop experience, you'll want to connect input devices (mouse, keyboard) and audio devices directly to your virtual machine. Instead of passthrough individual USB devices, we'll passthrough an entire USB controller to the VM for better performance and flexibility.
+For a complete desktop experience, you'll want to connect input devices (mouse, keyboard) 
+and audio devices directly to your virtual machine. Instead of passthrough individual 
+USB devices, we'll passthrough an entire USB controller to the VM for better performance 
+and flexibility.
 
 Step 1: Identify a Suitable USB Controller
 ---------------------------------------------
@@ -506,18 +486,20 @@ This section guides you through creating virtual machines that can utilize the G
 Step 1: Create Persistent Volumes from LVM Disks
 -------------------------------------------------------
 
-First, we need to make our LVM volumes available to OpenShift by creating Persistent Volumes (PVs) and Persistent Volume Claims (PVCs).
+First, we need to make our LVM volumes available to OpenShift by creating a Persistent Volume Claims (PVCs).
+This assume you have the Local Storage Operator installed and running.
 
 .. seealso::
 
-   https://docs.openshift.com/container-platform/4.12/storage/persistent_storage/persistent-storage-local.html
+   https://docs.redhat.com/en/documentation/openshift_container_platform/4.12/html/storage/configuring-persistent-storage#lvms-installing-lvms-with-web-console_logical-volume-manager-storage
+
 
 1. Create a YAML file for each VM disk. Here's an example for a Fedora 35 VM:
 
 .. literalinclude:: /articles/openshift-workstation/pv/fedora35.yaml
     :language: yaml
     :linenos:
-    :caption: fedora35.yaml
+    :caption: fedora_pvc.yaml
 
 2. Apply the YAML to create the PV and PVC:
 

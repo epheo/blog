@@ -17,18 +17,13 @@ Layer 2 User Defined Networks for OpenShift Virtualization
 
 Configure and implement Layer 2 User Defined Networks (UDN) for Virtual Machines in OpenShift Virtualization to create isolated tenant networks with multi-node connectivity.
 
-Overview
-========
-
 This use case demonstrates how to implement User Defined Networks (UDN) in OpenShift Virtualization, allowing for network isolation between Virtual Machines within a namespace or across namespaces. User Defined Networks provide a way to create isolated tenant networks for VMs, separate from the default pod network, enabling more complex network topologies and improved security isolation.
 
-Prerequisites
-=============
+.. seealso::
+   For more information about OpenShift Virtualization networking, check out the official `OpenShift Virtualization Documentation <https://docs.openshift.com/container-platform/4.18/virt/virtual_machines/vm_networking/>`_.
 
-* OpenShift Container Platform 4.18 or newer
-* OpenShift Virtualization operator installed and configured
-* OVN-Kubernetes as the cluster network provider
-* Cluster administrator privileges
+.. note::
+   This is compatible with OpenShift 4.18 and newer versions.
 
 Implementation Steps
 ====================
@@ -61,8 +56,8 @@ User Defined Networks can be configured with either Layer 2 or Layer 3 topology:
 
    * Creates a unique Layer 2 segment per node with Layer 3 routing between segments
    * Each node has its own subnet, with routing providing connectivity between nodes
+   * Functionally similar to the default OpenShift pod network
    * Better manages broadcast traffic by containing it within node-specific segments
-   * Provides improved scalability for larger deployments
    * Supports NetworkPolicy for enhanced security control
    * Recommended for environments with many VMs where broadcast traffic might be problematic
 
@@ -280,58 +275,5 @@ Testing and Validation
       # From inside VM
       ping 1.1.1.1
 
-Troubleshooting
-===============
-
-.. admonition:: VM Not Receiving IP Address
-   :class: warning
-
-   Ensure the DHCP client is enabled in the VM's network configuration.
-
-.. admonition:: Network Connectivity Issues
-   :class: warning
-
-   * Check that the UDN or Cluster UDN has been successfully created and has status "NetworkCreated" and "NetworkAllocationSucceeded"
-   * Verify that the NetworkAttachmentDefinition has been created in the namespace
-
-.. admonition:: Cross-Namespace Communication Issues
-   :class: warning
-
-   * Ensure both namespaces are labeled correctly for the Cluster UDN
-   * Verify that the namespaceSelector in the Cluster UDN correctly targets the namespaces
-
-Best Practices
-==============
-
-Network Planning
-----------------
-* Plan your network CIDR ranges carefully, especially if you'll have multiple UDNs
-* While overlapping CIDRs between separate UDNs won't cause conflicts (since they're isolated), it can create confusion
-
-VM Configuration
-----------------
-* Always enable DHCP in the VM's operating system
-* Even though the UDN is a Layer 2 network, don't manually configure IP addresses
-
 .. important::
-   Using DHCP is critical as the UDN controller manages IP address allocation through its IPAM functionality.
-
-Namespace Management
---------------------
-* Remember to create namespaces with the required labels from the beginning, as they cannot be added later
-* Use descriptive labels for Cluster UDNs to make management easier
-
-Conclusion
-==========
-
-User Defined Networks provide powerful network isolation capabilities for OpenShift Virtualization, allowing both intra-namespace and cross-namespace communication between VMs while maintaining isolation from other networks. This enables complex multi-tenant deployments with proper network segmentation and security.
-
-The benefits include:
-
-* Improved network isolation between tenants
-* Ability to create custom subnet configurations for VM networks
-* Support for cross-namespace communication via Cluster UDNs
-* Automatic IP address management with persistent IP assignments
-
-.. seealso::
-   For more information about OpenShift Virtualization networking, check out the official `OpenShift Virtualization Documentation <https://docs.openshift.com/container-platform/4.18/virt/virtual_machines/vm_networking/>`_.
+   Even though the UDN is a Layer 2 network, don't manually configure IP addresses as UDN controller manages IP address allocation through its IPAM functionality.

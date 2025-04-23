@@ -17,18 +17,13 @@ OpenShift Virtualization with Localnet Configuration
 
 Configure OpenShift Virtualization to use localnet for direct north/south connectivity of VMs without dedicated interfaces.
 
-Overview
-========
-
 This use case demonstrates how to configure OpenShift Virtualization to leverage the existing ``br-ex`` OVS bridge for direct north/south connectivity of virtual machines. Instead of using a dedicated interface, this approach reuses the main OpenShift interface to provide IP addresses from your baremetal network to your KubeVirt virtual machines.
 
-Prerequisites
-=============
+.. seealso::
+   For more information about OpenShift Virtualization networking, check out the official `OpenShift Virtualization Documentation <https://docs.openshift.com/container-platform/4.18/virt/virtual_machines/vm_networking/>`_.
 
-* OpenShift Container Platform 4.18 or newer
-* OpenShift Virtualization operator installed and configured
-* OVN-Kubernetes as the CNI
-* Cluster administrator privileges
+.. note::
+   This is compatible with OpenShift 4.18 and newer versions.
 
 Implementation Steps
 ====================
@@ -245,56 +240,5 @@ Testing and Validation
       # From an external machine
       ping <vm-ip-address>
 
-Troubleshooting
-===============
-
-.. admonition:: VM Not Receiving IP Address
-   :class: warning
-
-   * Ensure DHCP is available on the baremetal network
-   * Check if the VM's network interface is properly configured for DHCP
-   * Verify that the NetworkAttachmentDefinition is correctly referencing the localnet
-
-.. admonition:: Connectivity Issues
-   :class: warning
-
-   * Verify that the br-ex bridge is properly configured on the node
-   * Check the OVS bridge configuration with ``ovs-vsctl show``
-   * Ensure there are no firewall rules blocking connectivity
-
-.. admonition:: NetworkAttachmentDefinition Issues
-   :class: warning
-
-   * Check the status of the NAD: ``oc get network-attachment-definitions``
-   * Verify the syntax in the NAD configuration
-
-Best Practices
-==============
-
-Network Planning
-----------------
-* Ensure your baremetal network has sufficient IP addresses available for VMs
-* Consider using a specific VLAN if you need isolation within the baremetal network
-
-Security Considerations
------------------------
-* Remember that VMs connected to localnet are directly accessible from the external network
-* Implement appropriate security measures, such as firewall rules within the VMs
-
 .. important::
    VMs using localnet networking will be directly exposed to your physical network, so ensure proper security measures are in place.
-
-Resource Management
--------------------
-* Apply the NodeNetworkConfigurationPolicy only to specific nodes if you want to limit which nodes can host VMs with external connectivity
-
-Conclusion
---------------
-
-Using OpenShift's localnet configuration provides a straightforward way to give virtual machines direct access to your baremetal network without requiring dedicated physical interfaces. This approach is particularly useful for:
-
-- Environments with limited physical networking resources
-- Scenarios where VMs need to be directly accessible from external networks
-- Simplifying the network architecture by reusing existing network bridges
-
-By following this use case, you can effectively configure your OpenShift Virtualization environment to provide VMs with direct north/south connectivity while minimizing hardware requirements.
