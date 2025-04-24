@@ -56,8 +56,8 @@ User Defined Networks can be configured with either Layer 2 or Layer 3 topology:
 
    * Creates a unique Layer 2 segment per node with Layer 3 routing between segments
    * Each node has its own subnet, with routing providing connectivity between nodes
-   * Functionally similar to the default OpenShift pod network
    * Better manages broadcast traffic by containing it within node-specific segments
+   * Provides improved scalability for larger deployments
    * Supports NetworkPolicy for enhanced security control
    * Recommended for environments with many VMs where broadcast traffic might be problematic
 
@@ -69,6 +69,12 @@ User Defined Networks can be configured with either Layer 2 or Layer 3 topology:
    * A pod/VM can have only one primary network but multiple secondary networks
    * UDNs can function as either primary or secondary networks
 
+.. important::
+   **Compatibility Note:**
+   
+   * For Virtual Machines, only Layer 2 UDNs are supported as primary networks
+   * Layer 3 UDNs are NOT supported for virtual machines and they can only be used with regular pods, not VMs
+
 This guide focuses on Layer 2 UDNs which are commonly used for VM workloads requiring simplicity and migration capabilities.
 
 2. Create a Namespace for User Defined Network
@@ -76,14 +82,9 @@ This guide focuses on Layer 2 UDNs which are commonly used for VM workloads requ
 
 To use a User Defined Network, you must create a namespace with a specific label that enables UDN functionality:
 
-.. code-block:: yaml
-
-   apiVersion: v1
-   kind: Namespace
-   metadata:
-     name: udn-example
-     labels:
-       k8s.ovn.org/primary-user-defined-network: ""
+.. literalinclude:: udn-namespace.yaml
+   :language: yaml
+   :caption: udn-namespace.yaml
 
 .. important::
    The label must be applied when the namespace is created. It cannot be added to an existing namespace.
@@ -99,21 +100,9 @@ Apply the namespace configuration:
 
 Create a User Defined Network in the namespace:
 
-.. code-block:: yaml
-
-   apiVersion: k8s.ovn.org/v1
-   kind: UserDefinedNetwork
-   metadata:
-     name: udn-example
-     namespace: udn-example
-   spec:
-     layer2:
-       ipam:
-         lifecycle: Persistent
-       role: Primary
-       subnets:
-       - 10.200.0.0/16
-     topology: Layer2
+.. literalinclude:: udn-example.yaml
+   :language: yaml
+   :caption: udn-example.yaml
 
 Apply the UDN configuration:
 
@@ -134,40 +123,23 @@ When creating a VM in a namespace with a User Defined Network, the VM will autom
 
 Example VM manifest:
 
-.. code-block:: yaml
-
-   apiVersion: kubevirt.io/v1
-   kind: VirtualMachine
-   metadata:
-     name: example-vm
-     namespace: udn-example
-   spec:
-     running: true
-     template:
-       spec:
-         domain:
-           devices:
-             disks:
-             - name: rootdisk
-               disk:
-                 bus: virtio
-             interfaces:
-             - name: default
-               binding:
-                 name: l2bridge
-           resources:
-             requests:
-               memory: 2Gi
-         networks:
-         - name: default
-           pod: {}
-         volumes:
-         - name: rootdisk
-           containerDisk:
-             image: quay.io/containerdisks/fedora:latest
+.. literalinclude:: example-vm.yaml
+   :language: yaml
+   :caption: example-vm.yaml
 
 .. note::
    Do not modify the network configuration for the VM. The network configuration is automatically handled by the UDN system.
+   
+.. important::
+   After attaching a VM to a network, you must restart or live migrate the VM for the network changes to take effect:
+
+   .. code-block:: bash
+      
+      # To restart the VM:
+      virtctl restart example-vm
+      
+      # To live migrate instead (avoids downtime):
+      virtctl migrate example-vm
 
 5. Create a Cluster User Defined Network
 --------------------------------------------
@@ -176,46 +148,15 @@ For communications across multiple namespaces, you can create a Cluster User Def
 
 1. Create namespaces with appropriate labels:
 
-   .. code-block:: yaml
-
-      apiVersion: v1
-      kind: Namespace
-      metadata:
-        name: udn-prod
-        labels:
-          k8s.ovn.org/primary-user-defined-network: ""
-          cluster-udn: prod
-
-   .. code-block:: yaml
-
-      apiVersion: v1
-      kind: Namespace
-      metadata:
-        name: udn-preprod
-        labels:
-          k8s.ovn.org/primary-user-defined-network: ""
-          cluster-udn: prod
+   .. literalinclude:: udn-namespaces.yaml
+      :language: yaml
+      :caption: udn-namespaces.yaml
 
 2. Create the Cluster User Defined Network:
 
-   .. code-block:: yaml
-
-      apiVersion: k8s.ovn.org/v1
-      kind: ClusterUserDefinedNetwork
-      metadata:
-        name: cluster-udn-prod
-      spec:
-        namespaceSelector:
-          matchLabels:
-            cluster-udn: prod
-        network:
-          layer2:
-            ipam:
-              lifecycle: Persistent
-            role: Primary
-            subnets:
-            - 10.100.0.0/16
-          topology: Layer2
+   .. literalinclude:: cluster-udn-prod.yaml
+      :language: yaml
+      :caption: cluster-udn-prod.yaml
 
 3. Apply the Cluster UDN configuration:
 
@@ -236,22 +177,32 @@ Testing and Validation
 ------------------------------------
 
 1. Create multiple VMs in the same namespace with a UDN
-2. Connect to the VMs and verify network configuration:
+2. Connect to the VM console or SSH:
+
+   .. code-block:: bash
+
+      # Connect to VM console
+      virtctl console example-vm
+      
+      # Or use SSH if configured
+      virtctl ssh example-vm
+
+3. Verify network configuration in each VM:
 
    .. code-block:: bash
 
       # From inside VM
-      ip address show eth0
+      ip addr show
       ip route
 
-3. Test connectivity between VMs in the same namespace:
+4. Test connectivity between VMs in the same namespace:
 
    .. code-block:: bash
 
       # From inside VM
       ping <other-vm-ip-address>
 
-4. Verify that the VMs have received IP addresses from the UDN subnet
+5. Verify that the VMs have received IP addresses from the UDN subnet
 
 2. Test VM Connectivity across Cluster UDN
 -------------------------------------------

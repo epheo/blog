@@ -57,6 +57,9 @@ Similar configurations with equivalent Intel CPUs should work with minor adjustm
 Installing OpenShift SNO
 ========================
 
+Before proceeding with the installation, ensure you've completed the backup steps for any existing partitions.
+
+
 Backup of existing system partitions
 -------------------------------------
 
@@ -67,12 +70,10 @@ backup and remove any existing partition table that you would like to preserve.
 .. seealso::
 
    https://github.com/openshift/assisted-service/blob/d37ac44051be76e95676f33b8361c04eae290357/internal/host/hostcommands/install_cmd.go#L232
-  
+
 
 OpenShift Installation
 ----------------------
-
-Before proceeding with the installation, ensure you've completed the backup steps for any existing partitions.
 
 .. seealso::
 
@@ -149,6 +150,7 @@ Activate Intel VT or AMD-V hardware virtualization extensions in BIOS or UEFI.
 
     subscription-manager repos --enable cnv-4.10-for-rhel-8-x86_64-rpms
     dnf install kubevirt-virtctl
+
 
 Configure OpenShift for single GPU passthrough
 ==============================================
@@ -501,7 +503,7 @@ This assume you have the Local Storage Operator installed and running.
 
 1. Create a YAML file for each VM disk. Here's an example for a Fedora 35 VM:
 
-.. literalinclude:: /articles/openshift-workstation/pv/fedora35.yaml
+.. literalinclude:: /articles/openshift-workstation/pv/fedora_pvc.yaml
     :language: yaml
     :linenos:
     :caption: fedora_pvc.yaml

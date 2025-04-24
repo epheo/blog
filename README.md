@@ -1,6 +1,6 @@
 # Epheo's Blog
 
-This repository contains the source files for [blog.epheo.eu](https://blog.epheo.eu), a personal blog by Thibaut Lapierre focusing on technical topics like OpenStack, OpenShift, and Linux.
+This repository contains the source files for [blog.epheo.eu](https://blog.epheo.eu), a personal blog focusing on technical topics like OpenStack, OpenShift, and Linux.
 
 ## About
 

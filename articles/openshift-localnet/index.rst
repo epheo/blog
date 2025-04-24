@@ -45,21 +45,8 @@ The OpenShift ``br-ex`` bridge is typically used for external connectivity for t
 
 Create a NodeNetworkConfigurationPolicy (NNCP) to add a localnet mapping to the ``br-ex`` bridge:
 
-.. code-block:: yaml
-
-   apiVersion: nmstate.io/v1
-   kind: NodeNetworkConfigurationPolicy
-   metadata:
-     name: br-ex-network
-   spec:
-     nodeSelector:
-       node-role.kubernetes.io/worker: '' 
-     desiredState:
-       ovn:
-         bridge-mappings:
-         - localnet: br-ex-network
-           bridge: br-ex 
-           state: present
+.. literalinclude:: br-ex-nncp.yaml
+   :language: yaml
 
 Apply the policy:
 
@@ -101,21 +88,8 @@ Expected output:
 
 Create a NetworkAttachmentDefinition (NAD) that will use the localnet:
 
-.. code-block:: yaml
-
-   apiVersion: k8s.cni.cncf.io/v1
-   kind: NetworkAttachmentDefinition
-   metadata:
-     name: br-ex-network
-     namespace: default
-   spec:
-     config: '{
-               "name":"br-ex-network",
-               "type":"ovn-k8s-cni-overlay",
-               "cniVersion":"0.4.0",
-               "topology":"localnet",
-               "netAttachDefName":"default/br-ex-network"
-             }'
+.. literalinclude:: br-ex-network-nad.yaml
+   :language: yaml
 
 Apply the NetworkAttachmentDefinition:
 
@@ -131,23 +105,8 @@ To configure a NetworkAttachmentDefinition with a specific VLAN ID, use the ``vl
 .. tip::
    Using VLANs with localnet can help maintain network isolation while still leveraging the existing physical infrastructure.
 
-.. code-block:: yaml
-
-   apiVersion: k8s.cni.cncf.io/v1
-   kind: NetworkAttachmentDefinition
-   metadata:
-     name: vlan-network
-     namespace: default
-   spec:
-     config: |
-       {
-               "cniVersion": "0.3.1",
-               "name": "vlan-network",
-               "type": "ovn-k8s-cni-overlay",
-               "topology": "localnet",
-               "vlanID": 200,
-               "netAttachDefName": "default/vlan-network"
-       }
+.. literalinclude:: vlan-network-nad.yaml
+   :language: yaml
 
 Apply the VLAN NetworkAttachmentDefinition:
 
@@ -162,41 +121,8 @@ In this example, the virtual machines connected to this network will receive VLA
 
 To attach a VM to the localnet bridge, modify your VM definition to include an additional network interface:
 
-.. code-block:: yaml
-
-   apiVersion: kubevirt.io/v1
-   kind: VirtualMachine
-   metadata:
-     name: example-vm
-     namespace: default
-   spec:
-     running: true
-     template:
-       spec:
-         domain:
-           devices:
-             disks:
-             - name: rootdisk
-               disk:
-                 bus: virtio
-             interfaces:
-             - name: default
-               masquerade: {}
-             - name: br-ex-interface
-               bridge: {}
-           resources:
-             requests:
-               memory: 2Gi
-         networks:
-         - name: default
-           pod: {}
-         - name: br-ex-interface
-           multus:
-             networkName: default/br-ex-network
-         volumes:
-         - name: rootdisk
-           containerDisk:
-             image: quay.io/containerdisks/fedora:latest
+.. literalinclude:: example-vm.yaml
+   :language: yaml
 
 Testing and Validation
 ========================

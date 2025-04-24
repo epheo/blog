@@ -13,8 +13,7 @@
 That’s with those words in mind that I started this blog in 2008. Although, the original content was in french and original posts aren’t referenced here anymore.
 
 I'm a cloud architect and open source enthusiast with insights on OpenShift, OpenStack, Linux, 
-and emerging technologies. Since 2008, I've been documenting my technical journey, originally in French,
-deleting many things along the way, and now sharing my experiences in English.
+and emerging technologies. 
 
 This space is where I aim to share troubleshooting notes, implementation guides, and 
 occasional thoughts on technology with a focus on open source solutions 
