@@ -1,0 +1,32 @@
+/* Custom color styles for environment labels */
+.color-prod {
+    color: #ffffff;
+    background-color: #880808;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-weight: bold;
+}
+
+.color-dev {
+    color: #ffffff;
+    background-color: #0066CC;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-weight: bold;
+}
+
+.color-test {
+    color: #ffffff;
+    background-color: #2E8B57;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-weight: bold;
+}
+
+.color-staging {
+    color: #ffffff;
+    background-color: #FF8C00;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-weight: bold;
+}

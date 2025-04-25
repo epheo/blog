@@ -31,12 +31,15 @@ Areas of Focus
    :hidden:
 
    articles/index
-   debug/index
    notes/index
+   debug/index
+
 
 Latest Content
 ~~~~~~~~~~~~~~~
 
+* :doc:`OpenShift Virtualization Sidecar </notes/kubevirt-sidecar>` - Modifying libvirt domain XML using sidecar containers
+* :doc:`OpenShift Block Device Backup </articles/openshift-borg/index>` - Simple Block Device Backup for OpenShift Lab Environments
 * :doc:`OpenShift Layer 2 UDN </articles/openshift-layer2-udn/index>` - Layer 2 User Defined Networking in OpenShift
 * :doc:`OpenShift LocalNet </articles/openshift-localnet/index>` - Local Network integration for OpenShift
 * :doc:`OpenShift Ollama </articles/openshift-ollama/index>` - Running Mistral:7b LLM on OpenShift

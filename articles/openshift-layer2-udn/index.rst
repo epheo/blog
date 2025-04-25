@@ -20,7 +20,7 @@ Configure and implement Layer 2 User Defined Networks (UDN) for Virtual Machines
 This use case demonstrates how to implement User Defined Networks (UDN) in OpenShift Virtualization, allowing for network isolation between Virtual Machines within a namespace or across namespaces. User Defined Networks provide a way to create isolated tenant networks for VMs, separate from the default pod network, enabling more complex network topologies and improved security isolation.
 
 .. seealso::
-   For more information about OpenShift Virtualization networking, check out the official `OpenShift Virtualization Documentation <https://docs.openshift.com/container-platform/4.18/virt/virtual_machines/vm_networking/>`_.
+   For more information about OpenShift Virtualization networking, check out the official `OpenShift Virtualization Documentation <https://docs.openshift.com/container-platform/latest/virt/virtual_machines/vm_networking/>`_.
 
 .. note::
    This is compatible with OpenShift 4.18 and newer versions.

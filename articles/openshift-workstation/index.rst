@@ -79,6 +79,11 @@ OpenShift Installation
 
    https://docs.openshift.com/container-platform/4.12/installing/installing_sno/install-sno-installing-sno.html
 
+.. note::
+   
+   You can also use the OpenShift web UI installer available in Red Hat Hybrid Cloud Console.
+   This provides a guided experience with the Assisted Installer service:
+   https://console.redhat.com/openshift/assisted-installer/clusters
 
 Once any existing file system is backed up and there are no more bootable
 partitions, we can proceed with the OpenShift Single Node installation.

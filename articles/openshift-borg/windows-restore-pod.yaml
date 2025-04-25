@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: windows-restore
+  namespace: epheo
+spec:
+  containers:
+  - name: restore-container
+    image: registry.desku.be/epheo/borgbackup:latest
+    env:
+    - name: BORG_CONFIG_DIR
+      value: /tmp/borg_config
+    - name: BORG_CACHE_DIR
+      value: /tmp/borg_cache
+    - name: BORG_UNKNOWN_UNENCRYPTED_REPO_ACCESS_IS_OK
+      value: "yes"
+    command: ["/bin/bash", "-c"]
+    args:
+      - |
+        echo "Starting Windows Backup pod with two mounted PVCs"
+        mkdir -p $BORG_CONFIG_DIR $BORG_CACHE_DIR
+        borg extract --progress --stdout /backup::$(borg list /backup --last 1 --format "{archive}") |dd of=/dev/windows-block
+    volumeDevices:
+    - devicePath: /dev/windows-block
+      name: windows-block
+    volumeMounts:
+    - mountPath: /backup
+      name: windows-backup
+    resources:
+      requests:
+        memory: "1Gi"
+        cpu: "500m"
+      limits:
+        memory: "4Gi"
+        cpu: "2"
+  volumes:
+  - name: windows-block
+    persistentVolumeClaim:
+      claimName: windows
+  - name: windows-backup
+    persistentVolumeClaim:
+      claimName: windows-backup
+  restartPolicy: OnFailure

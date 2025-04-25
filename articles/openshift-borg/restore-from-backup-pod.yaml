@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: restore-from-existing-backup
+spec:
+  containers:
+  - name: restore-container
+    image: registry.desku.be/epheo/borgbackup:latest
+    env:
+    - name: BORG_CONFIG_DIR
+      value: /tmp/borg_config
+    - name: BORG_CACHE_DIR
+      value: /tmp/borg_cache
+    - name: BORG_UNKNOWN_UNENCRYPTED_REPO_ACCESS_IS_OK
+      value: "yes"
+    command: ["/bin/bash", "-c"]
+    args:
+      - |
+        mkdir -p $BORG_CONFIG_DIR $BORG_CACHE_DIR
+        borg extract --progress --stdout /existing-backup::$(borg list /existing-backup --last 1 --format "{archive}") | dd of=/dev/target-block bs=4M status=progress
+    volumeDevices:
+    - devicePath: /dev/target-block
+      name: target-block-device
+    volumeMounts:
+    - mountPath: /existing-backup
+      name: existing-backup-volume
+  volumes:
+  - name: existing-backup-volume
+    persistentVolumeClaim:
+      claimName: existing-backup-pvc
+  - name: target-block-device
+    persistentVolumeClaim:
+      claimName: target-device-pvc

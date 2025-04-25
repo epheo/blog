@@ -6,6 +6,7 @@ This section contains technical articles on various topics including OpenShift, 
 Latest Articles
 ---------------
 
+* :doc:`OpenShift Block Device Backup </articles/openshift-borg/index>` - Simple Block Device Backup for OpenShift Lab Environments
 * :doc:`OpenShift Ollama </articles/openshift-ollama/index>` - Deploy Ollama AI on OpenShift
 * :doc:`OpenStack BGP </articles/openstack-bgp/index>` - Border Gateway Protocol in OpenStack
 * :doc:`OpenShift Layer 2 UDN </articles/openshift-layer2-udn/index>` - Layer 2 User Defined Networking in OpenShift
@@ -15,6 +16,7 @@ Categories
 
 OpenShift
 ^^^^^^^^^
+* :doc:`OpenShift Block Device Backup </articles/openshift-borg/index>`
 * :doc:`OpenShift Ollama </articles/openshift-ollama/index>`
 * :doc:`OpenShift Layer 2 UDN </articles/openshift-layer2-udn/index>`
 * :doc:`OpenShift LocalNet </articles/openshift-localnet/index>`
@@ -31,6 +33,7 @@ Complete Article Index
 .. toctree::
    :maxdepth: 2
 
+   openshift-borg/index
    openshift-layer2-udn/index
    openshift-localnet/index
    openshift-ollama/index

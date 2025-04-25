@@ -57,6 +57,9 @@ ogp_type = "website"
 html_theme = 'furo'
 html_static_path = ['_static']
 
+# Add custom CSS
+html_css_files = ['custom.css']
+
 html_title = "epheo - personal how-to, technical notes and insights"
 html_logo = "_static/logo.jpg"
 
