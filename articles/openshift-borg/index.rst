@@ -16,11 +16,13 @@ Simple Block Device Backup for OpenShift Lab Environments
 Introduction
 ============
 
+Just like the Borg collective from Star Trek assimilates technology and knowledge with their famous phrase 
+"resistance is futile," BorgBackup assimilates your data. 
+
 This article introduces a simple solution for backing up and restoring LVM Logical Volumes from local storage
-of a Single Node OpenShift (SNO) cluster to FreeNAS using BorgBackup. While not designed for enterprise-grade
-production workloads, this approach provides a practical method for protecting block storage in test
-and development clusters. The solution is deliberately kept simple to allow quick setup and testing in lab environments
-without the complexity of enterprise backup solutions.
+to FreeNAS (or other Storage Class) using BorgBackup. 
+While not designed for enterprise-grade production workloads, this approach provides a practical method. 
+
 
 Overview & Prerequisites
 ========================

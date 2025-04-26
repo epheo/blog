@@ -77,13 +77,24 @@ OpenShift Installation
 
 .. seealso::
 
-   https://docs.openshift.com/container-platform/4.12/installing/installing_sno/install-sno-installing-sno.html
+   https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/installing_on_a_single_node/install-sno-installing-sno
 
 .. note::
    
    You can also use the OpenShift web UI installer available in Red Hat Hybrid Cloud Console.
-   This provides a guided experience with the Assisted Installer service:
+   This will guide you through the install with the Assisted Installer service:
+
    https://console.redhat.com/openshift/assisted-installer/clusters
+
+   This also provides you with an automated way to install multiple Operator from Day0.
+
+   The relevant Operators for this use case are:
+    - Logical Volume Manager Storage
+    - NMState
+    - Node Feature Discovery
+    - NVIDIA GPU
+    - OpenShift Virtualization 
+
 
 Once any existing file system is backed up and there are no more bootable
 partitions, we can proceed with the OpenShift Single Node installation.
@@ -138,7 +149,7 @@ Activate Intel VT or AMD-V hardware virtualization extensions in BIOS or UEFI.
 
 .. seealso::
 
-   https://docs.openshift.com/container-platform/4.10/virt/install/installing-virt-cli.html
+   https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/virtualization/installing
 
 
 .. literalinclude:: /articles/openshift-workstation/install/cnv-resources.yaml
@@ -394,7 +405,8 @@ First, we need to identify an appropriate USB controller that we can dedicate to
 
 .. seealso::
 
-    https://docs.openshift.com/container-platform/4.12/virt/virtual_machines/advanced_vm_management/virt-configuring-pci-passthrough.html
+    https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html-single/virtualization/index#virt-configuring-pci-passthrough
+
 
 1. List all PCI devices on your system:
 
@@ -503,7 +515,7 @@ This assume you have the Local Storage Operator installed and running.
 
 .. seealso::
 
-   https://docs.redhat.com/en/documentation/openshift_container_platform/4.12/html/storage/configuring-persistent-storage#lvms-installing-lvms-with-web-console_logical-volume-manager-storage
+   https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/storage/configuring-persistent-storage#lvms-installing-lvms-with-web-console_logical-volume-manager-storage
 
 
 1. Create a YAML file for each VM disk. Here's an example for a Fedora 35 VM:
@@ -549,9 +561,6 @@ Key Configuration Elements
    
 4. **UEFI Boot**: Use UEFI boot mode for compatibility with modern operating systems and GPU drivers
    
-   .. seealso::
-      https://docs.openshift.com/container-platform/4.12/virt/virtual_machines/advanced_vm_management/virt-efi-mode-for-vms.html
-
 5. **CPU/Memory Configuration**: Allocate appropriate resources based on workload requirements
     
 
