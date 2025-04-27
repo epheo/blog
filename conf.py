@@ -44,8 +44,24 @@ exclude_patterns = [
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
 html_baseurl = 'https://blog.epheo.eu/'
+
+# Sitemap configuration
+sitemap_filename = "sitemap.xml"  # Ensure standard filename
 sitemap_locales = [None]
 sitemap_url_scheme = '{link}'
+sitemap_add_html = True
+sitemap_priority = {
+    'index.html': 1.0,
+    'articles/index.html': 0.9,
+}
+# Default priority for all pages not explicitly listed
+sitemap_priority_default = 0.8
+# Update frequency of pages
+sitemap_changefreq = {
+    'index.html': 'weekly',
+    'articles/index.html': 'weekly',
+}
+sitemap_changefreq_default = 'monthly'
 
 # OpenGraph and social media settings
 ogp_site_url = "https://blog.epheo.eu/"
@@ -63,7 +79,7 @@ html_css_files = ['custom.css']
 html_title = "epheo - personal how-to, technical notes and insights"
 html_logo = "_static/logo.jpg"
 
-html_extra_path = [ "robots.txt", "_static/favicon.ico" ]
+html_extra_path = [ "_static/robots.txt", "_static/favicon.ico" ]
 
 html_theme_options = {
     "source_repository": "https://github.com/epheo/blog/",

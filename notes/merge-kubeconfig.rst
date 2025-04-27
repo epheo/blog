@@ -109,15 +109,3 @@ To switch to a different context:
 .. code-block:: bash
 
    kubectl config use-context <context-name>
-
-Troubleshooting
-===============
-
-If you encounter duplicate entries or conflicts during the merge:
-
-- Manually edit the merged kubeconfig to resolve conflicts
-- Ensure unique names for clusters, contexts, and users in each original kubeconfig file
-- Use the ``--flatten`` option to handle duplicates when merging
-
-.. note::
-   The merged kubeconfig file might be quite large if you're managing many clusters. Consider organizing your configs and removing outdated or unnecessary cluster entries periodically.
