@@ -17,6 +17,8 @@ sphinxext-opengraph = "^0.10.0"
 sphinx-autobuild = "^2024.10.3"
 sphinx-copybutton = "^0.5.2"
 sphinx-reredirects = "^0.1.6"
+sphinx-jsonschema = "^1.19.1"
+readthedocs-sphinx-search = "^0.3.2"
 
 
 [build-system]

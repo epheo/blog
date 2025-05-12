@@ -1,2 +1,15 @@
 User-agent: *
+Allow: /
+
+# Optimize crawl rate
+Crawl-delay: 5
+
+# Sitemap location
 Sitemap: https://blog.epheo.eu/sitemap.xml
+
+# Disallow search results pages
+Disallow: /search.html
+
+# Allow search engines to focus on unique content
+Disallow: /_sources/
+Disallow: /_static/
