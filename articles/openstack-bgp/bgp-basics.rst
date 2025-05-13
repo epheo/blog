@@ -1,79 +1,51 @@
 Understanding BGP Basics
 ========================
 
-
 BGP Fundamentals
 ----------------
 
-BGP (Border Gateway Protocol) is a standardized exterior gateway protocol (EGP) defined in RFC 4271 that plays a 
-central role in how the global routing of Internet traffic is performed. It is considered the routing protocol of the Internet and enables routing across administrative domains.
+BGP (Border Gateway Protocol) is a standardized exterior gateway protocol designed for routing across administrative domains. It serves as the primary routing protocol of the Internet.
 
-Here are some fundamental concepts of BGP:
+Key BGP concepts:
 
-- **Path Vector Protocol**: BGP is a path vector protocol, meaning it keeps track of 
-  the path (sequence of ASes) that routes take through the Internet. 
-  
-  This information helps BGP in making routing decisions.
+- **Path Vector Protocol**: BGP tracks the sequence of Autonomous Systems (ASes) that routes traverse, using this information for routing decisions.
 
-- **Autonomous Systems (ASes)**: Autonomous systems are individual networks or groups 
-  of networks managed by a single entity and that operates under a common routing policy.
-  
-  Each AS is assigned a unique Autonomous System Number (ASN), which is used to identify it.
+- **Autonomous Systems**: Networks managed by a single entity under a common routing policy. Each AS has a unique Autonomous System Number (ASN).
 
-- **BGP Peers**: BGP routers establish peering sessions with other BGP routers (peers). 
-  
-  Peering is typically done using TCP connections. 
-  
-  BGP routers exchange routing updates and route information with their peers.
-
+- **BGP Peers**: BGP routers establish TCP-based connections with other BGP routers to exchange routing information.
 
 BGP Use Cases in OpenStack
----------------------------
+--------------------------
 
-In the context of OpenStack, BGP can be used in multiple ways to facilitate different use cases:
+Red Hat OpenStack Platform specifically supports ML2/OVN dynamic routing with BGP in both control and data planes. In this environment, BGP enables:
 
-1. **Control Plane VIP**: BGP is used to advertise the Control Plane VIP (Virtual IP) 
-   to external routers. 
-   
-   This enables the routing of traffic to the OpenStack Control Plane by external routers.
+1. **Control Plane High Availability**: Advertises control plane Virtual IPs to external routers, directing traffic to OpenStack services.
 
-2. **External Connectivity**: BGP is used to connect OpenStack workload to external 
-   networks, such as the Internet or private data centers. 
+2. **External Connectivity**: Connects OpenStack workloads to external networks by advertising routes to floating IPs and provider network IPs.
 
-   This enables the routing of traffic between OpenStack instances and the outside 
-   world by advertising routes to floating IPs and VLAN provider IPs to external routers.
+3. **Multi-cloud Connectivity**: Links multiple OpenStack clouds together through route advertisement.
 
-3. **Multi cloud Connectivity**: BGP is used to connect multiple OpenStack clouds together. 
+4. **High Availability**: Provides redundancy by rerouting traffic during network failures.
 
-   This enables the routing of traffic between instances in different OpenStack clouds 
-   by advertising routes to external routers.
-
-4. **High Availability**: BGP is instrumental in achieving high availability and 
-   redundancy by allowing traffic to be rerouted in the event of network failures. 
-   
-   This ensures minimal downtime for critical applications.
-
+5. **Subnet Failover**: Enables failover of entire subnets for public provider IPs or floating IPs from one site to another.
 
 Benefits of Dynamic Routing with BGP
 -------------------------------------
 
-Dynamic routing with BGP offers several benefits in the context of OpenStack:
+BGP offers significant advantages for OpenStack environments:
 
-- **Scalability**: BGP scales seamlessly, making it suitable for growing OpenStack 
-  environments. New networks and floating IPs (FIPs) can be routed without manual configuration,
-  allowing for easier expansion of your cloud infrastructure.
+- **Scalability**: New networks and floating IPs can be routed without manual configuration.
 
-- **Load Balancing**: BGP supports equal-cost multi-path routing (ECMP), which can distribute 
-  traffic across multiple paths, optimizing network utilization and ensuring efficient load balancing.
+- **Load Balancing**: Supports equal-cost multi-path routing (ECMP) to distribute traffic efficiently.
 
-- **Redundancy**: BGP provides high availability by automatically rerouting traffic in case of 
-  network failures, reducing the risk of service interruptions. This is especially important
-  for controllers deployed across availability zones with separate L2 segments or physical sites.
+- **Redundancy**: Automatically reroutes traffic during network failures, critical for controllers deployed across multiple availability zones.
 
-- **Interoperability**: BGP is a widely accepted standard, ensuring compatibility with 
-  various networking devices and cloud platforms. This simplifies integration with existing
-  network infrastructure.
-  
-- **Simplified L3 Architecture**: Deploying clusters in a pure Layer 3 (L3) data center with BGP
-  overcomes the scaling issues of traditional Layer 2 (L2) infrastructures such as large failure domains,
-  high volume broadcast traffic, or long convergence times during failure recoveries.
+- **Interoperability**: Works with diverse networking equipment and cloud platforms.
+
+- **Simplified L3 Architecture**: Enables pure Layer 3 data centers, avoiding Layer 2 issues like large failure domains, broadcast traffic, and slow convergence.
+
+- **Distributed Network Architecture**: Distributes L2 provider VLANs and floating IP subnets across L3 boundaries with no requirement to span VLANs across racks (for non-overlapping CIDRs).
+
+- **Improved Data Plane Management**: Provides better control and management of data plane traffic.
+
+- **Next-Generation Fabric Support**: Enables integration with next-generation data center and hyperscale fabric technologies.

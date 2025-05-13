@@ -1,38 +1,36 @@
 .. meta::
    :keywords:
-      GPU passthrough, VFIO-PCI, OpenShift, Kubevirt, SNO, Nvidia, Windows VM::
+      GPU passthrough, VFIO-PCI, OpenShift, Kubevirt, SNO, Nvidia, Windows VM
    :description:
-      how to run OpenShift as a workstation with GPU PCI passthrough 
-      and Container Native Virtualization (CNV) to provide a virtualized desktop 
-      experience on a single OpenShift node (SNO). 
+      How to run OpenShift as a workstation with GPU PCI passthrough 
+      and Container Native Virtualization (CNV) for virtualized desktop 
+      experience on a single OpenShift node (SNO).
 
 
 *******************************************************************
-Setting up a virtual workstation in OpenShift with VFIO passthrough
+Setting up a Virtual Workstation in OpenShift with VFIO Passthrough
 *******************************************************************
 
 .. article-info::
     :date: Feb 27, 2023
     :read-time: 25 min read
 
-This article provides a detailed guide on how to configure OpenShift as a workstation 
-with GPU PCI passthrough and Container Native Virtualization (CNV) on a single OpenShift 
-node (SNO). 
+This guide explains how to configure OpenShift as a workstation with GPU PCI passthrough 
+using Container Native Virtualization (CNV) on a single OpenShift node (SNO). This setup 
+delivers near-native performance for GPU-intensive applications while leveraging Kubernetes 
+orchestration capabilities.
 
-This setup allows you to leverage Kubernetes orchestration capabilities 
-while still enjoying near-native performance for GPU-intensive applications.
+**Key Benefits:**
 
-**Why this approach?**
-
-* Run both containerized workloads and virtual machines on the same hardware
-* Use a single GPU for both Kubernetes pods and virtual machines by switching the driver binding
+* Run containerized workloads and virtual machines on the same hardware
+* Use a single GPU for both Kubernetes pods and VMs by switching driver binding
 * Achieve near-native performance for gaming and professional applications in VMs
-* Maintain the flexibility and power of Kubernetes/OpenShift for other workloads
+* Maintain Kubernetes/OpenShift flexibility for other workloads
 
 In testing, this configuration successfully ran Microsoft Flight Simulator in a Windows VM 
-with performance smiliar to a bare metal Windows installation. 
+with performance comparable to a bare metal Windows installation.
 
-The workstation used for this demo has the following hardware:
+**Hardware Used:**
 
 .. list-table:: 
    :header-rows: 1
@@ -41,31 +39,29 @@ The workstation used for this demo has the following hardware:
    * - Component
      - Specification
    * - **CPU**
-     - AMD Ryzen 9 3950X 16-Core 32-Threads
+     - AMD Ryzen 9 3950X (16-Core, 32-Threads)
    * - **Memory**
      - 64GB DDR4 3200MHz
    * - **GPU**
      - Nvidia RTX 3080 FE 10GB
    * - **Storage**
-     - | 2x 2TB NVMe Disks (for virtual machine storage)
-       | 1x 500GB SSD Disk (for OpenShift root system)
+     - | 2x 2TB NVMe Disks (VM storage)
+       | 1x 500GB SSD Disk (OpenShift root system)
    * - **Network**
      - 10Gbase-CX4 Mellanox Ethernet
 
-Similar configurations with equivalent Intel CPUs should work with minor adjustments noted throughout the guide.
+Similar configurations with Intel CPUs should work with minor adjustments noted throughout this guide.
 
 Installing OpenShift SNO
 ========================
 
-Before proceeding with the installation, ensure you've completed the backup steps for any existing partitions.
+Before installation, be sure to back up any existing partition data.
 
+Backup Existing System Partitions
+---------------------------------
 
-Backup of existing system partitions
--------------------------------------
-
-To avoid boot order conflicts, the OpenShift assisted installer will format the first 
-512 bytes of any disks that contain a bootable partition. Therefore, it is important to 
-backup and remove any existing partition table that you would like to preserve.
+The OpenShift assisted installer formats the first 512 bytes of any disk with a bootable partition. 
+Back up and remove any existing partition tables you want to preserve.
 
 .. seealso::
 
@@ -81,14 +77,14 @@ OpenShift Installation
 
 .. note::
    
-   You can also use the OpenShift web UI installer available in Red Hat Hybrid Cloud Console.
-   This will guide you through the install with the Assisted Installer service:
+   You can use the OpenShift web UI installer in Red Hat Hybrid Cloud Console.
+   This guides you through installation with the Assisted Installer service:
 
    https://console.redhat.com/openshift/assisted-installer/clusters
 
-   This also provides you with an automated way to install multiple Operator from Day0.
+   This also provides an automated way to install multiple Operators from Day 0.
 
-   The relevant Operators for this use case are:
+   Relevant Operators for this setup:
     - Logical Volume Manager Storage
     - NMState
     - Node Feature Discovery
@@ -96,17 +92,14 @@ OpenShift Installation
     - OpenShift Virtualization 
 
 
-Once any existing file system is backed up and there are no more bootable
-partitions, we can proceed with the OpenShift Single Node installation.
+After backing up existing file systems and removing bootable partitions, proceed with the 
+OpenShift Single Node installation.
 
-It is important to note that CoreOS, the underlying operating system, requires an
-entire disk for installation. For this workstation setup:
+CoreOS (the underlying operating system) requires an entire disk for installation:
 
-1. We'll use the 500GB SSD disk for the OpenShift operating system
-2. The two 2TB NVMe disks will be reserved for persistent volumes as LVM Physical
-   volumes belonging to the same Volume Group
-3. This configuration allows for flexible VM storage management while keeping the
-   system installation separate
+1. 500GB SSD for the OpenShift operating system
+2. Two 2TB NVMe disks for persistent volumes as LVM Physical volumes in the same Volume Group
+3. This setup enables flexible VM storage management while keeping the system installation separate
 
 
 .. literalinclude:: /articles/openshift-workstation/install/get-ocp-binaries.sh
@@ -138,14 +131,13 @@ entire disk for installation. For this workstation setup:
     dd if=discovery_image_sno.iso of=/dev/usbkey status=progress
 
 
-Once the ISO is copied to the USB drive, you can use the USB drive to boot your
-workstation node and install OpenShift Container Platform.
+After copying the ISO to a USB drive, boot your workstation from it to install OpenShift.
 
 
-Install CNV Operator
---------------------
+Installing CNV Operator
+-----------------------
 
-Activate Intel VT or AMD-V hardware virtualization extensions in BIOS or UEFI.
+Enable Intel VT or AMD-V hardware virtualization extensions in your BIOS/UEFI settings.
 
 .. seealso::
 
@@ -162,51 +154,40 @@ Activate Intel VT or AMD-V hardware virtualization extensions in BIOS or UEFI.
     oc apply -f cnv-resources.yaml
 
 .. code-block:: bash
-    :caption: Installing the Virtctl client on your desktop.
+    :caption: Installing Virtctl client on your desktop
 
     subscription-manager repos --enable cnv-4.10-for-rhel-8-x86_64-rpms
     dnf install kubevirt-virtctl
 
 
-Configure OpenShift for single GPU passthrough
-==============================================
+Configuring OpenShift for GPU Passthrough
+=========================================
 
-As our GPU is the only one attached to the node a few additional steps are
-required.
+Since we're working with a single GPU, additional configuration is required.
 
-We will use MachineConfig to configure our node accordingly.
-
-All MachineConfig are applied on the master machineset because we have a single
-node OpenShift. With a multi nodes cluster those would be applied to workers
-instead.
+We'll use MachineConfig to configure our node. In a single-node OpenShift setup, 
+all MachineConfig changes apply to the master machineset. In multi-node clusters, 
+these would apply to workers instead.
 
 .. seealso::
 
     https://github.com/openshift/machine-config-operator/blob/master/docs/SingleNodeOpenShift.md
 
 
-Passing kernel arguments at boot time
--------------------------------------
+Setting Kernel Boot Arguments
+-----------------------------
 
-Multiple Kernel arguments have to be passed at boot time in order to configure our node 
-for GPU passthrough. 
-This can be done using the MachineConfigOperator. 
+To enable GPU passthrough, we need to pass several kernel arguments at boot time via the MachineConfigOperator:
 
-
-- **amd_iommu=on**: Enables IOMMU (Input/Output Memory Management Unit) support for AMD 
-  platforms, allowing for direct memory access (DMA) by PCI devices without going 
-  through the CPU. This improves performance and reduces overhead.
-- **vga=off**: Disables VGA (Video Graphics Array) console output during boot time. 
-- **rdblaclist=nouveau**: Enables the blacklisting of the Nouveau open-source NVIDIA 
-  driver.
-- **video=efifb:off**: Disables the EFI (Extensible Firmware Interface) framebuffer 
-  console output during boot time. 
+- **amd_iommu=on**: Enables IOMMU support for AMD platforms (use intel_iommu=on for Intel CPUs)
+- **vga=off**: Disables VGA console output during boot
+- **rdblaclist=nouveau**: Blacklists the Nouveau open-source NVIDIA driver
+- **video=efifb:off**: Disables EFI framebuffer console output
 
 .. seealso::
 
     https://www.reddit.com/r/VFIO/comments/cktnhv/bar_0_cant_reserve/
     https://www.reddit.com/r/VFIO/comments/mx5td8/bar_3_cant_reserve_mem_0xc00000000xc1ffffff_64bit/
-
     https://docs.kernel.org/fb/fbcon.html
 
 
@@ -226,24 +207,24 @@ This can be done using the MachineConfigOperator.
 
 .. note::
 
-    If you're using an Intel CPU you'll have to set intel_iommu=on instead.
+    Intel CPU users: use intel_iommu=on instead of amd_iommu=on.
 
 
-Installing and configuring the NVIDIA GPU Operator
----------------------------------------------------
+Installing the NVIDIA GPU Operator
+----------------------------------
 
-The NVIDIA GPU Operator automates the management of NVIDIA GPUs in Kubernetes environments.
+The NVIDIA GPU Operator simplifies GPU management in Kubernetes environments.
 
-Step 1: Install the GPU Operator
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Step 1: Install the Operator
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-1. Navigate to the OpenShift web console
-2. Go to **Operators** → **OperatorHub**
-3. Search for "NVIDIA GPU Operator"
-4. Select the operator and click **Install**
-5. Keep the default installation settings and click **Install** again
+Via OpenShift web console:
+1. Go to **Operators** → **OperatorHub**
+2. Search for "NVIDIA GPU Operator"
+3. Select the operator and click **Install**
+4. Keep default settings and click **Install**
 
-Alternatively, you can install it through the CLI using the following commands:
+Or via CLI:
 
 .. code-block:: bash
 
@@ -253,9 +234,7 @@ Alternatively, you can install it through the CLI using the following commands:
 Step 2: Configure the ClusterPolicy
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-When deploying the operator's ClusterPolicy, we need to set ``sandboxWorkloads.enabled`` 
-to ``true`` to enable the sandbox-device-plugin and vfio-manager components, which are essential for GPU passthrough.
-
+Set ``sandboxWorkloads.enabled`` to ``true`` to enable the components needed for GPU passthrough:
 
 .. code-block:: yaml
     :linenos:
@@ -274,10 +253,9 @@ to ``true`` to enable the sandbox-device-plugin and vfio-manager components, whi
     oc patch ClusterPolicy gpu-cluster-policy --type=merge -p sandboxWorkloadsEnabled.yaml
 
 
-As the Nvidia GPU Operator does not officialy supports consumer grade GPUs it does not take the
-audio device into consideration and therefore doesn't bind it to vfiopci driver.
-This has to be done manually but can be achieved once at boot time using the following 
-machine config.
+The NVIDIA GPU Operator doesn't officially support consumer-grade GPUs and won't automatically 
+bind the GPU audio device to the vfio-pci driver. We'll handle this manually with the following 
+machine config:
 
 
 .. literalinclude:: /articles/openshift-workstation/machineconfig/build/vfio-prepare.bu
@@ -303,24 +281,23 @@ machine config.
 
 
 Dynamically Switching GPU Drivers
--------------------------------------
+---------------------------------
 
-One of the key advantages of this setup is the ability to use a single GPU for both container 
-workloads and virtual machines without rebooting the system.
+A key advantage of this setup is using a single GPU for both container workloads and VMs 
+without rebooting.
 
 Use Case Scenario
 ~~~~~~~~~~~~~~~~~
 
-* Our workstation has a single NVIDIA GPU
-* Container workloads (such as AI/ML applications) require the NVIDIA kernel driver
-* Virtual machines with GPU passthrough require the VFIO-PCI driver
-* We need to switch between these modes without system reboots
+* Single NVIDIA GPU shared between container workloads and VMs
+* Container workloads require the NVIDIA kernel driver
+* VMs with GPU passthrough require the VFIO-PCI driver
+* Switching between modes without rebooting
 
 Driver Switching Using Node Labels
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The NVIDIA GPU Operator with sandbox workloads enabled provides a convenient way to switch 
-driver bindings using node labels:
+The NVIDIA GPU Operator with sandbox workloads enabled lets you switch driver bindings using node labels:
 
 **For container workloads (NVIDIA driver):**
 
@@ -339,32 +316,34 @@ driver bindings using node labels:
 Notes on Driver Switching
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* The driver switching process takes a few minutes to complete
-* You can verify the current driver binding with ``lspci -nnk | grep -A3 NVIDIA``
-* All GPU workloads must be stopped before switching drivers
-* No system reboot isually required for the switch to take effect
-* This have prouved to be a bit unreliable and may require a reboot
+* Driver switching takes a few minutes
+* Verify current driver with ``lspci -nnk | grep -A3 NVIDIA``
+* Stop all GPU workloads before switching drivers
+* No reboot is usually required
+* Can be occasionally unreliable and may require a reboot
 
 
-Add GPU as Hardware Device of your node
----------------------------------------
+Adding GPU as a Hardware Device
+-------------------------------
 
 .. seealso::
 
     https://github.com/kubevirt/kubevirt/blob/main/docs/devel/host-devices-and-device-plugins.md
 
 
-We indentify the Vendor and Product ID of the GPU
+First, identify the GPU's Vendor and Product ID:
 
 .. code-block:: bash
 
     lspci -nnk |grep VGA
 
-We indentify the device name provided by the gpu-feature-discovery.
+Then, identify the device name provided by gpu-feature-discovery:
 
 .. code-block:: bash
 
     oc get nodes da2 -ojson |jq .status.capacity |grep nvidia
+
+Now, add the GPU to the permitted host devices:
 
 .. code-block:: yaml
     :linenos:
@@ -382,46 +361,40 @@ We indentify the device name provided by the gpu-feature-discovery.
 
 .. code-block:: bash
 
-    oc patch hyperconverged kubevirt-hyperconverged -n openshift-cnv  --type=merge -d hyperconverged.yaml 
+    oc patch hyperconverged kubevirt-hyperconverged -n openshift-cnv --type=merge -f hyperconverged.yaml 
 
-The `pciDeviceSelector` field specifies the vendor ID and device ID of the PCI device, 
-while the `resourceName` field specifies the name of the resource that will be created 
-in Kubernetes/OpenShift.
-
+The `pciDeviceSelector` specifies the vendor:device ID, while `resourceName` specifies the resource 
+name in Kubernetes/OpenShift.
 
 
-Passthrough USB Host Controllers to the VM
-===============================================
+Passthrough USB Controllers to VMs
+==================================
 
-For a complete desktop experience, you'll want to connect input devices (mouse, keyboard) 
-and audio devices directly to your virtual machine. Instead of passthrough individual 
-USB devices, we'll passthrough an entire USB controller to the VM for better performance 
-and flexibility.
+For a complete desktop experience, you'll want to pass through an entire USB controller to 
+your VM for better performance and flexibility.
 
-Step 1: Identify a Suitable USB Controller
----------------------------------------------
-
-First, we need to identify an appropriate USB controller that we can dedicate to the virtual machine:
+Identifying a Suitable USB Controller
+----------------------------------------
 
 .. seealso::
 
     https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html-single/virtualization/index#virt-configuring-pci-passthrough
 
 
-1. List all PCI devices on your system:
+1. List all USB controllers:
 
-    .. code-block:: bash
+   .. code-block:: bash
    
-       lspci -nnk | grep -i usb
+      lspci -nnk | grep -i usb
 
    Example output:
    ```
    0b:00.3 USB controller [0c03]: Advanced Micro Devices, Inc. [AMD] Matisse USB 3.0 Host Controller [1022:149c]
    ```
 
-2. Note the PCI address (e.g., `0b:00.3`) and the device ID (`1022:149c` in the example).
+2. Note the PCI address (e.g., `0b:00.3`) and device ID (`1022:149c`).
 
-3. Verify the IOMMU group of the controller to ensure it can be safely passed through:
+3. Check the IOMMU group:
 
    .. code-block:: bash
    
@@ -431,30 +404,20 @@ First, we need to identify an appropriate USB controller that we can dedicate to
        ls /sys/kernel/iommu_groups/27/devices/
        # Lists all devices in the same IOMMU group
 
-4. **Important**: For clean passthrough, the USB controller should ideally be alone in its IOMMU group. If other devices are in the same group, you'll need to pass those through as well.
+4. **Important**: For clean passthrough, the USB controller should ideally be alone in its IOMMU group. 
+   If other devices share the group, you'll need to pass those through as well.
 
 
-Add the USB Controller as Hardware Device of your node
-------------------------------------------------------
+Adding the USB Controller as a Permitted Device
+-----------------------------------------------
 
 .. seealso::
 
     https://access.redhat.com/solutions/6250271
-
-
-.. seealso::
-
     https://kubevirt.io/user-guide/virtual_machines/host-devices/#listing-permitted-devices
 
 
-Once identified we add its Vendor and product IDs to the list of permitted
-Host Devices.
-
-Currently, Kubevirt does not allow providing a specific PCI address, therefore
-the pciDeviceSelector will match all similar USB Host Controller from the node.
-However, as we will only bind the one we are interested in to the VFIO-PCI
-driver the other ones will not be available for pci passthrough.
-
+Add the controller's Vendor and Product IDs to permitted host devices:
 
 .. code-block:: yaml
     :linenos:
@@ -473,11 +436,11 @@ driver the other ones will not be available for pci passthrough.
 
 .. code-block:: bash
 
-    oc patch hyperconverged kubevirt-hyperconverged -n openshift-cnv  --type=merge -d hyperconverged.yaml 
+    oc patch hyperconverged kubevirt-hyperconverged -n openshift-cnv --type=merge -f hyperconverged.yaml 
 
 
-Binding the USB Controller to VFIO-PCI driver at boot time
-----------------------------------------------------------
+Binding the USB Controller to VFIO-PCI Driver
+---------------------------------------------
 
 
 .. literalinclude:: /articles/openshift-workstation/machineconfig/build/vfio-prepare.bu
@@ -485,8 +448,7 @@ Binding the USB Controller to VFIO-PCI driver at boot time
     :linenos:
     :caption: vfio-prepare.bu
 
-Create a bash script to unbind specific PCI devices and bind them to the VFIO-PCI 
-driver.
+Create a script to unbind the USB controller from its current driver and bind it to vfio-pci:
 
 .. literalinclude:: /articles/openshift-workstation/machineconfig/build/vfio-prepare.sh
     :language: bash
@@ -502,36 +464,37 @@ driver.
     oc patch MachineConfig 100-vfio --type=merge -p ../vfio-prepare.yaml
 
 
-Creating a Virtual Machine with GPU Passthrough
-===============================================
+Creating VMs with GPU Passthrough
+=================================
 
-This section guides you through creating virtual machines that can utilize the GPU via PCI passthrough. We'll use existing LVM Logical Volumes where the operating system is already installed with UEFI boot.
+This section explains how to create VMs that can use GPU passthrough, using existing 
+LVM Logical Volumes with UEFI boot.
 
-Step 1: Create Persistent Volumes from LVM Disks
--------------------------------------------------------
+Creating Persistent Volumes from LVM Disks
+------------------------------------------
 
-First, we need to make our LVM volumes available to OpenShift by creating a Persistent Volume Claims (PVCs).
-This assume you have the Local Storage Operator installed and running.
+First, make LVM volumes available to OpenShift via Persistent Volume Claims (PVCs).
+This assumes you have the Local Storage Operator installed.
 
 .. seealso::
 
    https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/storage/configuring-persistent-storage#lvms-installing-lvms-with-web-console_logical-volume-manager-storage
 
 
-1. Create a YAML file for each VM disk. Here's an example for a Fedora 35 VM:
+1. Create a YAML file for each VM disk:
 
 .. literalinclude:: /articles/openshift-workstation/pv/fedora_pvc.yaml
     :language: yaml
     :linenos:
     :caption: fedora_pvc.yaml
 
-2. Apply the YAML to create the PV and PVC:
+2. Apply the YAML:
 
 .. code-block:: bash
 
     oc apply -f fedora35.yaml
 
-3. Verify the PV and PVC are created and bound:
+3. Verify the PV and PVC are bound:
 
 .. code-block:: bash
 
@@ -539,29 +502,26 @@ This assume you have the Local Storage Operator installed and running.
     oc get pvc -n <your-namespace>
 
 
-Step 2: Defining the Virtual Machine with GPU Passthrough
-----------------------------------------------------------
+Defining VMs with GPU Passthrough
+-----------------------------------
 
-When creating virtual machines for desktop use with GPU passthrough, several important configurations need to be applied:
-
-Key Configuration Elements
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+Key configuration elements for desktop VMs with GPU passthrough:
 
 1. **GPU Passthrough**: Pass the entire physical GPU to the VM
    
    .. seealso::
       https://kubevirt.io/user-guide/virtual_machines/host-devices/#pci-passthrough
 
-2. **Disable Virtual VGA**: Remove the default emulated VGA device since we're using the physical GPU
+2. **Disable Virtual VGA**: Remove the emulated VGA device
    
    .. seealso::
       https://kubevirt.io/api-reference/master/definitions.html#_v1_devices
 
-3. **USB Controller Passthrough**: Include the USB controller for connecting peripherals directly
+3. **USB Controller Passthrough**: For connecting peripherals directly
    
-4. **UEFI Boot**: Use UEFI boot mode for compatibility with modern operating systems and GPU drivers
+4. **UEFI Boot**: For compatibility with modern OSes and GPU drivers
    
-5. **CPU/Memory Configuration**: Allocate appropriate resources based on workload requirements
+5. **CPU/Memory Configuration**: Based on workload requirements
     
 
 .. literalinclude:: /articles/openshift-workstation/vms/fedora.yaml
@@ -576,93 +536,23 @@ Key Configuration Elements
     :caption: windows.yaml
 
 
-Unused anymore, for reference only
-==================================
+Future Improvements
+===================
 
-Binding GPU to VFIO Driver at boot time
----------------------------------------
+Some potential future improvements to this setup:
 
-We first gather the PCI Vendor and product IDs from `pciutils`.
-
-.. code-block:: bash
-
-    lspci -nn |grep VGA
-
-
-.. literalinclude:: /articles/openshift-workstation/machineconfig/100-sno-vfiopci.bu
-    :caption: 100-sno-vfiopci.bu
-    :language: yaml
-    :linenos:
-
-
-.. code-block:: bash
-
-    dnf install butane
-    butane 100-sno-vfiopci.bu -o 100-sno-vfiopci.yaml
-    oc apply -f 100-sno-vfiopci.yaml
-
-.. literalinclude:: /articles/openshift-workstation/machineconfig/98-sno-xhci-unbind.yaml
-    :language: yaml
-    :linenos:
-    :caption: 98-sno-xhci-unbind.yaml
-
-
-Unbinding VTConsole at boot time
---------------------------------
-
-.. seealso::
-
-    https://docs.kernel.org/fb/fbcon.html
-
-
-.. literalinclude:: /articles/openshift-workstation/machineconfig/98-sno-vtconsole-unbind.yaml
-    :caption: 98-sno-vtconsole-unbind.yaml
-    :language: yaml
-    :linenos:
-
-
-What's next
-===========
-
-This chapter is kept as a reference for furture possible improvements.
-
-- Reducing the Control Plane footprint by relaying on microshift instead.
-- Using GPU from containers instead of virtual machines for Linux Desktop.
-
-
-Replace node prep by qemu hooks
--------------------------------
-
-- https://github.com/kubevirt/kubevirt/blob/main/examples/vmi-with-sidecar-hook.yaml
-
-
-Enabling dedicated resources for virtual machines
--------------------------------------------------
-
-- https://docs.openshift.com/container-platform/4.10/scalability_and_performance/using-cpu-manager.html
-- https://docs.openshift.com/container-platform/4.10/virt/virtual_machines/advanced_vm_management/virt-dedicated-resources-vm.html
-- https://docs.openshift.com/container-platform/4.10/virt/virtual_machines/advanced_vm_management/virt-using-huge-pages-with-vms.html
-
-
-Using MicroShift and RHEL for Edge
-----------------------------------
-
-- https://microshift.io/
-- https://next.redhat.com/2022/01/19/introducing-microshift/
-- https://github.com/redhat-et/microshift
-- https://community.ibm.com/community/user/cloud/blogs/alexei-karve/2022/03/07/microshift-11
-
+- Using MicroShift instead of OpenShift to reduce Control Plane footprint
+- Running Linux Desktop in containers instead of VMs
+- Implementing more efficient resource allocation with CPU pinning and huge pages
 
 Troubleshooting
 ===============
 
-This section covers common issues you might encounter when setting up GPU passthrough with OpenShift and their solutions.
-
-IOMMU Group Viability Issues
-----------------------------
+IOMMU Group Issues
+------------------
 
 **Problem:**
-Virtual machine fails to start with an error similar to:
+VM fails to start with:
 
 .. code-block:: bash
 
@@ -671,56 +561,52 @@ Virtual machine fails to start with an error similar to:
     Please ensure all devices within the iommu_group are bound to their vfio bus driver."}
 
 **Diagnosis:**
-This error occurs when not all devices in the same IOMMU group are bound to the vfio-pci driver. To check the IOMMU group:
+Not all devices in the IOMMU group are bound to vfio-pci. Check:
 
 .. code-block:: bash
 
-    # Check which devices are in the same IOMMU group
+    # Check devices in the IOMMU group
     ls /sys/kernel/iommu_groups/19/devices/
-    # Output shows multiple devices in the group:
-    # 0000:03:08.0  0000:07:00.0  0000:07:00.1  0000:07:00.3
     
-    # Check what one of these devices is
+    # Check what these devices are
     lspci -nnks 07:00.0
-    # Output: AMD Starship/Matisse Reserved SPP [1022:1485]
 
 **Solution:**
-All devices in the same IOMMU group need to be bound to the vfio-pci driver. Modify your vfio-prepare.sh script to include all devices in the IOMMU group:
+Bind all devices in the IOMMU group to vfio-pci:
 
 .. code-block:: bash
 
-    # Add these lines to your vfio-prepare.sh script
+    # Add to vfio-prepare.sh
     echo "vfio-pci" > /sys/bus/pci/devices/0000:03:08.0/driver_override
     echo "vfio-pci" > /sys/bus/pci/devices/0000:07:00.0/driver_override
     echo "vfio-pci" > /sys/bus/pci/devices/0000:07:00.1/driver_override
     echo "vfio-pci" > /sys/bus/pci/devices/0000:07:00.3/driver_override
     
-    # Make sure to unbind from current drivers first and then bind to vfio-pci
-    # as shown in the vfio-prepare.sh script example
+    # Unbind from current drivers, then bind to vfio-pci
 
-Other Common Issues
--------------------
+Common Issues and Solutions
+---------------------------
 
 **No display output after GPU passthrough:**
 
-* Ensure you've disabled the virtual VGA device in the VM specification
-* Check that you've passed through both the GPU and its audio device
-* Install the appropriate GPU drivers inside the virtual machine
+* Disable virtual VGA in VM spec
+* Pass through both GPU and audio device
+* Install proper GPU drivers inside VM
 
 **Performance issues in Windows VM:**
 
-* Ensure CPU pinning is configured correctly
-* Consider enabling huge pages for memory performance
-* Install the latest NVIDIA drivers from within the VM
-* Disable the Windows Game Bar and other overlay software
+* Configure CPU pinning correctly
+* Enable huge pages for better memory performance
+* Install latest NVIDIA drivers in VM
+* Disable Windows Game Bar and overlay software
 
 **GPU driver switching fails:**
 
-* Verify all GPU workloads are stopped before switching
-* Check the GPU operator pod logs: ``oc logs -n nvidia-gpu-operator <pod-name>``
-* Verify IOMMU is properly enabled in BIOS/UEFI settings
+* Stop all GPU workloads before switching
+* Check GPU operator logs: ``oc logs -n nvidia-gpu-operator <pod-name>``
+* Verify IOMMU is enabled in BIOS/UEFI
 
-For more troubleshooting help, check the logs of the following components:
+For further troubleshooting, check logs:
 
 * virt-handler: ``oc logs -n openshift-cnv virt-handler-<hash>``
 * virt-launcher: ``oc logs -n <namespace> virt-launcher-<vm-name>-<hash>``

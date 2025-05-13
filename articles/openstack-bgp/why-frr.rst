@@ -1,57 +1,40 @@
-
 FRR: The Free Range Routing Suite
 ==================================
 
-Free Range Routing (FRR) is the primary component powering the BGP implementation 
-within Red Hat OpenStack Platform. It operates as a containerized service that seamlessly 
-integrates with OVN (Open Virtual Network).
+Free Range Routing (FRR) powers BGP implementation in Red Hat OpenStack Platform as a containerized service integrated with OVN.
 
-Introduction to FRR
+What is FRR?
 -------------------
 
-**Free Range Routing (FRR)** is an IP routing protocol suite of daemons that run in a container 
-on all OpenStack composable roles, working together to build and maintain the routing table.
+**Free Range Routing (FRR)** is an IP routing protocol suite that maintains routing tables on OpenStack nodes. It forked from Quagga to overcome limitations and is officially included in Red Hat Enterprise Linux.
 
-FRR originated as a fork of Quagga, aiming to overcome limitations and enhance the 
-capabilities of traditional routing software. It is officially included in Red Hat Enterprise Linux (RHEL).
+Key FRR components in OpenStack:
 
-Key components of FRR in OpenStack include:
+- **BGP daemon (``bgpd``)**: Implements BGP protocol v4, handling peer capabilities and communicating with the kernel through Zebra. Uses capability negotiation to detect remote peer capabilities.
 
-- **BGP daemon (``bgpd``)**: Implements BGP protocol version 4, running in the ``frr`` container 
-  to handle the negotiation of capabilities with remote peers and communicate with the kernel 
-  routing table through the Zebra daemon.
+- **BFD daemon (``bfdd``)**: Provides fast failure detection between adjacent forwarding engines.
 
-- **BFD daemon (``bffd``)**: Provides Bidirectional Forwarding Detection for faster failure detection 
-  between adjacent forwarding engines.
+- **Zebra daemon**: Coordinates routing information from various FRR daemons and updates the kernel routing table.
 
-- **Zebra daemon**: Coordinates information from various FRR daemons and communicates 
-  routing decisions directly to the kernel routing table.
+- **VTY shell (``vtysh``)**: Command interface that aggregates all CLI commands from the daemons and presents them in a unified interface.
 
-- **VTY shell (``vtysh``)**: A shell interface that aggregates CLI commands from all daemons 
-  and presents them in a unified interface.
+FRR Features in OpenStack
+--------------------------
 
+FRR provides several critical features for OpenStack:
 
-FRR Features and Capabilities in OpenStack
--------------------------------------------
-
-FRR provides specific features that make it ideal for BGP implementation in Red Hat OpenStack Platform:
-
-- **Equal-Cost Multi-Path Routing (ECMP)**: FRR supports ECMP for load balancing network traffic 
-  across multiple paths, enhancing performance and resilience. Each protocol daemon in FRR uses 
-  different methods to manage ECMP policy.
+- **Equal-Cost Multi-Path Routing (ECMP)**: Enables load balancing across multiple paths. Each protocol daemon in FRR uses different methods to manage ECMP policy.
   
-  Example configuration in FRR to enable ECMP with 8 paths:
+  Example configuration:
   
   .. code-block:: text
 
      router bgp 65000
        maximum-paths 8
 
-- **BGP Advertisement Mechanism**: FRR works with the OVN BGP agent to advertise and withdraw routes. 
-  The agent exposes IP addresses of VMs and load balancers on provider networks, and optionally on 
-  tenant networks when specifically configured.
+- **BGP Advertisement Mechanism**: Works with OVN BGP agent to advertise IP addresses from VMs and load balancers
   
-  Example of FRR's configuration template used by the OVN BGP agent:
+  Sample configuration template:
   
   .. code-block:: text
   
@@ -68,40 +51,31 @@ FRR provides specific features that make it ideal for BGP implementation in Red 
         redistribute connected
         exit-address-family
 
-- **Seamless Integration with Red Hat OpenStack**: The FRR implementation in Red Hat OpenStack platform 
-  uses VRF (Virtual Routing and Forwarding) named ``bgp_vrf`` and a dummy interface (``bgp-nic``) to 
-  handle the redirection of traffic between external networks and the OVN overlay.
+- **Integration with OpenStack**: Uses VRF (``bgp_vrf``) and a dummy interface (``bgp-nic``) to redirect traffic between external networks and OVN
 
+Why Red Hat Chose FRR
+---------------------
 
-Why FRR in Red Hat OpenStack?
------------------------------
+FRR was selected for OpenStack BGP implementation for these reasons:
 
-Red Hat chose FRR for its OpenStack BGP implementation for several technical reasons:
-
-- **OVN BGP Agent Integration**: FRR works seamlessly with the OVN BGP agent (``ovn-bgp-agent`` container), 
-  which monitors the OVN southbound database for VM and floating IP events. When these events occur, 
-  the agent notifies the FRR BGP daemon to advertise the associated IP addresses. This architecture 
-  provides a clean separation between networking functions.
+- **Clean OVN Integration**: Works seamlessly with the OVN BGP agent monitoring the OVN southbound database
   
-  Example of how OVN BGP agent interacts with FRR:
+  Agent-FRR interaction:
   
   .. code-block:: bash
   
       # Agent communicates with FRR through VTY shell
       $ vtysh --vty_socket -c <command_file>
 
-- **Versatile Kernel Integration**: FRR's Zebra daemon communicates routing decisions directly to 
-  the kernel routing table, allowing OpenStack to leverage Linux kernel networking capabilities for 
-  traffic management. When routes need to be advertised, the agent simply adds or removes them from 
-  the ``bgp-nic`` interface, and FRR handles the rest.
+- **Direct Kernel Integration**: Zebra daemon efficiently communicates with the kernel routing table
 
-- **Advanced BGP Features Support**: FRR supports critical features needed in production OpenStack environments:
-  - BGP graceful restart (preserves forwarding state during restarts)
-  - BFD for fast failure detection (sub-second)
-  - IPv4 and IPv6 address families
-  - VRF support for network separation
+- **Enterprise BGP Features**: Supports critical functionality:
+  - BGP graceful restart for preserving forwarding state
+  - BFD for sub-second failure detection
+  - IPv4/IPv6 support
+  - VRF for network separation
 
-  Example configuration for BGP graceful restart:
+  Graceful restart configuration:
   
   .. code-block:: text
   
@@ -111,6 +85,5 @@ Red Hat chose FRR for its OpenStack BGP implementation for several technical rea
         bgp graceful-restart restart-time 60
         bgp graceful-restart preserve-fw-state
 
-- **Supplied with RHEL**: As FRR is included with Red Hat Enterprise Linux, it provides a consistent 
-  and supported solution that integrates well with the entire Red Hat ecosystem.
+- **RHEL Integration**: Included with Red Hat Enterprise Linux, providing consistent support within the Red Hat ecosystem
 
