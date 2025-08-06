@@ -138,3 +138,58 @@ img.loading {
 .tag:hover {
     background-color: rgba(0, 102, 204, 0.2);
 }
+
+/* Mermaid diagram styling for better visual integration */
+.mermaid {
+    text-align: center;
+    margin: 2rem auto;
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+/* Ensure mermaid diagrams are responsive */
+.mermaid svg {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background: #ffffff;
+}
+
+/* Dark mode support for mermaid diagrams */
+@media (prefers-color-scheme: dark) {
+    .mermaid svg {
+        background: #1a1a1a;
+        box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
+    }
+}
+
+/* Improve mermaid diagram spacing on mobile */
+@media screen and (max-width: 768px) {
+    .mermaid {
+        margin: 1rem auto;
+        padding: 0 1rem;
+    }
+    
+    .mermaid svg {
+        border-radius: 4px;
+    }
+}
+
+/* Style for mermaid diagram containers with captions */
+.figure .mermaid {
+    margin: 1rem auto;
+}
+
+/* Override default mermaid text styling for better readability */
+.mermaid .node text {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.mermaid .edgeLabel {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+}
