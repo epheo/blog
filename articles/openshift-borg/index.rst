@@ -2,7 +2,7 @@
    :description:
       A simple block device backup system for OpenShift labs using BorgBackup.
    :keywords:
-      Kubernetes, OpenShift, BorgBackup, backups, block devices, lab environment, containers, storage
+      borgbackup, kubernetes, cronjob, persistent volumes, deduplication, incremental, backup
 
 
 *********************************************************
