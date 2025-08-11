@@ -16,6 +16,7 @@ Include/
 Lib/
 Scripts/
 pyvenv.cfg
+.venv/
 
 # Log files
 *.log
