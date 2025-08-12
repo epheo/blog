@@ -168,9 +168,7 @@ RHOSO BGP Network Topology
 
    ---
    config:
-     look: handDrawn
      theme: neutral
-     handDrawnSeed: 42
    ---
    graph TB
        subgraph "External Network"
@@ -220,9 +218,7 @@ The following diagram shows detailed interactions between all RHOSO BGP componen
 
    ---
    config:
-     look: handDrawn
      theme: neutral
-     handDrawnSeed: 42
    ---
    graph TB
        subgraph "External Infrastructure"
@@ -488,9 +484,7 @@ When tenant network advertising is enabled, traffic follows a specific path thro
 
    ---
    config:
-     look: handDrawn
      theme: neutral
-     handDrawnSeed: 42
    ---
    graph TD
        CLIENT[External Client<br/>203.0.113.100]
@@ -627,9 +621,7 @@ Enterprise Multi-Zone Deployment
 
    ---
    config:
-     look: handDrawn
      theme: neutral
-     handDrawnSeed: 42
    ---
    graph TB
        subgraph "Enterprise WAN"
@@ -805,9 +797,7 @@ Control Plane High Availability
 
    ---
    config:
-     look: handDrawn
      theme: neutral
-     handDrawnSeed: 42
    ---
    graph LR
        subgraph "OpenShift Cluster"
@@ -845,9 +835,7 @@ Dedicated Networker Node Deployment
 
    ---
    config:
-     look: handDrawn
      theme: neutral
-     handDrawnSeed: 42
    ---
    graph TB
        subgraph "External Infrastructure"
@@ -1085,9 +1073,7 @@ RHOSO BGP deployments implement automated failure detection and recovery mechani
 
    ---
    config:
-     look: handDrawn
      theme: neutral
-     handDrawnSeed: 42
    ---
    flowchart TD
        START([Normal Operation<br/>BGP Sessions Active]) --> MONITOR{Monitoring<br/>Systems}
