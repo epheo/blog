@@ -1,8 +1,9 @@
-# Modern UV-based Dockerfile for Sphinx blog with Mermaid support
-# Based on 2024/2025 UV + Docker best practices
+# Multi-stage Dockerfile for Sphinx blog with static HTML output
+# Stage 1: Build the blog HTML
+# Stage 2: Serve static content with quay.io/epheo/kiss
 
 # =============================================================================
-# Stage 1: Builder - Install UV and dependencies
+# Stage 1: Builder - Build the blog HTML
 # =============================================================================
 FROM fedora:latest AS builder
 
@@ -47,51 +48,16 @@ COPY . .
 # Copy Mermaid and Puppeteer configuration  
 COPY mermaid-config.json puppeteer-config.json ./
 
-# Set Chrome executable path for Puppeteer config
-RUN sed -i 's|/usr/bin/google-chrome|/usr/bin/chromium-headless|g' puppeteer-config.json
-
-# =============================================================================
-# Stage 2: Production - Lean runtime with only necessary components
-# =============================================================================  
-FROM fedora:latest AS production
-
-# Install minimal runtime dependencies
-RUN dnf update -y && \
-    dnf install -y \
-        python3 \
-        make \
-        chromium-headless \
-        nodejs \
-        npm \
-        && dnf clean all
-
-# Install Mermaid CLI globally for runtime
-RUN npm install -g @mermaid-js/mermaid-cli
-
-# Create Chrome user for sandbox-less operation
-RUN groupadd -r chrome && useradd -r -g chrome -G audio,video chrome \
-    && mkdir -p /home/chrome/Downloads \
-    && chown -R chrome:chrome /home/chrome
-
-# Set working directory
-WORKDIR /app
-
-# Copy virtual environment from builder stage
-COPY --from=builder /app/.venv /app/.venv
-
-# Copy source code and configuration from builder stage  
-COPY --from=builder /app /app
-
-# Add virtual environment to PATH
+# Add virtual environment to PATH for build
 ENV PATH="/app/.venv/bin:$PATH"
 
-# Expose port for development server (sphinx-autobuild)
-EXPOSE 8000
+# Build the blog HTML
+RUN make clean html
 
-# Default command: build the blog using make
-CMD ["make", "html"]
+# =============================================================================
+# Stage 2: Production - Static content with quay.io/epheo/kiss
+# =============================================================================  
+FROM quay.io/epheo/kiss:latest
 
-# Alternative commands available:
-# - Clean build: podman run <image> make clean html  
-# - Development server: podman run -p 8000:8000 <image> sphinx-autobuild . _build/html --host 0.0.0.0 --port 8000
-# - Link check: podman run <image> make linkcheck
+# Copy built HTML content to root directory
+COPY --from=builder /app/_build/html/ /

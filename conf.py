@@ -153,44 +153,10 @@ intersphinx_mapping = {
 autosectionlabel_prefix_document = True
 autosectionlabel_maxdepth = 2
 
-# Mermaid configuration for better visual appearance
+# Mermaid configuration for server-side SVG rendering
 mermaid_output_format = 'svg'  # Use server-side SVG rendering
 mermaid_version = "11.2.0"     # Use latest stable version
 mermaid_params = ['--puppeteerConfigFile', 'puppeteer-config.json', '--configFile', 'mermaid-config.json']
 
-# Initialize Mermaid with custom theme and colors
-mermaid_init_js = """
-mermaid.initialize({
-    startOnLoad: true,
-    theme: 'base',
-    themeVariables: {
-        primaryColor: '#0066CC',
-        primaryTextColor: '#ffffff',
-        primaryBorderColor: '#004499',
-        lineColor: '#333333',
-        sectionBkgColor: '#f8f9fa',
-        altSectionBkgColor: '#e9ecef',
-        gridColor: '#cccccc',
-        secondaryColor: '#2E8B57',
-        tertiaryColor: '#FF8C00',
-        background: '#ffffff',
-        mainBkg: '#ffffff',
-        secondBkg: '#f8f9fa',
-        tertiaryBkg: '#e9ecef'
-    },
-    flowchart: {
-        nodeSpacing: 50,
-        rankSpacing: 50,
-        curve: 'basis'
-    },
-    sequence: {
-        actorMargin: 50,
-        width: 150,
-        height: 65,
-        boxMargin: 10,
-        boxTextMargin: 5,
-        noteMargin: 10,
-        messageMargin: 35
-    }
-});
-"""
+# Server-side SVG rendering - no client-side JS needed
+mermaid_init_js = ""
