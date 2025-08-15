@@ -58,6 +58,4 @@ RUN make clean html
 # Stage 2: Production - Static content with quay.io/epheo/kiss
 # =============================================================================  
 FROM quay.io/epheo/kiss:latest
-
-# Copy built HTML content to root directory
-COPY --from=builder /app/_build/html/ /
+COPY --from=builder /app/_build/html/ /content/
