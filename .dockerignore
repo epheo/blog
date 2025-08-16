@@ -1,1 +1,33 @@
+# Virtual environments
 .venv/
+__pycache__/
+
+# Build outputs
+_build/
+*.egg-info/
+
+# Git and version control
+.git/
+.gitignore
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Cache directories
+.cache/
+*.pyc
+*.pyo
+
+# Documentation build cache
+.doctrees/
+
+# Local development files
+.env
+.env.local

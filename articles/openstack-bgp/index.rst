@@ -12,44 +12,6 @@ BGP Implementation in Red Hat OpenStack Services on OpenShift
     :date: Nov 20, 2024
     :read-time: 8 min read
 
-Introduction
-============
-
-Red Hat OpenStack Services on OpenShift (RHOSO) 18.0 introduces comprehensive Border Gateway Protocol (BGP) support for dynamic routing in containerized OpenStack deployments. This implementation leverages Free Range Routing (FRR) with the OVN BGP agent to provide scalable, reliable networking for modern cloud infrastructure deployed on OpenShift.
-
-RHOSO's BGP implementation enables pure Layer 3 data center architectures, eliminating traditional Layer 2 limitations such as large failure domains and slow convergence during network failures. This approach is essential for enterprise environments requiring high availability, scalability, and integration with existing network infrastructure.
-
-.. contents::
-   :local:
-   :depth: 2
-
-Understanding RHOSO Dynamic Routing
-===================================
-
-What is RHOSO?
---------------
-
-Red Hat OpenStack Services on OpenShift (RHOSO) represents Red Hat's next-generation OpenStack deployment model, running OpenStack services as containerized workloads on OpenShift. This architectural shift provides:
-
-- **Container-native deployment**: All OpenStack services run as pods on OpenShift
-- **Kubernetes-native operations**: Leverages OpenShift for scaling, health monitoring, and lifecycle management
-- **Enhanced reliability**: Benefits from OpenShift's self-healing and high availability features
-- **Simplified operations**: Uses OpenShift's declarative configuration and GitOps workflows
-
-BGP in RHOSO vs. Traditional OpenStack
---------------------------------------
-
-RHOSO 18.0's BGP implementation differs significantly from traditional Red Hat OpenStack Platform:
-
-**Traditional RHOSP**:
-- BGP services run on bare-metal or VM hypervisors
-- Direct systemd service management
-- Node-level configuration files
-
-**RHOSO 18.0**:
-- BGP services run in OpenShift pods
-- Kubernetes-native configuration management
-- Container-based service deployment
 
 Key Components
 ==============
@@ -1269,17 +1231,3 @@ Performance Tuning
    router bgp 64999
      neighbor 172.30.1.254 timers 10 30
      neighbor 172.30.1.254 capability extended-nexthop
-
-Conclusion
-==========
-
-RHOSO 18.0's BGP implementation provides enterprise-grade dynamic routing for containerized OpenStack deployments. By leveraging OpenShift's container orchestration with proven networking technologies like FRR and OVN, organizations can achieve:
-
-- **Scalable networking**: Automatic route management as workloads scale
-- **High availability**: Sub-second failover with BFD and ECMP
-- **Operational simplicity**: Kubernetes-native management and monitoring
-- **Enterprise integration**: Seamless connectivity with existing network infrastructure
-
-The combination of RHOSO's containerized architecture with BGP's proven routing capabilities enables organizations to deploy production-ready OpenStack clouds that integrate seamlessly with modern data center networking practices.
-
-For detailed deployment procedures and additional configuration options, refer to the official `Red Hat OpenStack Services on OpenShift 18.0 documentation <https://docs.redhat.com/en/documentation/red_hat_openstack_services_on_openshift/18.0/html-single/deploying_a_dynamic_routing_environment/index>`_.
