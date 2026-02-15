@@ -7,35 +7,56 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'blog.epheo.eu'
-copyright = '2023, Thibaut Lapierre'
+copyright = '2025, Thibaut Lapierre'
 author = 'Thibaut Lapierre'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = [ 
-    'sphinx_design', 
-    'sphinx_sitemap', 
-    'sphinx_copybutton', 
+extensions = [
+    'sphinx_design',
+    'sphinx_sitemap',
+    'sphinx_copybutton',
     'sphinxext.opengraph',
-    'sphinx.ext.imgmath',  # For optimizing math images if you have any
     'sphinx_reredirects',
-    'sphinx-jsonschema',   # Add JSON Schema support for structured data
-    'sphinx.ext.autosectionlabel',  # For better cross-referencing
-    'sphinx.ext.viewcode',  # For linking to source code
-    'sphinx.ext.intersphinx',  # For linking to other documentation
-    'sphinx_search.extension',  # Add enhanced search functionality
-    'sphinxcontrib.mermaid', # For rendering diagrams
+    'sphinx.ext.autosectionlabel',
+    'sphinx.ext.intersphinx',
+    'sphinxcontrib.mermaid',
+    'yasfb',
 ]
 
-# Image settings for better optimization
-imgmath_image_format = 'svg'  # Use SVG for math rendering if applicable
-images_config = {
-    'override_image_directive': True,
-    'default_image_width': '100%',
-    'responsive_images': True,  # Enable responsive images
-    'lazy_loading': True,       # Enable lazy loading for images
-}
+# RSS feed configuration
+feed_base_url = 'https://blog.epheo.eu'
+feed_description = 'Technical articles on OpenShift, Kubernetes, OpenStack, and Linux'
+feed_author = 'Thibaut Lapierre'
+
+# yasfb skips all pages ending with 'index', but our articles use index.rst.
+# Only skip section-level index pages, not article index pages like articles/*/index.
+import yasfb as _yasfb
+_yasfb._SKIP_INDEX_PAGES = {'index', 'articles/index', 'notes/index', 'debug/index'}
+
+_orig_create_feed_item = _yasfb.create_feed_item
+
+def _patched_create_feed_item(app, pagename, templatename, ctx, doctree):
+    if pagename in _yasfb._SKIP_INDEX_PAGES:
+        return
+    env = app.builder.env
+    metadata = env.metadata.get(pagename, {})
+    pubdate = _yasfb._get_last_updated(app, pagename)
+    if not pubdate:
+        return
+    item = {
+        'title': ctx.get('title'),
+        'link': app.config.feed_base_url + '/' + ctx['current_page_name'] + ctx['file_suffix'],
+        'description': _yasfb._clean_feed_item_description(ctx.get('body')),
+        'pubDate': pubdate,
+    }
+    if 'author' in metadata:
+        item['author'] = metadata['author']
+    env.feed_items[pagename] = item
+    ctx['rss_link'] = app.config.feed_base_url + '/' + app.config.feed_filename
+
+_yasfb.create_feed_item = _patched_create_feed_item
 
 templates_path = ['_templates']
 exclude_patterns = [
@@ -77,10 +98,10 @@ ogp_image = "_static/logo.jpg"
 ogp_site_name = "epheo - personal how-to, technical notes and insights"
 ogp_description_length = 300
 ogp_type = "website"
-ogp_custom_meta_tags = [
+ogp_custom_meta_tags = (
     '<meta name="viewport" content="width=device-width, initial-scale=1.0">',
     '<link rel="canonical" href="{{ pageurl }}">',
-]
+)
 
 html_theme = 'furo'
 html_static_path = ['_static']
@@ -92,12 +113,6 @@ html_title = "epheo - personal how-to, technical notes and insights"
 html_logo = "_static/logo.jpg"
 
 html_extra_path = [ "_static/robots.txt", "_static/favicon.ico" ]
-
-# Enable search functionality
-html_search_language = 'en'
-html_search_options = {
-    'type': 'default'
-}
 
 html_theme_options = {
     "source_repository": "https://github.com/epheo/blog/",

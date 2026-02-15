@@ -18,6 +18,13 @@ Featured Notes
 
 .. card-carousel:: 2
 
+   .. card:: Running vLLM on Strix Halo
+      :link: strix-halo/index
+      :link-type: doc
+      :class-card: sd-rounded-3
+
+      Build vLLM from source with ROCm nightly on AMD Strix Halo (gfx1151) running Fedora 43.
+
    .. card:: Merging kubeconfig Files
       :link: merge-kubeconfig
       :link-type: doc
@@ -58,11 +65,18 @@ Categories
    * :doc:`OpenShift Console Banner </notes/openshift-banner>` - Set a console banner in OpenShift
    * :doc:`Podman </notes/podman>` - Notes on Podman container runtime and commands
 
+
 .. dropdown:: Linux Administration
    :icon: terminal
    :animate: fade-in
 
    * :doc:`Linux File Permissions and ACLs </notes/linux/droits-multiples-et-acl/index>` - Working with complex permissions and Access Control Lists
+
+.. dropdown:: AI & GPU
+   :icon: cpu
+   :animate: fade-in
+
+   * :doc:`Running vLLM on Strix Halo </notes/strix-halo/index>` - Build vLLM with ROCm nightly on AMD Strix Halo (gfx1151)
 
 .. dropdown:: Concepts & Thoughts
    :icon: light-bulb
@@ -133,3 +147,4 @@ Complete Notes Index
    podman
    defms/index
    linux/droits-multiples-et-acl/index
+   strix-halo/index

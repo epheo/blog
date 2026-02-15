@@ -5,6 +5,8 @@
       borgbackup, kubernetes, cronjob, persistent volumes, deduplication, incremental, backup
 
 
+:Publish Date: 2025-04-25
+
 *********************************************************
 Simple Block Device Backup for OpenShift Lab Environments
 *********************************************************

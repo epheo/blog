@@ -4,14 +4,21 @@
    :keywords:
       OpenStack, RHOSO, OpenShift, BGP, FRR, ECMP, ML2/OVN, OVN BGP Agent
 
+:Publish Date: 2024-11-20
+
 ***************************************************************
 BGP Implementation in Red Hat OpenStack Services on OpenShift
 ***************************************************************
 
 .. article-info::
     :date: Nov 20, 2024
-    :read-time: 8 min read
+    :read-time: 30 min read
 
+
+.. warning::
+   **Deprecation Notice**: The OVN BGP Agent was deprecated in RHOSO 18.0.10 (Feature Release 3).
+   This component will be removed and replaced in a future release. An alternative BGP integration
+   mechanism will be provided in a future release.
 
 Key Components
 ==============
@@ -30,22 +37,18 @@ The OVN BGP agent is a Python-based daemon running in the ``ovn_bgp_agent`` cont
 
 The agent operates by detecting changes in the OVN database and translating these into BGP routing decisions.
 
-.. code-block:: yaml
-   :caption: OVN BGP Agent Container Configuration
+.. note::
+   In RHOSO 18.0, BGP is deployed through ``OpenStackControlPlane`` and
+   ``OpenStackDataPlaneNodeSet`` custom resources managed by the RHOSO operators.
 
-   apiVersion: v1
-   kind: ConfigMap
-   metadata:
-     name: ovn-bgp-agent-config
-   data:
-     ovn_bgp_agent.conf: |
-       [DEFAULT]
-       debug = False
-       reconcile_interval = 120
-       expose_tenant_networks = False
-       
-       [bgp]
-       bgp_speaker_driver = ovn_bgp_driver
+.. code-block:: ini
+   :caption: OVN BGP Agent Configuration (ovn_bgp_agent.conf)
+
+   [DEFAULT]
+   debug = False
+   reconcile_interval = 120
+   expose_tenant_network = False
+   driver = ovn_bgp_driver
 
 FRR Container Suite
 -------------------
@@ -117,7 +120,6 @@ RHOSO BGP deployments **require** dedicated networking nodes with specific archi
 
 - **Control Plane OVN Gateways**: Not supported with BGP (incompatible)
 - **Octavia Load Balancer**: Cannot be used with BGP dynamic routing
-- **IPv6 Deployments**: Currently not supported with BGP
 - **BFD Limitations**: Bi-directional forwarding detection has known issues
 
 Network Architecture
@@ -257,15 +259,6 @@ The following diagram shows detailed interactions between all RHOSO BGP componen
        
        DRIVER -.-> AGENT
 
-**Key Interaction Flows**:
-
-1. **Route Discovery**: OVN BGP Agent monitors OVN northbound database for VM and floating IP events
-2. **Route Injection**: Agent adds IP addresses to bgp-nic dummy interface 
-3. **Kernel Integration**: Zebra daemon detects new routes and updates kernel routing table
-4. **BGP Advertisement**: BGP daemon advertises connected routes to external peers
-5. **Traffic Redirection**: Agent configures IP rules and OVS flows for incoming traffic
-6. **BFD Monitoring**: BFD daemon provides fast failure detection between BGP peers
-
 Traffic Flow Process
 --------------------
 
@@ -291,103 +284,6 @@ When a VM is created or a floating IP is assigned, the following sequence occurs
        Note over Agent,Kernel: Traffic redirection configured
        Note over FRR,Peer: Route convergence complete
 
-BGP Session Establishment Process
-----------------------------------
-
-The following diagram illustrates the complete BGP peering process between RHOSO nodes and external infrastructure:
-
-.. mermaid::
-
-   sequenceDiagram
-       participant EXT as External BGP Peer<br/>(ToR Switch AS 65000)
-       participant NODE as RHOSO Node<br/>(AS 64999)
-       participant FRR as FRR BGP Daemon<br/>(bgpd)
-       participant ZEBRA as Zebra Daemon
-       participant BFD as BFD Daemon<br/>(bfdd)
-       participant AGENT as OVN BGP Agent
-       participant KERNEL as Kernel Routing
-       
-       Note over EXT,KERNEL: BGP Session Initialization
-       
-       EXT->>NODE: TCP SYN to port 179
-       NODE->>EXT: TCP SYN-ACK
-       EXT->>NODE: TCP ACK
-       
-       Note over EXT,NODE: TCP Connection Established
-       
-       NODE->>EXT: BGP OPEN Message<br/>AS: 64999, Router-ID: 172.30.1.10
-       EXT->>NODE: BGP OPEN Message<br/>AS: 65000, Router-ID: 172.30.1.254
-       
-       EXT->>NODE: BGP KEEPALIVE
-       NODE->>EXT: BGP KEEPALIVE
-       
-       Note over EXT,NODE: BGP Session Established
-       
-       %% BFD Session Setup (if configured)
-       alt BFD Enabled
-           BFD->>EXT: BFD Control Packet<br/>Detect Multiplier: 3
-           EXT->>BFD: BFD Control Packet<br/>Session State: Up
-           Note over BFD,EXT: BFD Session Active<br/>Fast Failure Detection
-       end
-       
-       Note over EXT,KERNEL: Route Advertisement Process
-       
-       AGENT->>KERNEL: Add 192.0.2.10/32 to bgp-nic
-       KERNEL->>ZEBRA: Route appears in kernel table
-       ZEBRA->>FRR: Notify of connected route
-       FRR->>EXT: BGP UPDATE<br/>NLRI: 192.0.2.10/32<br/>Next-hop: 172.30.1.10
-       
-       EXT->>FRR: BGP UPDATE ACK
-       
-       Note over EXT,FRR: Route Advertisement Complete
-       
-       %% Ongoing Operations
-       loop Every 30 seconds (default)
-           FRR->>EXT: BGP KEEPALIVE
-           EXT->>FRR: BGP KEEPALIVE
-       end
-       
-       %% Failure Detection
-       alt Network Failure
-           EXT--xFRR: Connection Lost
-           BFD->>FRR: BFD Session Down<br/>Fast Detection
-           FRR->>ZEBRA: Withdraw routes
-           ZEBRA->>KERNEL: Remove from routing table
-           Note over EXT,KERNEL: Sub-second failure detection<br/>with BFD enabled
-       end
-
-**BGP Session States and Transitions**:
-
-- **Idle**: Initial state, no BGP session attempt
-- **Connect**: TCP connection establishment in progress  
-- **OpenSent**: BGP OPEN message sent, waiting for peer response
-- **OpenConfirm**: BGP OPEN received, sending KEEPALIVE
-- **Established**: Full BGP session active, route exchange possible
-
-**RHOSO BGP Configuration Parameters**:
-
-.. code-block:: text
-   :caption: Key BGP Timers and Settings
-
-   router bgp 64999
-     # BGP timers (keepalive, hold-time)
-     timers bgp 10 30
-     
-     # BFD for fast failure detection  
-     neighbor 172.30.1.254 bfd
-     neighbor 172.30.1.254 bfd profile fast-detect
-     
-     # BGP session parameters
-     neighbor 172.30.1.254 remote-as 65000
-     neighbor 172.30.1.254 capability extended-nexthop
-   
-   # BFD profile for sub-second detection
-   bfd
-     profile fast-detect
-       detect-multiplier 3
-       receive-interval 100  # 100ms
-       transmit-interval 100 # 100ms
-
 Private Network Advertising
 ============================
 
@@ -400,22 +296,14 @@ Tenant Network Exposure Configuration
 
 **Enabling Tenant Network Advertisement**:
 
-.. code-block:: yaml
-   :caption: OVN BGP Agent Configuration for Tenant Network Exposure
+.. code-block:: ini
+   :caption: OVN BGP Agent Configuration with Tenant Network Exposure
 
-   apiVersion: v1
-   kind: ConfigMap
-   metadata:
-     name: ovn-bgp-agent-config
-   data:
-     ovn_bgp_agent.conf: |
-       [DEFAULT]
-       debug = False
-       reconcile_interval = 120
-       expose_tenant_networks = True  # Enable tenant network advertising
-       
-       [bgp]
-       bgp_speaker_driver = ovn_bgp_driver
+   [DEFAULT]
+   debug = False
+   reconcile_interval = 120
+   expose_tenant_network = True
+   driver = ovn_bgp_driver
 
 **Security Considerations**:
 
@@ -423,19 +311,6 @@ Tenant Network Exposure Configuration
 - **Routing Policies**: External routers must implement proper filtering to maintain security boundaries
 - **Non-Overlapping CIDRs**: Tenant networks must use unique, non-overlapping IP ranges
 - **Access Control**: External network infrastructure must enforce tenant access policies
-
-.. note::
-   **Cross-Datacenter Tenant Network Design Considerations**
-   
-   When exposing tenant networks via BGP across datacenter boundaries, consider these additional design factors:
-   
-   - **WAN Security**: Plan for appropriate security measures when tenant traffic traverses WAN links, including encryption and filtering strategies
-   - **Route Advertisement Control**: Implement proper BGP route filtering and communities to control advertisement boundaries
-   - **Operational Complexity**: Account for increased troubleshooting complexity spanning multiple sites and administrative domains
-   - **Compliance Planning**: Evaluate data locality and compliance requirements that may affect multi-site tenant network designs
-   - **Performance Considerations**: Factor in WAN latency and bandwidth characteristics for cross-datacenter tenant communication
-   
-   **Design Options**: Consider various approaches including dedicated VPN connections, floating IP strategies, or hybrid architectures that balance connectivity needs with operational complexity.
 
 Traffic Flow for Tenant Networks
 ---------------------------------
@@ -482,41 +357,6 @@ When tenant network advertising is enabled, traffic follows a specific path thro
        AGENT1 -.->|Add route to<br/>bgp-nic interface| FRR1
        FRR1 -.->|BGP UPDATE<br/>advertise 10.1.0.0/24| TOR
 
-**Detailed Traffic Flow Analysis**:
-
-1. **External Client Request**: Client sends packet destined for tenant VM (10.1.0.10)
-2. **BGP Route Lookup**: ToR switch consults BGP routing table, finds route advertised by Networker Node 1
-3. **Kernel Processing**: Networker node kernel applies IP rules, directing tenant network traffic to br-ex bridge
-4. **CR-LRP Injection**: Traffic enters OVN overlay via Chassis Redirect Logical Router Port hosted on networker node
-5. **OVN Routing**: Logical router performs L3 routing and ARP resolution within overlay
-6. **Overlay Forwarding**: Logical switch performs L2 forwarding to target VM based on MAC address
-7. **VM Delivery**: Packet delivered to tenant VM running on compute node
-
-**Return Traffic Path**: 
-
-.. mermaid::
-
-   sequenceDiagram
-       participant VM as Tenant VM<br/>10.1.0.10
-       participant LS as Logical Switch
-       participant LR as Logical Router  
-       participant CRLRP as CR-LRP<br/>Networker Node
-       participant BREX as br-ex Bridge
-       participant KERNEL as Kernel Routing
-       participant TOR as ToR Switch
-       participant CLIENT as External Client
-       
-       VM->>LS: Response packet<br/>dst: 203.0.113.100
-       LS->>LR: L2 forwarding to router
-       LR->>CRLRP: L3 routing to gateway
-       CRLRP->>BREX: Exit OVN overlay
-       BREX->>KERNEL: Host network processing
-       KERNEL->>TOR: Forward via physical interface
-       TOR->>CLIENT: Deliver to external client
-       
-       Note over VM,CRLRP: OVN overlay network
-       Note over CRLRP,TOR: Host networking and BGP
-
 **Key Technical Details**:
 
 - **CR-LRP Role**: Chassis Redirect Logical Router Ports serve as the entry point for external traffic to tenant networks
@@ -557,23 +397,6 @@ Real-World Deployment Scenarios
 
 Enterprise Multi-Zone Deployment
 ---------------------------------
-
-.. note::
-   **Cross-Datacenter Deployment Considerations**
-   
-   The architecture shown below is technically feasible and has been successfully implemented by various organizations. However, cross-datacenter RHOSO deployments typically require specific support considerations and careful planning beyond the standard deployment model.
-   
-   **Key Design Considerations**:
-   
-   - Control plane database synchronization across WAN links
-   - Network latency considerations for OpenStack service communication
-   - Resilience planning for network partitions between sites
-   - Enhanced monitoring and troubleshooting procedures
-   - Storage architecture design for multi-site scenarios
-   
-   **Alternative Architecture**: Red Hat's **Distributed Compute Node (DCN)** architecture offers a supported approach for multi-site deployments, where control plane services remain centralized and only compute nodes are deployed at remote sites.
-   
-   **Planning Recommendation**: Consult with Red Hat support during the design phase to validate your specific cross-datacenter deployment architecture and requirements.
 
 **Use Case**: Large enterprise with RHOSO deployed across multiple OpenShift clusters in different availability zones.
 
@@ -781,7 +604,7 @@ Control Plane High Availability
        BGP --> Client
 
 **Implementation Details**:
-- Pacemaker manages VIP assignment
+- Kubernetes-native HA manages VIP assignment
 - OVN BGP agent advertises active VIP location
 - Sub-second failover with BFD
 - No single point of failure
@@ -844,38 +667,6 @@ Dedicated Networker Node Deployment
        FW <--> TOR1
        FW <--> TOR2
 
-**Technical Implementation**:
-
-.. code-block:: yaml
-   :caption: Networker Node DaemonSet Configuration
-
-   apiVersion: apps/v1
-   kind: DaemonSet
-   metadata:
-     name: rhoso-networker-services
-   spec:
-     selector:
-       matchLabels:
-         app: rhoso-networker
-     template:
-       metadata:
-         labels:
-           app: rhoso-networker
-       spec:
-         nodeSelector:
-           node-role.kubernetes.io/rhoso-networker: ""
-         hostNetwork: true
-         containers:
-         - name: frr-bgp
-           image: quay.io/rhoso/frr:latest
-           securityContext:
-             privileged: true
-         - name: ovn-bgp-agent
-           image: quay.io/rhoso/ovn-bgp-agent:latest
-           env:
-           - name: EXPOSE_TENANT_NETWORKS
-             value: "true"  # Enable tenant network advertising
-
 **Benefits**:
 - **Dedicated Traffic Path**: All north-south traffic controlled through networker nodes
 - **High Availability**: Multiple networker nodes provide redundancy for tenant network access
@@ -888,33 +679,6 @@ Dedicated Networker Node Deployment
 - **DVR Requirement**: Must be deployed with Distributed Virtual Routing enabled
 - **Monitoring**: Enhanced monitoring required for CR-LRP and gateway functions
 
-Hybrid Cloud Connectivity
---------------------------
-
-**Use Case**: Connecting RHOSO workloads to external cloud providers and on-premises networks.
-
-**Technical Implementation**:
-
-.. code-block:: text
-   :caption: Multi-Cloud BGP Peering
-
-   # RHOSO to AWS Transit Gateway
-   router bgp 64999
-     neighbor 169.254.100.1 remote-as 64512  # AWS side
-     
-     address-family ipv4 unicast
-       network 10.0.0.0/16  # RHOSO tenant networks
-       neighbor 169.254.100.1 prefix-list RHOSO-OUT out
-     exit-address-family
-   
-   # RHOSO to On-premises
-   router bgp 64999
-     neighbor 172.16.1.1 remote-as 65000  # Corporate network
-     
-     address-family ipv4 unicast
-       neighbor 172.16.1.1 route-map CORPORATE-IN in
-     exit-address-family
-
 Configuration and Deployment
 =============================
 
@@ -924,7 +688,7 @@ Prerequisites
 RHOSO dynamic routing requires:
 
 - **RHOSO 18.0 or later** with ML2/OVN mechanism driver
-- **OpenShift 4.14+** with appropriate node networking
+- **OpenShift 4.18+** with appropriate node networking
 - **BGP-capable network infrastructure** (ToR switches, routers)
 - **Dedicated networker nodes** (mandatory for BGP deployments)
 - **Distributed Virtual Routing (DVR)** enabled
@@ -935,7 +699,6 @@ RHOSO dynamic routing requires:
 - **No Control Plane OVN Gateways**: BGP is incompatible with control plane OVN gateway deployments
 - **No Octavia Load Balancer**: Cannot be used simultaneously with BGP dynamic routing
 - **No Distributed Control Plane**: RHOSO dynamic routing does not support distributed control planes across datacenters
-- **IPv4 Only**: IPv6 deployments are not currently supported with BGP
 - **Non-overlapping CIDRs**: When using tenant network advertising, all networks must use unique IP ranges
 - **External BGP Peers**: Network infrastructure must support BGP peering and route filtering
 
@@ -956,40 +719,10 @@ OpenShift Integration
 
 RHOSO BGP services integrate with OpenShift through:
 
-**Service Mesh**: BGP containers run within the OpenShift service mesh
+**Pod Deployment**: BGP containers run as privileged pods with host networking
 **ConfigMaps**: Configuration stored as Kubernetes ConfigMaps
 **Monitoring**: Integration with OpenShift monitoring and alerting
 **Networking**: Uses OpenShift SDN or OVN-Kubernetes for pod networking
-
-.. code-block:: yaml
-   :caption: FRR Deployment in OpenShift
-
-   apiVersion: apps/v1
-   kind: DaemonSet
-   metadata:
-     name: frr-bgp
-   spec:
-     selector:
-       matchLabels:
-         app: frr-bgp
-     template:
-       metadata:
-         labels:
-           app: frr-bgp
-       spec:
-         hostNetwork: true
-         containers:
-         - name: frr
-           image: quay.io/rhoso/frr:latest
-           securityContext:
-             privileged: true
-           volumeMounts:
-           - name: frr-config
-             mountPath: /etc/frr
-         volumes:
-         - name: frr-config
-           configMap:
-             name: frr-configuration
 
 Production Operations
 =====================
@@ -1008,13 +741,13 @@ RHOSO BGP monitoring leverages OpenShift's native observability:
    :caption: BGP Status Monitoring Commands
 
    # Check BGP session status
-   oc exec -n rhoso-system ds/frr-bgp -- vtysh -c 'show bgp summary'
+   oc exec -n openstack ds/frr-bgp -- vtysh -c 'show bgp summary'
    
    # View route advertisements
-   oc exec -n rhoso-system ds/frr-bgp -- vtysh -c 'show ip bgp neighbors advertised-routes'
+   oc exec -n openstack ds/frr-bgp -- vtysh -c 'show ip bgp neighbors advertised-routes'
    
    # Check OVN BGP agent status
-   oc logs -n rhoso-system -l app=ovn-bgp-agent --tail=50
+   oc logs -n openstack -l app=ovn-bgp-agent --tail=50
 
 Scaling Operations
 ------------------
@@ -1126,13 +859,13 @@ Symptoms: BGP peers show "Idle" or "Connect" state
    :caption: Diagnosis Commands
 
    # Check BGP peer status
-   oc exec -n rhoso-system ds/frr-bgp -- vtysh -c 'show bgp neighbors'
+   oc exec -n openstack ds/frr-bgp -- vtysh -c 'show bgp neighbors'
    
    # Verify network connectivity
-   oc exec -n rhoso-system ds/frr-bgp -- ping <peer-ip>
+   oc exec -n openstack ds/frr-bgp -- ping <peer-ip>
    
    # Check firewall rules
-   oc exec -n rhoso-system ds/frr-bgp -- ss -tulpn | grep 179
+   oc exec -n openstack ds/frr-bgp -- ss -tulpn | grep 179
 
 **Solution**: Verify network connectivity, ASN configuration, and firewall rules allowing TCP port 179.
 
@@ -1144,31 +877,31 @@ Symptoms: External networks cannot reach RHOSO workloads
    :caption: Diagnosis and Resolution
 
    # Check if IPs are on bgp-nic interface
-   oc exec -n rhoso-system ds/ovn-bgp-agent -- ip addr show bgp-nic
+   oc exec -n openstack ds/ovn-bgp-agent -- ip addr show bgp-nic
    
    # Verify FRR is redistributing connected routes
-   oc exec -n rhoso-system ds/frr-bgp -- vtysh -c 'show running-config'
+   oc exec -n openstack ds/frr-bgp -- vtysh -c 'show running-config'
    
    # Check OVN BGP agent logs
-   oc logs -n rhoso-system -l app=ovn-bgp-agent
+   oc logs -n openstack -l app=ovn-bgp-agent
 
 **Solution**: Ensure OVN BGP agent is running and FRR has "redistribute connected" configured.
 
 **Tenant Networks Not Reachable**
 
-Symptoms: External clients cannot reach VMs on tenant networks despite `expose_tenant_networks = True`
+Symptoms: External clients cannot reach VMs on tenant networks despite `expose_tenant_network = True`
 
 .. code-block:: bash
    :caption: Tenant Network Troubleshooting
 
    # Check if tenant network exposure is enabled
-   oc exec -n rhoso-system ds/ovn-bgp-agent -- grep expose_tenant_networks /etc/ovn_bgp_agent/ovn_bgp_agent.conf
+   oc exec -n openstack ds/ovn-bgp-agent -- grep expose_tenant_network /etc/ovn_bgp_agent/ovn_bgp_agent.conf
    
    # Verify CR-LRP (Chassis Redirect Logical Router Ports) are active on networker nodes
-   oc exec -n rhoso-system ds/ovn-bgp-agent -- ovn-sbctl show | grep cr-lrp
+   oc exec -n openstack ds/ovn-bgp-agent -- ovn-sbctl show | grep cr-lrp
    
    # Check neutron router gateway port advertisement
-   oc exec -n rhoso-system ds/frr-bgp -- vtysh -c 'show ip bgp | grep 10.0.0'
+   oc exec -n openstack ds/frr-bgp -- vtysh -c 'show ip bgp | grep 10.0.0'
 
 **Solution**: Verify networker nodes are hosting CR-LRP and neutron router gateways are properly advertised.
 
@@ -1183,13 +916,13 @@ Symptoms: Complete loss of external connectivity to tenant networks
    oc get nodes -l node-role.kubernetes.io/rhoso-networker
    
    # Verify networker pods are running
-   oc get pods -n rhoso-system -l app=rhoso-networker
+   oc get pods -n openstack -l app=rhoso-networker
    
    # Check CR-LRP failover status
-   oc exec -n rhoso-system ds/ovn-bgp-agent -- ovn-sbctl find Chassis_Redirect_Port
+   oc exec -n openstack ds/ovn-bgp-agent -- ovn-sbctl find Chassis_Redirect_Port
    
    # Verify BGP session status on remaining networker nodes
-   oc exec -n rhoso-system ds/frr-bgp -- vtysh -c 'show bgp summary'
+   oc exec -n openstack ds/frr-bgp -- vtysh -c 'show bgp summary'
 
 **Solution**: Ensure multiple networker nodes are deployed for high availability and CR-LRP can migrate between nodes.
 
@@ -1209,6 +942,12 @@ Symptoms: Long failover times during node or network failures
        detect-multiplier 3
        receive-interval 100
        transmit-interval 100
+
+Known Issues
+-------------
+
+- **Floating IP port forwarding**: Port forwarding with floating IPs fails when BGP dynamic routing is enabled (BZ 2160481)
+- **Multicast routing**: Multicast routing is not supported with BGP dynamic routing (BZ 2163477)
 
 Performance Tuning
 -------------------

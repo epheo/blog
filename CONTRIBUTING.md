@@ -5,12 +5,14 @@ Thank you for your interest in contributing to my personal blog! While this is p
 ## Types of Contributions Welcome
 
 ### Encouraged
+
 - Typo and grammar fixes
 - Broken link corrections
 - Technical corrections to existing content
 - Suggestions for improving clarity
 
 ### Also Welcome
+
 - New articles on relevant technical topics (OpenStack, OpenShift, Linux, etc.)
   - I'm open to hosting content from others that aligns with the blog's technical focus
 
@@ -24,10 +26,10 @@ Thank you for your interest in contributing to my personal blog! While this is p
 
 ### For New Articles or Significant Changes
 
-1. **Open an issue first** to discuss your proposed contribution
+1. **Open an issue first** to discuss your proposal
    - Describe the topic and outline of your proposed content
-   - Wait for feedback before investing significant time
-   
+   - Wait for feedback before investing any significant time
+
 2. If the proposal is accepted:
    - Fork the repository
    - Create your content following the existing structure and formatting guidelines
@@ -38,7 +40,6 @@ Thank you for your interest in contributing to my personal blog! While this is p
 - Use reStructuredText (`.rst`) format for consistency with existing content
 - Place images in the appropriate directory structure
 - Include proper attribution for any external content (quotes, images, etc.)
-- Ensure code examples are accurate and well-documented
 
 ## Technical Setup
 
@@ -46,7 +47,7 @@ If you need to build the blog locally to test your changes, follow the setup ins
 
 ## Review Process
 
-- All contributions will be reviewed by me personally
+- All contributions will be reviewed personally
 - I may suggest changes or improvements before merging
 
 Thank you for respecting these guidelines, and I appreciate your interest in contributing to my blog!

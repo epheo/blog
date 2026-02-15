@@ -29,42 +29,38 @@ occasional thoughts on technology with a focus on open source solutions
 and cloud infrastructure.
 
 
-Latest Content
-~~~~~~~~~~~~~~~
+Featured Articles
+~~~~~~~~~~~~~~~~~~
 
-* :doc:`OpenShift Virtualization Sidecar </notes/kubevirt-sidecar>` - Modifying libvirt domain XML using sidecar containers
+* :doc:`OpenShift Workstation </articles/openshift-workstation/index>` - GPU passthrough to run a gaming VM on Kubernetes
+* :doc:`How this blog is served to you </articles/kiss-rust-server/index>` - A minimal Rust static-file server for Kubernetes
+* :doc:`SOPS + Age Secret Management </articles/k8s-sops-secrets/index>` - Transparent K8S secret management with SOPS and Age
+* :doc:`NGINX Ingress Router Sharding </articles/k8s-nginx-ingress-sharding/index>` - Multiple NGINX ingress controllers for traffic management
 * :doc:`OpenShift Layer 2 UDN </articles/openshift-layer2-udn/index>` - Layer 2 User Defined Networking in OpenShift
 * :doc:`OpenShift Ollama </articles/openshift-ollama/index>` - Running Mistral:7b LLM on OpenShift
-* :doc:`OpenStack BGP </articles/openstack-bgp/index>` - Border Gateway Protocol in OpenStack
-* :doc:`OpenStack OVN Networking </debug/openstack-ovn>` - OVN Deep Dive and Debugging
-* :doc:`OpenShift Block Device Backup </articles/openshift-borg/index>` - Simple Block Device Backup for OpenShift Lab Environments
+* :doc:`Running vLLM on Strix Halo </notes/strix-halo/index>` - Building vLLM with ROCm nightly on AMD Strix Halo (gfx1151)
 
 Content Categories
 ~~~~~~~~~~~~~~~~~~~
 
 .. grid:: 3
 
-    .. grid-item-card:: :octicon:`container` Container Platforms
+    .. grid-item-card:: :octicon:`book` Technical Articles
         :link: articles/index
         :link-type: doc
-        
-        Articles and guides on OpenShift, Kubernetes, and container technologies
 
-    .. grid-item-card:: :octicon:`server` Cloud Infrastructure
-        :link: articles/openstack-bgp/index
-        :link-type: doc
+        In-depth guides on OpenShift, Kubernetes, and cloud technologies
 
-        OpenStack, SDN, and cloud infrastructure resources
-
-    .. grid-item-card:: :octicon:`terminal` Linux & Debugging
+    .. grid-item-card:: :octicon:`note` Notes & How-Tos
         :link: notes/index
         :link-type: doc
-        
-        System administration, troubleshooting, and optimization
 
+        Quick references, tips, and practical snippets
 
+    .. grid-item-card:: :octicon:`bug` Troubleshooting
+        :link: debug/index
+        :link-type: doc
 
-.. admonition:: This blog is open source
-   :class: tip
+        Debugging guides for OpenShift and OpenStack
 
-   You can contribute on `GitHub <https://github.com/epheo/blog>`_ 
+:octicon:`mark-github` `Source on GitHub <https://github.com/epheo/blog>`_ · :octicon:`rss` `RSS Feed </rss.xml>`_

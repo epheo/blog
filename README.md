@@ -18,12 +18,14 @@ This blog is built using [Sphinx](https://www.sphinx-doc.org/), a powerful docum
 ### Setup
 
 1. Clone this repository:
+
    ```bash
    git clone https://github.com/epheo/blog.git
    cd blog
    ```
 
 2. Install dependencies using UV:
+
    ```bash
    uv sync
    ```
@@ -51,26 +53,31 @@ make clean html
 You can also build the blog using containers with Podman (or Docker). This ensures consistent builds across different environments and includes all necessary dependencies like Chrome for Mermaid diagram rendering.
 
 **Build the container image:**
+
 ```bash
 podman build -t sphinx-builder .
 ```
 
 **Standard HTML build:**
+
 ```bash
 podman run --rm -v $(pwd)/_build:/app/_build:Z sphinx-builder
 ```
 
 **Clean build (removes existing build artifacts):**
+
 ```bash
 podman run --rm -v $(pwd)/_build:/app/_build:Z sphinx-builder make clean html
 ```
 
 **Check external links:**
+
 ```bash
 podman run --rm -v $(pwd)/_build:/app/_build:Z sphinx-builder make linkcheck
 ```
 
 **Development server with auto-rebuild:**
+
 ```bash
 podman run --rm -p 8000:8000 -v $(pwd):/app:Z sphinx-builder sphinx-autobuild . _build/html --host 0.0.0.0 --port 8000
 ```

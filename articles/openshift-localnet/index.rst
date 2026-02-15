@@ -5,6 +5,8 @@
    :keywords:
       OpenShift, Virtualization, KubeVirt, Localnet, OVN-Kubernetes, br-ex, VM Networking, OCP
 
+:Publish Date: 2025-04-22
+
 .. _openshift_localnet:
 
 **********************************************************
@@ -14,8 +16,6 @@ OpenShift Virtualization with Localnet Configuration
 .. article-info::
     :date: April 22, 2025
     :read-time: 15 min read
-
-Configure OpenShift Virtualization to use localnet for direct north/south connectivity of VMs without dedicated interfaces.
 
 This use case demonstrates how to configure OpenShift Virtualization to leverage the existing ``br-ex`` OVS bridge for direct north/south connectivity of virtual machines. Instead of using a dedicated interface, this approach reuses the main OpenShift interface to provide IP addresses from your baremetal network to your KubeVirt virtual machines.
 
@@ -168,3 +168,6 @@ Testing and Validation
 
 .. important::
    VMs using localnet networking will be directly exposed to your physical network, so ensure proper security measures are in place.
+
+.. seealso::
+   For isolated tenant networks without physical network exposure, see :ref:`openshift_layer2_udn`.

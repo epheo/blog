@@ -7,6 +7,8 @@
       experience on a single OpenShift node (SNO).
 
 
+:Publish Date: 2023-02-27
+
 *******************************************************************
 Setting up a Virtual Workstation in OpenShift with VFIO Passthrough
 *******************************************************************
@@ -55,17 +57,9 @@ Similar configurations with Intel CPUs should work with minor adjustments noted 
 Installing OpenShift SNO
 ========================
 
-Before installation, be sure to back up any existing partition data.
-
-Backup Existing System Partitions
----------------------------------
-
-The OpenShift assisted installer formats the first 512 bytes of any disk with a bootable partition. 
-Back up and remove any existing partition tables you want to preserve.
-
-.. seealso::
-
-   https://github.com/openshift/assisted-service/blob/d37ac44051be76e95676f33b8361c04eae290357/internal/host/hostcommands/install_cmd.go#L232
+.. warning::
+   The OpenShift assisted installer formats the first 512 bytes of any disk with a bootable partition.
+   Back up and remove any existing partition tables you want to preserve. See the `assisted-service source code <https://github.com/openshift/assisted-service/blob/d37ac44051be76e95676f33b8361c04eae290357/internal/host/hostcommands/install_cmd.go#L232>`_ for details.
 
 
 OpenShift Installation
@@ -95,7 +89,7 @@ OpenShift Installation
 After backing up existing file systems and removing bootable partitions, proceed with the 
 OpenShift Single Node installation.
 
-CoreOS (the underlying operating system) requires an entire disk for installation:
+CoreOS requires an entire disk for installation:
 
 1. 500GB SSD for the OpenShift operating system
 2. Two 2TB NVMe disks for persistent volumes as LVM Physical volumes in the same Volume Group
@@ -388,9 +382,10 @@ Identifying a Suitable USB Controller
       lspci -nnk | grep -i usb
 
    Example output:
-   ```
-   0b:00.3 USB controller [0c03]: Advanced Micro Devices, Inc. [AMD] Matisse USB 3.0 Host Controller [1022:149c]
-   ```
+
+   .. code-block:: text
+
+      0b:00.3 USB controller [0c03]: Advanced Micro Devices, Inc. [AMD] Matisse USB 3.0 Host Controller [1022:149c]
 
 2. Note the PCI address (e.g., `0b:00.3`) and device ID (`1022:149c`).
 

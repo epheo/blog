@@ -5,6 +5,8 @@
    :keywords:
       OpenShift, Virtualization, KubeVirt, UDN, Layer2, VM Networking, OCP, User Defined Networks, Network Isolation
 
+:Publish Date: 2025-04-22
+
 .. _openshift_layer2_udn:
 
 ************************************************************
@@ -224,3 +226,6 @@ Testing and Validation
 
 .. important::
    Don't manually configure IP addresses. The UDN controller manages IP allocation through IPAM.
+
+.. seealso::
+   For direct north/south connectivity using the existing ``br-ex`` bridge, see :ref:`openshift_localnet`.

@@ -6,98 +6,39 @@ This section contains technical articles focused on debugging various systems an
 Featured Debugging Guides
 -------------------------
 
-.. grid:: 2
+.. card:: PostgreSQL on OpenShift
+   :link: postgresql_openshift
+   :link-type: doc
+   :class-card: sd-rounded-3
 
-    .. grid-item-card::  :octicon:`database` PostgreSQL on OpenShift
-        :link: postegresql_openshift
-        :link-type: doc
-        :class-card: sd-rounded-3
+   **Troubleshooting for PostgreSQL deployments running on OpenShift**
 
-        Troubleshooting for PostgreSQL deployments running on OpenShift, covering common issues and their solutions.
+   Covers common issues and their solutions for PostgreSQL instances on OpenShift,
+   including connection issues, performance bottlenecks, and storage-related problems.
 
-    .. grid-item-card::  :octicon:`server` OpenStack OVN Networking
-        :link: openstack-ovn
-        :link-type: doc
-        :class-card: sd-rounded-3
+.. card-carousel:: 2
 
-        Deep dive into OVN networking architecture in OpenStack, with detailed debugging techniques for common problems.
+   .. card:: OpenStack OVN Networking
+      :link: openstack-ovn
+      :link-type: doc
+      :class-card: sd-rounded-3
 
-Debugging by Platform
----------------------
+      Deep dive into OVN networking architecture in OpenStack, with detailed debugging techniques for common problems.
 
-.. tab-set::
+Categories
+----------
 
-    .. tab-item:: OpenShift
-        :sync: openshift-debug
+.. dropdown:: OpenShift
+   :icon: container
+   :animate: fade-in
 
-        .. dropdown:: PostgreSQL on OpenShift
-           :animate: fade-in
-           :class-title: sd-fs-5
-           :class-body: sd-fs-6
+   * :doc:`PostgreSQL on OpenShift </debug/postgresql_openshift>` - Troubleshooting PostgreSQL deployments on OpenShift
 
-           Troubleshooting for PostgreSQL instances running on OpenShift:
+.. dropdown:: OpenStack
+   :icon: server
+   :animate: fade-in
 
-           * Database connection issues
-           * Performance bottlenecks
-           * Storage-related problems
-           * Backup and recovery scenarios
-
-           :doc:`Read the full guide </debug/postegresql_openshift>`
-
-    .. tab-item:: OpenStack
-        :sync: openstack-debug
-
-        .. dropdown:: OVN Networking
-           :animate: fade-in
-           :class-title: sd-fs-5
-           :class-body: sd-fs-6
-
-           Debugging OVN networking issues in OpenStack:
-
-           * Understanding the OVN architecture
-           * Network traffic flow analysis
-           * Common failure scenarios and their solutions
-           * Command-line debugging tools
-
-           :doc:`Read the full guide </debug/openstack-ovn>`
-
-Debugging Cheat Sheets
-----------------------
-
-.. admonition:: OpenShift PostgreSQL Debugging
-   :class: tip
-
-   .. code-block:: bash
-
-      # Get PostgreSQL pod status
-      oc get pods -l app=postgresql
-
-      # Check logs
-      oc logs <pod-name>
-
-      # Connect to PostgreSQL instance
-      oc rsh <pod-name>
-      psql -U postgres
-
-      # Check PostgreSQL configuration
-      oc exec <pod-name> -- cat /opt/bitnami/postgresql/conf/postgresql.conf
-
-.. admonition:: OpenStack OVN Debugging
-   :class: tip
-
-   .. code-block:: bash
-
-      # List OVN northbound database content
-      ovn-nbctl show
-
-      # List OVN southbound database content
-      ovn-sbctl show
-
-      # Check logical flows
-      ovn-sbctl lflow-list
-
-      # Trace a packet through OVN
-      ovn-trace <switch> "inport=<port_id> ... <packet details>"
+   * :doc:`OVN Networking </debug/openstack-ovn>` - Debugging OVN networking issues in OpenStack
 
 Complete Debugging Resources
 ----------------------------
@@ -105,5 +46,5 @@ Complete Debugging Resources
 .. toctree::
    :maxdepth: 1
 
-   postegresql_openshift
+   postgresql_openshift
    openstack-ovn
