@@ -32,13 +32,11 @@ and cloud infrastructure.
 Featured Articles
 ~~~~~~~~~~~~~~~~~~
 
-* :doc:`OpenShift Workstation </articles/openshift-workstation/index>` - GPU passthrough to run a gaming VM on Kubernetes
-* :doc:`How this blog is served to you </articles/kiss-rust-server/index>` - A minimal Rust static-file server for Kubernetes
-* :doc:`SOPS + Age Secret Management </articles/k8s-sops-secrets/index>` - Transparent K8S secret management with SOPS and Age
-* :doc:`NGINX Ingress Router Sharding </articles/k8s-nginx-ingress-sharding/index>` - Multiple NGINX ingress controllers for traffic management
-* :doc:`OpenShift Layer 2 UDN </articles/openshift-layer2-udn/index>` - Layer 2 User Defined Networking in OpenShift
-* :doc:`OpenShift Ollama </articles/openshift-ollama/index>` - Running Mistral:7b LLM on OpenShift
-* :doc:`Running vLLM on Strix Halo </notes/strix-halo/index>` - Building vLLM with ROCm nightly on AMD Strix Halo (gfx1151)
+* :doc:`OpenShift Layer 2 UDN </articles/openshift-layer2-udn/index>` - Isolated tenant networks for VMs with User Defined Networking
+* :doc:`OpenShift Workstation </articles/openshift-workstation/index>` - GPU passthrough on single-node OpenShift; yes, it runs Flight Simulator
+* :doc:`Running vLLM on Strix Halo </notes/strix-halo/index>` - Building vLLM against ROCm nightlies on gfx1151
+* :doc:`SOPS + Age Secret Management </articles/k8s-sops-secrets/index>` - Plain-text secrets in the working tree, encrypted in Git
+* :doc:`How this blog is served to you </articles/kiss-rust-server/index>` - The 454 KiB Rust server behind this page, written to save 0.005€
 
 Content Categories
 ~~~~~~~~~~~~~~~~~~~

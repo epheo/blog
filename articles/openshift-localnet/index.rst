@@ -15,7 +15,7 @@ OpenShift Virtualization with Localnet Configuration
 
 .. article-info::
     :date: April 22, 2025
-    :read-time: 15 min read
+    :read-time: 3 min read
 
 This use case demonstrates how to configure OpenShift Virtualization to leverage the existing ``br-ex`` OVS bridge for direct north/south connectivity of virtual machines. Instead of using a dedicated interface, this approach reuses the main OpenShift interface to provide IP addresses from your baremetal network to your KubeVirt virtual machines.
 

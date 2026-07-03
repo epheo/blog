@@ -1,57 +1,8 @@
 Notes & How-To Guides
 =====================
 
-This section contains technical notes, tips, and how-to guides on various topics including Linux and container technologies.
-
-Featured Notes
---------------
-
-.. card:: OpenShift Virtualization Sidecar
-   :link: kubevirt-sidecar
-   :link-type: doc
-   :class-card: sd-rounded-3
-
-   **Customize virtual machines by modifying libvirt domain XML using sidecar containers**
-   
-   Learn how to use the sidecar pattern to customize and extend virtual machines running on OpenShift Virtualization.
-   This guide covers the complete process from setup to implementation.
-
-.. card-carousel:: 2
-
-   .. card:: Running vLLM on Strix Halo
-      :link: strix-halo/index
-      :link-type: doc
-      :class-card: sd-rounded-3
-
-      Build vLLM from source with ROCm nightly on AMD Strix Halo (gfx1151) running Fedora 43.
-
-   .. card:: Merging kubeconfig Files
-      :link: merge-kubeconfig
-      :link-type: doc
-      :class-card: sd-rounded-3
-
-      Learn how to merge multiple kubeconfig files for Kubernetes and OpenShift for easy cluster management.
-
-   .. card:: OpenShift Console Banner
-      :link: openshift-banner
-      :link-type: doc
-      :class-card: sd-rounded-3
-
-      Set a console banner in OpenShift to display important information to users.
-
-   .. card:: Working with Podman
-      :link: podman
-      :link-type: doc
-      :class-card: sd-rounded-3
-
-      Essential notes and commands for working with Podman container technology.
-
-   .. card:: Linux File Permissions and ACLs
-      :link: linux/droits-multiples-et-acl/index
-      :link-type: doc
-      :class-card: sd-rounded-3
-
-      Detailed guide on managing complex Linux file permissions and Access Control Lists.
+Shorter notes and how-tos: the commands I keep looking up and the setups
+I don't want to figure out twice.
 
 Categories
 ----------
@@ -59,30 +10,33 @@ Categories
 .. dropdown:: Container Technologies
    :icon: container
    :animate: fade-in
+   :open:
 
-   * :doc:`OpenShift Virtualization Sidecar </notes/kubevirt-sidecar>` - How to customize virtual machines with sidecar containers
-   * :doc:`Merging kubeconfig Files </notes/merge-kubeconfig>` - How to merge multiple kubeconfig files for Kubernetes and OpenShift
-   * :doc:`OpenShift Console Banner </notes/openshift-banner>` - Set a console banner in OpenShift
-   * :doc:`Podman </notes/podman>` - Notes on Podman container runtime and commands
-
+   * :doc:`OpenShift Virtualization Sidecar </notes/kubevirt-sidecar>` - Rewrite the libvirt domain XML of a running VM with a hook sidecar
+   * :doc:`Merging kubeconfig Files </notes/merge-kubeconfig>` - One kubeconfig for all your clusters
+   * :doc:`OpenShift Console Banner </notes/openshift-banner>` - A colored banner so you stop applying things to prod by mistake
+   * :doc:`Podman </notes/podman>` - The Podman commands I keep looking up: squash, Quadlet, pods, pasta
 
 .. dropdown:: Linux Administration
    :icon: terminal
    :animate: fade-in
+   :open:
 
-   * :doc:`Linux File Permissions and ACLs </notes/linux/droits-multiples-et-acl/index>` - Working with complex permissions and Access Control Lists
+   * :doc:`Linux File Permissions and ACLs </notes/linux/droits-multiples-et-acl/index>` - setfacl, getfacl, masks, default ACLs, and Samba integration
 
 .. dropdown:: AI & GPU
    :icon: cpu
    :animate: fade-in
+   :open:
 
-   * :doc:`Running vLLM on Strix Halo </notes/strix-halo/index>` - Build vLLM with ROCm nightly on AMD Strix Halo (gfx1151)
+   * :doc:`Running vLLM on Strix Halo </notes/strix-halo/index>` - Building vLLM against ROCm nightlies on gfx1151, OpenStack-early-days vibes
 
 .. dropdown:: Concepts & Thoughts
    :icon: light-bulb
    :animate: fade-in
+   :open:
 
-   * :doc:`Defms </notes/defms/index>` - A Distributed, Encrypted and Free Mail System
+   * :doc:`Defms </notes/defms/index>` - A 2018 essay on a distributed, encrypted and free mail system
 
 Quick Reference
 ---------------
@@ -146,11 +100,9 @@ Quick Reference
          # ~/.config/containers/systemd/myapp.container
          # then: systemctl --user daemon-reload && systemctl --user start myapp
 
-Complete Notes Index
-----------------------
-
 .. toctree::
    :maxdepth: 1
+   :hidden:
 
    kubevirt-sidecar
    merge-kubeconfig

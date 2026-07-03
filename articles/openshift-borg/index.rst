@@ -13,7 +13,7 @@ Simple Block Device Backup for OpenShift Lab Environments
 
 .. article-info::
     :date: April 25, 2025
-    :read-time: 8 min read
+    :read-time: 5 min read
 
 Introduction
 ============

@@ -14,7 +14,7 @@ How this blog is served to you
 
 .. article-info::
     :date: Aug 16, 2025
-    :read-time: 5 min read
+    :read-time: 6 min read
 
 
 This blog is just static files, served from a container, behind a Kubernetes Ingress Controller.

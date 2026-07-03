@@ -15,7 +15,7 @@ Layer 2 User Defined Networks for OpenShift Virtualization
 
 .. article-info::
     :date: April 22, 2025
-    :read-time: 20 min read
+    :read-time: 3 min read
 
 Learn how to set up Layer 2 User Defined Networks (UDN) for VMs in OpenShift Virtualization for isolated tenant networks with multi-node connectivity.
 

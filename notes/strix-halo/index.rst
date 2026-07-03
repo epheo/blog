@@ -14,7 +14,7 @@ Running vLLM on Strix Halo
 
 .. article-info::
     :date: Feb 15, 2026
-    :read-time: 5 min read
+    :read-time: 3 min read
 
 So I bought this machine, AMD RYZEN AI MAX+ 395 w/ Radeon 8060S and 128GB GTT RAM,
 and I knew that the ecosystem was still... ongoing.

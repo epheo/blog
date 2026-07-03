@@ -12,7 +12,7 @@ BGP Implementation in Red Hat OpenStack Services on OpenShift
 
 .. article-info::
     :date: Nov 20, 2024
-    :read-time: 30 min read
+    :read-time: 12 min read
 
 *Updated July 2026: RHOCP version requirements, DVR requirement, agent driver name,
 and known issues refreshed against the current RHOSO 18.0 documentation.*

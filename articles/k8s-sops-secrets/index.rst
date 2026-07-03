@@ -14,7 +14,7 @@ Kubernetes Secret Management with SOPS + Age + Git
 
 .. article-info::
     :date: Aug 16, 2024
-    :read-time: 15 min read
+    :read-time: 6 min read
 
 I don't like managing secrets in Kubernetes. Solutions like HashiCorp Vault are 
 complicated and resource-intensive. Kubeseal was actually great but now that Bitnami 

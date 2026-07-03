@@ -15,7 +15,7 @@ Setting up a Virtual Workstation in OpenShift with VFIO Passthrough
 
 .. article-info::
     :date: Feb 27, 2023
-    :read-time: 25 min read
+    :read-time: 8 min read
 
 This guide explains how to configure OpenShift as a workstation with GPU PCI passthrough 
 using Container Native Virtualization (CNV) on a single OpenShift node (SNO). This setup 
@@ -187,7 +187,7 @@ To enable GPU passthrough, we need to pass several kernel arguments at boot time
 
 .. literalinclude:: /articles/openshift-workstation/machineconfig/build/vfio-prepare.bu
     :language: yaml
-    :lines: 1-6,41-46
+    :start-at: openshift:
     :linenos:
     :caption: Setting Kernel Arguments at boot time.
 
@@ -254,14 +254,14 @@ machine config:
 
 .. literalinclude:: /articles/openshift-workstation/machineconfig/build/vfio-prepare.bu
     :language: yaml
-    :lines: 1-6,7-18,25-40
+    :end-before: openshift:
     :linenos:
     :caption: vfio-prepare.bu
 
 
 .. literalinclude:: /articles/openshift-workstation/machineconfig/build/vfio-prepare.sh
     :language: bash
-    :lines: 1-16
+    :end-before: # Bind "useless"
     :linenos:
     :caption: vfio-prepare.sh
 

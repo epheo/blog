@@ -13,6 +13,11 @@ author = 'Thibaut Lapierre'
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
+import os
+import sys
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '_ext'))
+
 extensions = [
     'sphinx_design',
     'sphinx_sitemap',
@@ -22,41 +27,13 @@ extensions = [
     'sphinx.ext.autosectionlabel',
     'sphinx.ext.intersphinx',
     'sphinxcontrib.mermaid',
-    'yasfb',
+    'yasfb_fix',  # loads yasfb with a patched create_feed_item, see _ext/
 ]
 
 # RSS feed configuration
 feed_base_url = 'https://blog.epheo.eu'
 feed_description = 'Technical articles on OpenShift, Kubernetes, OpenStack, and Linux'
 feed_author = 'Thibaut Lapierre'
-
-# yasfb skips all pages ending with 'index', but our articles use index.rst.
-# Only skip section-level index pages, not article index pages like articles/*/index.
-import yasfb as _yasfb
-_yasfb._SKIP_INDEX_PAGES = {'index', 'articles/index', 'notes/index', 'debug/index'}
-
-_orig_create_feed_item = _yasfb.create_feed_item
-
-def _patched_create_feed_item(app, pagename, templatename, ctx, doctree):
-    if pagename in _yasfb._SKIP_INDEX_PAGES:
-        return
-    env = app.builder.env
-    metadata = env.metadata.get(pagename, {})
-    pubdate = _yasfb._get_last_updated(app, pagename)
-    if not pubdate:
-        return
-    item = {
-        'title': ctx.get('title'),
-        'link': app.config.feed_base_url + '/' + ctx['current_page_name'] + ctx['file_suffix'],
-        'description': _yasfb._clean_feed_item_description(ctx.get('body')),
-        'pubDate': pubdate,
-    }
-    if 'author' in metadata:
-        item['author'] = metadata['author']
-    env.feed_items[pagename] = item
-    ctx['rss_link'] = app.config.feed_base_url + '/' + app.config.feed_filename
-
-_yasfb.create_feed_item = _patched_create_feed_item
 
 templates_path = ['_templates']
 exclude_patterns = [
@@ -78,19 +55,10 @@ html_baseurl = 'https://blog.epheo.eu/'
 sitemap_filename = "sitemap.xml"  # Ensure standard filename
 sitemap_locales = [None]
 sitemap_url_scheme = '{link}'
-sitemap_add_html = True
-sitemap_priority = {
-    'index.html': 1.0,
-    'articles/index.html': 0.9,
-}
-# Default priority for all pages not explicitly listed
-sitemap_priority_default = 0.8
-# Update frequency of pages
-sitemap_changefreq = {
-    'index.html': 'weekly',
-    'articles/index.html': 'weekly',
-}
-sitemap_changefreq_default = 'monthly'
+sitemap_excludes = [
+    'search.html',
+    'genindex.html',
+]
 
 # OpenGraph and social media settings
 ogp_site_url = "https://blog.epheo.eu/"
@@ -152,6 +120,7 @@ html_theme_options = {
 
 redirects = {
     "articles/openshift-ollama": "openshift-ollama/index.html",
+    "debug/postgresql_openshift": "postgresql-openshift.html",
 }
 
 # Enable JSON-LD structured data

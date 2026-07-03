@@ -12,7 +12,7 @@ Advanced File Permissions with ACL on Linux
 
 .. article-info::
     :date: Aug 06, 2010
-    :read-time: 10 min read
+    :read-time: 8 min read
 
 Traditional Unix file permissions have a significant limitation: they don't allow us to grant different 
 access levels to multiple users or groups simultaneously - such as read/write access for some groups 

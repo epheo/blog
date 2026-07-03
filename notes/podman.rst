@@ -12,7 +12,7 @@ Useful Podman Commands
 
 .. article-info::
     :date: April 22, 2025
-    :read-time: 5 min read
+    :read-time: 2 min read
 
 Introduction
 ------------

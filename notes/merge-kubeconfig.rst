@@ -13,7 +13,7 @@ Merging kubeconfig Files
 
 .. article-info::
     :date: Apr 25, 2025
-    :read-time: 3 min read
+    :read-time: 2 min read
 
 When working with multiple Kubernetes or OpenShift clusters, you'll often have multiple kubeconfig files. 
 Kubernetes provides tools to merge these configurations into a single file.

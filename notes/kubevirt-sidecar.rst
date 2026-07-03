@@ -14,7 +14,7 @@ OpenShift Virtualization Sidecar Implementation Guide
 
 .. article-info::
     :date: April 25, 2025
-    :read-time: 8 min read
+    :read-time: 3 min read
 
 
 Overview

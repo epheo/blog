@@ -14,7 +14,7 @@ Dual Interface Routing with NGINX Ingress in Kubernetes
 
 .. article-info::
     :date: Aug 16, 2024
-    :read-time: 15 min read
+    :read-time: 3 min read
 
 
 While I would consider this a basic requirement I never understood why Kubernetes Ingress 
