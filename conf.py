@@ -7,7 +7,7 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'blog.epheo.eu'
-copyright = '2025, Thibaut Lapierre'
+copyright = '2026, Thibaut Lapierre'
 author = 'Thibaut Lapierre'
 
 # -- General configuration ---------------------------------------------------
@@ -100,7 +100,6 @@ ogp_description_length = 300
 ogp_type = "website"
 ogp_custom_meta_tags = (
     '<meta name="viewport" content="width=device-width, initial-scale=1.0">',
-    '<link rel="canonical" href="{{ pageurl }}">',
 )
 
 html_theme = 'furo'

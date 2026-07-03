@@ -129,11 +129,12 @@ Quick Reference
          # List containers
          podman ps
 
-         # Build from Dockerfile
+         # Build from Containerfile
          podman build -t myapp .
 
-         # Generate systemd unit file
-         podman generate systemd --name mycontainer > ~/.config/systemd/user/mycontainer.service
+         # Quadlet: drop a .container file for systemd integration
+         # ~/.config/containers/systemd/myapp.container
+         # then: systemctl --user daemon-reload && systemctl --user start myapp
 
 Complete Notes Index
 ----------------------

@@ -18,7 +18,7 @@ Kubernetes Secret Management with SOPS + Age + Git
 
 I don't like managing secrets in Kubernetes. Solutions like HashiCorp Vault are 
 complicated and resource-intensive. Kubeseal was actually great but now that Bitnami 
-got aquired by Broadcom, I'm concerned about the future of the apiVersion: bitnami.com/ API domain.
+got acquired by Broadcom, I'm concerned about the future of the apiVersion: bitnami.com/ API domain.
 
 I wanted something fully transparent, so I can work with normal secrets in my repo, git 
 commit, have the secrets provisioned on my k8s cluster and never have to care about 

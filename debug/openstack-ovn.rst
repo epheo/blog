@@ -1,3 +1,11 @@
+.. meta::
+   :description:
+      Deep dive into OVN networking in OpenStack: debugging OVN databases,
+      tracing security group rules through ACLs and logical flows, packet
+      tracing with ovn-trace, and verifying DHCP delivery.
+   :keywords:
+      OpenStack, OVN, networking, debugging, ovn-trace, OVS, Neutron, security groups
+
 OpenStack OVN Networking - Deep Dive and Debugging
 ==================================================
 

@@ -1,3 +1,10 @@
+.. meta::
+   :description:
+      How to fix PostgreSQL crash loops in OpenShift caused by
+      "tuple concurrently updated" errors after unclean shutdowns.
+   :keywords:
+      PostgreSQL, OpenShift, crash loop, debugging, tuple concurrently updated, Kubernetes
+
 Debugging PostgreSQL Crash Loop in OpenShift
 ==============================================
 

@@ -160,7 +160,7 @@ The build script applies these patches via an inline Python script, see
    # Replace default GPU targets
    sed -i "s/gfx1200;gfx1201/${GFX}/" CMakeLists.txt
 
-   # Fedora's GCC produces ABI-incompatible extensions — use ROCm's clang
+   # Fedora's GCC produces ABI-incompatible extensions: use ROCm's clang
    export CC="$ROCM_PATH/llvm/bin/clang"
    export CXX="$ROCM_PATH/llvm/bin/clang++"
 

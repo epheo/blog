@@ -29,7 +29,7 @@ You can create a banner on the OpenShift web console by creating a ``ConsoleNoti
    metadata:
      name: banner
    spec:
-     backgroundColor: '#0f4414'  # Dark red
+     backgroundColor: '#0f4414'  # Dark green
      color: '#ffffff'            # White text
      location: BannerTop
      text: If it ain't broke, don't fix it
@@ -84,4 +84,4 @@ To remove the banner:
 
 .. code-block:: bash
 
-   oc delete consolennotification banner
+   oc delete consolenotification banner

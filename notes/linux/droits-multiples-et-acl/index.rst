@@ -1,3 +1,10 @@
+.. meta::
+   :description:
+      Comprehensive guide to Linux Access Control Lists (ACLs) covering
+      setfacl, getfacl, masks, default ACLs, and Samba integration.
+   :keywords:
+      Linux, ACL, permissions, setfacl, getfacl, Samba, file permissions, access control
+
 Advanced File Permissions with ACL on Linux
 =======================================================
 

@@ -93,7 +93,7 @@ python - <<'PYEOF'
 import re
 from pathlib import Path
 
-# Patch __init__.py — amdsmi doesn't support Strix Halo yet,
+# Patch __init__.py: amdsmi doesn't support Strix Halo yet,
 # so we stub it out and force ROCm detection to True.
 p = Path('vllm/platforms/__init__.py')
 txt = p.read_text()
@@ -104,7 +104,7 @@ txt = txt.replace('amdsmi.amdsmi_init()', 'pass')
 txt = txt.replace('amdsmi.amdsmi_shut_down()', 'pass')
 p.write_text(txt)
 
-# Patch rocm.py — mock amdsmi entirely, hardcode device identity
+# Patch rocm.py: mock amdsmi entirely, hardcode device identity
 # so vLLM sees a known ROCm device instead of failing at runtime.
 p = Path('vllm/platforms/rocm.py')
 txt = p.read_text()

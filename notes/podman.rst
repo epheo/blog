@@ -1,3 +1,10 @@
+.. meta::
+   :description:
+      Essential Podman commands and techniques for container operations
+      including image squashing, systemd integration, and offline transfers.
+   :keywords:
+      Podman, container, rootless, systemd, squash, image, Linux
+
 Useful Podman Commands
 =====================================
 
@@ -18,7 +25,7 @@ Squashing container images reduces their size by combining multiple layers into 
 
 .. code-block:: bash
 
-   podman build --layers --force-rm --squash-all --tag squashedimage - <<< "FROM regsitry/imagetosquash"
+   podman build --layers --force-rm --squash-all --tag squashedimage - <<< "FROM registry/imagetosquash"
 
 Container Run Commands
 ----------------------
@@ -72,22 +79,75 @@ When direct registry access is unavailable, you can save and load images for tra
    podman image save 97f3876877e2 -o 97f3876877e2.tgz
    podman load --input 97f3876877e2.tgz
 
-Systemd Integration
--------------------
+Systemd Integration with Quadlet
+---------------------------------
 
-Running containers as systemd services allows them to persist even when the user is logged out:
+.. note::
+
+   ``podman generate systemd`` is deprecated since Podman 4.4. Use `Quadlet
+   <https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html>`_
+   instead: drop a ``.container`` unit file and systemd manages the lifecycle.
 
 .. code-block:: bash
 
-   # Enable executing processes with logged out shell
-   loginctl enable-linger user
-   
-   # Move to user systemd directory
-   cd ~/.config/systemd/user/
-   
-   # Generate systemd files for container
-   podman generate systemd --restart-policy=always -t 1 --name container_name --files
-   
-   # Enable and start the service
-   systemctl --user enable container-container_name.service
+   # Enable user services when logged out
+   loginctl enable-linger $USER
 
+Create a Quadlet unit file:
+
+.. code-block:: ini
+   :caption: ~/.config/containers/systemd/my-app.container
+
+   [Container]
+   Image=docker.io/library/nginx:alpine
+   PublishPort=8080:80
+   Volume=%h/html:/usr/share/nginx/html:ro,Z
+
+   [Service]
+   Restart=always
+
+   [Install]
+   WantedBy=default.target
+
+.. code-block:: bash
+
+   # Reload and start
+   systemctl --user daemon-reload
+   systemctl --user start my-app
+
+Rootless Networking
+-------------------
+
+Rootless containers use ``slirp4netns`` by default, with ``pasta`` as an
+alternative with better performance:
+
+.. code-block:: bash
+
+   # Use pasta network driver (faster port forwarding)
+   podman run -d --network pasta -p 8080:80 nginx:alpine
+
+   # Create an isolated network for inter-container communication
+   podman network create my-net
+   podman run -d --network my-net --name db postgres:16-alpine
+   podman run -d --network my-net --name app -e DB_HOST=db my-app
+
+Multi-Container Pods
+--------------------
+
+Pods share network namespace, similar to a Kubernetes Pod:
+
+.. code-block:: bash
+
+   # Create a pod exposing ports
+   podman pod create --name my-pod -p 8080:80 -p 3306:3306
+
+   # Add containers to the pod (they share localhost)
+   podman run -d --pod my-pod --name db \
+     -e MYSQL_ROOT_PASSWORD=secret \
+     docker.io/mariadb:latest
+
+   podman run -d --pod my-pod --name web \
+     docker.io/nginx:alpine
+
+   # Generate a Kubernetes-compatible YAML from a running pod
+   podman generate kube my-pod > my-pod.yaml

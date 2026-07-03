@@ -1,3 +1,11 @@
+.. meta::
+   :description:
+      DEFMS proposes a distributed, encrypted and free mail exchange system
+      compatible with existing protocols while offering end-to-end encryption
+      and peer-to-peer delivery.
+   :keywords:
+      email, encryption, distributed, P2P, mail, SMTP, DEFMS
+
 *********************************************************
 DEFMS: Distributed, Encrypted and Free Mail System
 *********************************************************
@@ -9,7 +17,7 @@ DEFMS: Distributed, Encrypted and Free Mail System
 Let’s have a closer look at the current implementation of our global email delivery 
 system.
 
-It scaled out from the very early stage of our network while all mail addresses was 
+It scaled out from the very early stage of our network while all mail addresses were 
 summed up in a paper book to our current multi-billion addresses directory quite 
 impressively, the workload and delivery effort is mostly shared across the few biggest 
 current IT and telecom companies and the required bandwidth and data effort is 
@@ -33,10 +41,10 @@ exchanges with someone. An entirely distributed, partly encrypted and free mail
 exchange system would allow us to communicate directly with the concerned receivers 
 without restrictions of size, number, consistency or availability of the exchanged 
 messages. Applications are numerous but more importantly this will help us reducing the 
-total amount of storage and bandwith required by mail exchanges.
+total amount of storage and bandwidth required by mail exchanges.
 
 As encryption, peer to peer and data immutability are already widespread principles one 
 remaining pain-point is in the compatibility with our existing systems and protocols. 
-Such a compatibility with actual mail protocols will be achieved by non-ditributed 
+Such a compatibility with actual mail protocols will be achieved by non-distributed 
 gateway servers, this long-term temporary solution will encrypt and forward all email 
 from standard MX systems to and from DEFMS.

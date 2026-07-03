@@ -13,7 +13,7 @@ Featured Articles
 
    **High-performance container-optimized static file serving with KISS**
 
-   A minimal Rust static-file server for Kubernetes — how this blog is served to you.
+   A minimal Rust static-file server for Kubernetes: how this blog is served to you.
 
 .. card-carousel:: 2
 

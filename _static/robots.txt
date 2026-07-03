@@ -12,4 +12,3 @@ Disallow: /search.html
 
 # Allow search engines to focus on unique content
 Disallow: /_sources/
-Disallow: /_static/

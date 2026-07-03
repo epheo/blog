@@ -175,7 +175,7 @@ To enable GPU passthrough, we need to pass several kernel arguments at boot time
 
 - **amd_iommu=on**: Enables IOMMU support for AMD platforms (use intel_iommu=on for Intel CPUs)
 - **vga=off**: Disables VGA console output during boot
-- **rdblaclist=nouveau**: Blacklists the Nouveau open-source NVIDIA driver
+- **rdblacklist=nouveau**: Blacklists the Nouveau open-source NVIDIA driver
 - **video=efifb:off**: Disables EFI framebuffer console output
 
 .. seealso::

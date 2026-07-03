@@ -5,7 +5,7 @@
 # =============================================================================
 # Stage 1: Builder - Build the blog HTML
 # =============================================================================
-FROM fedora:latest AS builder
+FROM fedora:42 AS builder
 
 # Install system dependencies for building
 RUN dnf update -y && \
