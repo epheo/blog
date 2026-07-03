@@ -31,6 +31,13 @@ Categories
 
    * :doc:`Running vLLM on Strix Halo </notes/strix-halo/index>` - Building vLLM against ROCm nightlies on gfx1151, OpenStack-early-days vibes
 
+.. dropdown:: OpenStack
+   :icon: server
+   :animate: fade-in
+   :open:
+
+   * :doc:`RHOSO BGP Dynamic Routing </notes/openstack-bgp/index>` - Study notes on FRR, the OVN BGP agent, and what breaks
+
 .. dropdown:: Concepts & Thoughts
    :icon: light-bulb
    :animate: fade-in
@@ -111,3 +118,4 @@ Quick Reference
    defms/index
    linux/droits-multiples-et-acl/index
    strix-halo/index
+   openstack-bgp/index

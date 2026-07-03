@@ -120,6 +120,7 @@ html_theme_options = {
 
 redirects = {
     "articles/openshift-ollama": "openshift-ollama/index.html",
+    "articles/openstack-bgp/index": "../../notes/openstack-bgp/index.html",
     "debug/postgresql_openshift": "postgresql-openshift.html",
 }
 

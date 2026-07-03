@@ -1,8 +1,8 @@
 Articles
 ========
 
-In-depth guides from my lab: OpenShift, Kubernetes, OpenStack, and whatever
-hardware or software problem kept me busy long enough to write it down.
+In-depth guides from my lab: OpenShift, Kubernetes, and whatever hardware or
+software problem kept me busy long enough to write it down.
 
 Categories
 ----------
@@ -27,13 +27,6 @@ Categories
    * :doc:`SOPS + Age + Git Secret Management </articles/k8s-sops-secrets/index>` - Plain-text secrets in the working tree, encrypted in Git, no Vault required
    * :doc:`NGINX Ingress Router Sharding </articles/k8s-nginx-ingress-sharding/index>` - Public and private services on separate interfaces with two NGINX controllers
 
-.. dropdown:: OpenStack
-   :icon: server
-   :animate: fade-in
-   :open:
-
-   * :doc:`OpenStack BGP </articles/openstack-bgp/index>` - How RHOSO 18 does dynamic routing: FRR, the OVN BGP agent, and what breaks
-
 .. toctree::
    :maxdepth: 1
    :hidden:
@@ -46,4 +39,3 @@ Categories
    kiss-rust-server/index
    k8s-sops-secrets/index
    k8s-nginx-ingress-sharding/index
-   openstack-bgp/index
