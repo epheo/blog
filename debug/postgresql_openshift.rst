@@ -5,11 +5,13 @@
    :keywords:
       PostgreSQL, OpenShift, crash loop, debugging, tuple concurrently updated, Kubernetes
 
+:Publish Date: 2019-04-20
+
 Debugging PostgreSQL Crash Loop in OpenShift
 ==============================================
 
 .. article-info::
-    :date: April 20, 2024
+    :date: April 20, 2019
     :read-time: 3 min read
 
 Introduction

@@ -106,7 +106,7 @@ formatting, no allocation, no syscalls beyond the write itself.
 Benchmarks
 ===========
 
-Tests run on AMD Ryzen AI MAX+ 395 (32 cores) with ``wrk`` (8 threads, 10s per test).
+Tests run on AMD Ryzen AI MAX+ 395 (16 cores / 32 threads) with ``wrk`` (8 threads, 10s per test).
 
 Concurrency Scaling
 --------------------

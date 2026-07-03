@@ -97,8 +97,18 @@ Quick Reference
          KUBECONFIG=~/.kube/config:~/new-cluster-config kubectl config view --flatten > ~/.kube/merged-config
          export KUBECONFIG=~/.kube/merged-config
 
-         # Set console banner
-         oc patch consoles.operator.openshift.io cluster --patch '{"spec":{"customization":{"customLogoFile":"","customProductName":"","customBannerText":"This is a test environment"}}}' --type=merge
+         # Set console banner (ConsoleNotification, see the banner note)
+         oc apply -f - <<'EOF'
+         apiVersion: console.openshift.io/v1
+         kind: ConsoleNotification
+         metadata:
+           name: banner
+         spec:
+           text: This is a test environment
+           location: BannerTop
+           backgroundColor: '#0f4414'
+           color: '#ffffff'
+         EOF
 
    .. tab-item:: KubeVirt
 

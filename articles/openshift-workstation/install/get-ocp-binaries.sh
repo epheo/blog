@@ -2,7 +2,7 @@
 
 OCP_VERSION=latest-4.10
 
-curl -k https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/openshift-client-linux.tar.gz > oc.tar.gz
+curl -k https://mirror.openshift.com/pub/openshift-v4/clients/ocp/$OCP_VERSION/openshift-client-linux.tar.gz > oc.tar.gz
 tar zxf oc.tar.gz
 chmod +x oc && mv oc ~/.local/bin/
 

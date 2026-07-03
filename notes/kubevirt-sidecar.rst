@@ -6,6 +6,8 @@
 
 .. _kubevirt_sidecar_section:
 
+:Publish Date: 2025-04-25
+
 ******************************************************
 OpenShift Virtualization Sidecar Implementation Guide
 ******************************************************

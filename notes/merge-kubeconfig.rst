@@ -5,6 +5,8 @@
    :keywords:
       Kubernetes, kubeconfig, kubectl, K8s, OpenShift, Configuration, Merge, Multiple Clusters
 
+:Publish Date: 2025-04-25
+
 ****************************
 Merging kubeconfig Files
 ****************************

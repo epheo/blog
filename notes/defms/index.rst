@@ -6,6 +6,8 @@
    :keywords:
       email, encryption, distributed, P2P, mail, SMTP, DEFMS
 
+:Publish Date: 2018-02-24
+
 *********************************************************
 DEFMS: Distributed, Encrypted and Free Mail System
 *********************************************************

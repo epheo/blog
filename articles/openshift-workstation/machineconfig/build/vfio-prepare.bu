@@ -42,6 +42,6 @@ openshift:
   kernel_arguments:
     - amd_iommu=on
     - vga=off
-    - rdblaclist=nouveau
+    - rdblacklist=nouveau
     - 'video=efifb:off'
 

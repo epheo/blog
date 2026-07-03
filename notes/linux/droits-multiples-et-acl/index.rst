@@ -5,6 +5,8 @@
    :keywords:
       Linux, ACL, permissions, setfacl, getfacl, Samba, file permissions, access control
 
+:Publish Date: 2010-08-06
+
 Advanced File Permissions with ACL on Linux
 =======================================================
 
@@ -369,11 +371,16 @@ When working with ACLs, you might encounter some common issues. Here are solutio
 
 5. **Debugging Complex ACL Issues**
 
-   For more complex issues, use verbose mode with ACL commands:
+   Preview the resulting ACLs without applying them, and display effective
+   rights (permissions after the mask is applied):
 
    .. code-block:: bash
 
-       setfacl -v -m u:user:rw /path/to/file
+       # Dry-run: show what the ACL would look like
+       setfacl --test -m u:user:rw /path/to/file
+
+       # Show effective rights for each entry
+       getfacl -e /path/to/file
 
 Working with ACLs in Samba Shares
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -395,8 +402,3 @@ To enable this functionality in your Samba configuration, edit ``/etc/samba/smb.
     inherit acls = yes
 
 This configuration allows Windows clients to modify the ACLs through the familiar Windows security dialog, providing a seamless experience across platforms.
-
-Conclusion
-~~~~~~~~~~
-
-Access Control Lists provide a powerful way to manage complex permission requirements that go beyond the traditional Unix permission model. By understanding how to use ``getfacl`` and ``setfacl``, you can create sophisticated permission structures that meet the needs of multi-user environments while maintaining proper security controls.

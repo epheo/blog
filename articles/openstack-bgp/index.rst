@@ -14,6 +14,8 @@ BGP Implementation in Red Hat OpenStack Services on OpenShift
     :date: Nov 20, 2024
     :read-time: 30 min read
 
+*Updated July 2026: RHOCP version requirements, DVR requirement, agent driver name,
+and known issues refreshed against the current RHOSO 18.0 documentation.*
 
 .. warning::
    **Deprecation Notice**: The OVN BGP Agent was deprecated in RHOSO 18.0.10 (Feature Release 3).
@@ -48,7 +50,7 @@ The agent operates by detecting changes in the OVN database and translating thes
    debug = False
    reconcile_interval = 120
    expose_tenant_network = False
-   driver = ovn_bgp_driver
+   driver = nb_ovn_bgp_driver
 
 FRR Container Suite
 -------------------
@@ -96,7 +98,7 @@ Dedicated Networking Nodes
 RHOSO BGP deployments **require** dedicated networking nodes with specific architectural constraints:
 
 - **Mandatory Architecture**: BGP dynamic routing cannot function without dedicated networker nodes
-- **DVR Integration**: Must be deployed with Distributed Virtual Routing (DVR) enabled
+- **DVR Integration**: Required before RHOSO 18.0.4; since 18.0.4, dynamic routing also works without DVR
 - **Traffic Gateway Role**: Networker nodes host neutron router gateways and CR-LRP (Chassis Redirect Logical Router Ports)
 - **North-South Traffic**: All external traffic to tenant networks flows through networker nodes
 - **BGP Advertisement**: Both compute and networker nodes run FRR and OVN BGP agent containers
@@ -118,9 +120,11 @@ RHOSO BGP deployments **require** dedicated networking nodes with specific archi
 
 **Architecture Constraints**:
 
-- **Control Plane OVN Gateways**: Not supported with BGP (incompatible)
+- **Control Plane OVN Gateways**: Control plane nodes cannot act as data plane gateway
+  nodes; dedicated Networker nodes must host the OVN gateway chassis (OSPRH-661)
 - **Octavia Load Balancer**: Cannot be used with BGP dynamic routing
-- **BFD Limitations**: Bi-directional forwarding detection has known issues
+- **Designate DNS Service**: Unsupported in dynamic routing environments
+- **BFD Limitations**: BFD did not work as expected before RHOSO 18.0.7 (fixed with nft rules)
 
 Network Architecture
 ====================
@@ -303,7 +307,7 @@ Tenant Network Exposure Configuration
    debug = False
    reconcile_interval = 120
    expose_tenant_network = True
-   driver = ovn_bgp_driver
+   driver = nb_ovn_bgp_driver
 
 **Security Considerations**:
 
@@ -676,7 +680,7 @@ Dedicated Networker Node Deployment
 **Deployment Considerations**:
 - **Hardware Requirements**: Networker nodes need enhanced networking capabilities
 - **Network Connectivity**: Direct physical connections to external infrastructure
-- **DVR Requirement**: Must be deployed with Distributed Virtual Routing enabled
+- **DVR**: Required before RHOSO 18.0.4, optional since (OSPRH-8429)
 - **Monitoring**: Enhanced monitoring required for CR-LRP and gateway functions
 
 Configuration and Deployment
@@ -688,11 +692,14 @@ Prerequisites
 RHOSO dynamic routing requires:
 
 - **RHOSO 18.0 or later** with ML2/OVN mechanism driver
-- **OpenShift 4.18+** with appropriate node networking
+- **RHOCP 4.16** (initial 18.0 release) or **4.18** (current feature releases)
 - **BGP-capable network infrastructure** (ToR switches, routers)
 - **Dedicated networker nodes** (mandatory for BGP deployments)
-- **Distributed Virtual Routing (DVR)** enabled
 - **Proper network planning** for ASN assignment and IP addressing
+
+.. note::
+   Before RHOSO 18.0.4, dynamic routing also required Distributed Virtual Routing
+   (DVR). Since 18.0.4, dynamic routing works without DVR (OSPRH-8429).
 
 **Critical Architecture Requirements**:
 
@@ -946,8 +953,13 @@ Symptoms: Long failover times during node or network failures
 Known Issues
 -------------
 
+Both issues below were originally filed against RHOSP 17.1 but are still listed in the
+RHOSO 18.0 dynamic routing documentation:
+
 - **Floating IP port forwarding**: Port forwarding with floating IPs fails when BGP dynamic routing is enabled (BZ 2160481)
-- **Multicast routing**: Multicast routing is not supported with BGP dynamic routing (BZ 2163477)
+- **Multicast routing**: Multicast routing is not supported with BGP dynamic routing (BZ 2163477, CLOSED WONTFIX)
+- **DNS service (designate)**: Unsupported in dynamic routing environments; the
+  designate-worker pods cannot configure the BIND backend
 
 Performance Tuning
 -------------------

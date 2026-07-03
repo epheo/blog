@@ -417,23 +417,6 @@ Support multiple teams with different keys:
        encrypted_regex: '^(data|stringData)$'
 
 
-Audit and Compliance
-=======================
-
-Track secret changes with Git history:
-
-.. code-block:: bash
-
-   # View secret change history
-   git log --oneline -- secrets/
-   
-   # See who changed secrets
-   git blame secrets/production.secrets.yaml
-   
-   # Diff encrypted secrets
-   git diff HEAD~1 secrets/production.secrets.yaml
-
-
 Testing and Validation
 =======================
 

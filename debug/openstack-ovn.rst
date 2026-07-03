@@ -6,11 +6,13 @@
    :keywords:
       OpenStack, OVN, networking, debugging, ovn-trace, OVS, Neutron, security groups
 
+:Publish Date: 2021-08-22
+
 OpenStack OVN Networking - Deep Dive and Debugging
 ==================================================
 
 .. article-info::
-    :date: Aug 22, 2025
+    :date: Aug 22, 2021
     :read-time: 12 min read
 
 OVN (Open Virtual Network) provides advanced networking capabilities for OpenStack environments. 

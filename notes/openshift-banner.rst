@@ -5,6 +5,8 @@
    :keywords:
       OpenShift, Console, Banner, Notification, Cluster Management
 
+:Publish Date: 2025-04-25
+
 *****************************
 OpenShift Console Banner
 *****************************

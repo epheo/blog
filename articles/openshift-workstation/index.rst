@@ -122,7 +122,7 @@ CoreOS requires an entire disk for installation:
           -w /data quay.io/coreos/coreos-installer:release'
     cp ocp/bootstrap-in-place-for-live-iso.ign iso.ign
     coreos-installer iso ignition embed -fi iso.ign rhcos-live.x86_64.iso
-    dd if=discovery_image_sno.iso of=/dev/usbkey status=progress
+    dd if=rhcos-live.x86_64.iso of=/dev/usbkey status=progress
 
 
 After copying the ISO to a USB drive, boot your workstation from it to install OpenShift.
@@ -159,9 +159,9 @@ Configuring OpenShift for GPU Passthrough
 
 Since we're working with a single GPU, additional configuration is required.
 
-We'll use MachineConfig to configure our node. In a single-node OpenShift setup, 
-all MachineConfig changes apply to the master machineset. In multi-node clusters, 
-these would apply to workers instead.
+We'll use MachineConfig to configure our node. In a single-node OpenShift setup,
+all MachineConfig changes apply to the master machine config pool. In multi-node
+clusters, these would apply to workers instead.
 
 .. seealso::
 
@@ -197,7 +197,7 @@ To enable GPU passthrough, we need to pass several kernel arguments at boot time
 
     cd articles/openshift-workstation/machineconfig/build
     butane -d . vfio-prepare.bu -o ../vfio-prepare.yaml
-    oc patch MachineConfig 100-vfio --type=merge -p ../vfio-prepare.yaml
+    oc apply -f ../vfio-prepare.yaml
 
 .. note::
 
@@ -244,7 +244,7 @@ Set ``sandboxWorkloads.enabled`` to ``true`` to enable the components needed for
 
 .. code-block:: bash
 
-    oc patch ClusterPolicy gpu-cluster-policy --type=merge -p sandboxWorkloadsEnabled.yaml
+    oc patch ClusterPolicy gpu-cluster-policy --type=merge --patch-file sandboxWorkloadsEnabled.yaml
 
 
 The NVIDIA GPU Operator doesn't officially support consumer-grade GPUs and won't automatically 
@@ -271,7 +271,7 @@ machine config:
 
     cd articles/openshift-workstation/machineconfig/build
     butane -d . vfio-prepare.bu -o ../vfio-prepare.yaml
-    oc patch MachineConfig 100-vfio --type=merge -p ../vfio-prepare.yaml
+    oc apply -f ../vfio-prepare.yaml
 
 
 Dynamically Switching GPU Drivers
@@ -355,7 +355,7 @@ Now, add the GPU to the permitted host devices:
 
 .. code-block:: bash
 
-    oc patch hyperconverged kubevirt-hyperconverged -n openshift-cnv --type=merge -f hyperconverged.yaml 
+    oc patch hyperconverged kubevirt-hyperconverged -n openshift-cnv --type=merge --patch-file hyperconverged.yaml
 
 The `pciDeviceSelector` specifies the vendor:device ID, while `resourceName` specifies the resource 
 name in Kubernetes/OpenShift.
@@ -431,7 +431,7 @@ Add the controller's Vendor and Product IDs to permitted host devices:
 
 .. code-block:: bash
 
-    oc patch hyperconverged kubevirt-hyperconverged -n openshift-cnv --type=merge -f hyperconverged.yaml 
+    oc patch hyperconverged kubevirt-hyperconverged -n openshift-cnv --type=merge --patch-file hyperconverged.yaml
 
 
 Binding the USB Controller to VFIO-PCI Driver
@@ -456,7 +456,7 @@ Create a script to unbind the USB controller from its current driver and bind it
 
     cd articles/openshift-workstation/machineconfig/build
     butane -d . vfio-prepare.bu -o ../vfio-prepare.yaml
-    oc patch MachineConfig 100-vfio --type=merge -p ../vfio-prepare.yaml
+    oc apply -f ../vfio-prepare.yaml
 
 
 Creating VMs with GPU Passthrough
