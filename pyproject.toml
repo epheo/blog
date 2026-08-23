@@ -10,16 +10,15 @@ authors = [
 license = {text = "GNU General Public License"}
 
 dependencies = [
-    "Sphinx>=7.2.6,<8.0.0",
-    "furo>=2023.9.10,<2027.0.0",
-    "sphinx-design>=0.5.0,<1.0.0",
-    "sphinx-sitemap>=2.5.1,<3.0.0",
+    "Sphinx>=8.0.0,<9.0.0",
+    "furo>=2024.8.6,<2027.0.0",
+    "sphinx-design>=0.6.1,<1.0.0",
+    "sphinx-sitemap>=2.6.0,<3.0.0",
     "sphinxext-opengraph>=0.10.0,<1.0.0",
     "sphinx-autobuild>=2024.10.3,<2027.0.0",
     "sphinx-copybutton>=0.5.2,<1.0.0",
     "sphinx-reredirects>=0.1.6,<1.0.0",
     "sphinxcontrib-mermaid>=1.0.0,<2.0.0",
-    "yasfb>=0.8.0,<0.9.0",  # _ext/yasfb_fix.py patches internals, written against 0.8.0
 ]
 
 # dependency spec only, nothing to build or install

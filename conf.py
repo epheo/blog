@@ -27,7 +27,7 @@ extensions = [
     'sphinx.ext.autosectionlabel',
     'sphinx.ext.intersphinx',
     'sphinxcontrib.mermaid',
-    'yasfb_fix',  # loads yasfb with a patched create_feed_item, see _ext/
+    'rss_feed',
     'jsonld',
 ]
 
