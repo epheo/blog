@@ -28,6 +28,7 @@ extensions = [
     'sphinx.ext.intersphinx',
     'sphinxcontrib.mermaid',
     'yasfb_fix',  # loads yasfb with a patched create_feed_item, see _ext/
+    'jsonld',
 ]
 
 # RSS feed configuration
@@ -35,14 +36,10 @@ feed_base_url = 'https://blog.epheo.eu'
 feed_description = 'Technical articles on OpenShift, Kubernetes, OpenStack, and Linux'
 feed_author = 'Thibaut Lapierre'
 
-templates_path = ['_templates']
 exclude_patterns = [
-    '_build', 
-    'Thumbs.db', 
+    '_build',
+    'Thumbs.db',
     '.DS_Store',
-    'Lib',
-    'Scripts',
-    'Include',
     '.venv',
 ]
 
@@ -66,9 +63,6 @@ ogp_image = "_static/logo.jpg"
 ogp_site_name = "epheo - personal how-to, technical notes and insights"
 ogp_description_length = 300
 ogp_type = "website"
-ogp_custom_meta_tags = (
-    '<meta name="viewport" content="width=device-width, initial-scale=1.0">',
-)
 
 html_theme = 'furo'
 html_static_path = ['_static']
@@ -78,8 +72,10 @@ html_css_files = ['custom.css']
 
 html_title = "epheo - personal how-to, technical notes and insights"
 html_logo = "_static/logo.jpg"
+html_favicon = "_root/favicon.ico"
 
-html_extra_path = [ "_static/robots.txt", "_static/favicon.ico" ]
+# files copied verbatim to the site root
+html_extra_path = ["_root"]
 
 html_theme_options = {
     "source_repository": "https://github.com/epheo/blog/",
@@ -124,9 +120,6 @@ redirects = {
     "debug/postgresql_openshift": "postgresql-openshift.html",
 }
 
-# Enable JSON-LD structured data
-html_js_files = ['structured_data.js']
-
 # Intersphinx configuration
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3', None),
@@ -137,10 +130,7 @@ intersphinx_mapping = {
 autosectionlabel_prefix_document = True
 autosectionlabel_maxdepth = 2
 
-# Mermaid configuration for server-side SVG rendering
-mermaid_output_format = 'svg'  # Use server-side SVG rendering
-mermaid_version = "11.2.0"     # Use latest stable version
+# Server-side SVG rendering via mmdc; no client-side mermaid JS
+mermaid_output_format = 'svg'
 mermaid_params = ['--puppeteerConfigFile', 'puppeteer-config.json', '--configFile', 'mermaid-config.json']
-
-# Server-side SVG rendering - no client-side JS needed
 mermaid_init_js = ""
