@@ -51,6 +51,10 @@ def _clean_description(body):
 
 
 def collect_item(app, pagename, templatename, context, doctree):
+    context['metatags'] = context.get('metatags', '') + (
+        '\n<link rel="alternate" type="application/rss+xml" '
+        f'title="{app.config.project}" '
+        f'href="{app.config.feed_base_url}/{FEED_FILENAME}" />')
     if pagename in SKIP_PAGES:
         return
     date = _page_date(app, pagename)

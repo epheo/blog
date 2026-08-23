@@ -41,7 +41,7 @@ Featured Articles
 Content Categories
 ~~~~~~~~~~~~~~~~~~~
 
-.. grid:: 3
+.. grid:: 1 3 3 3
 
     .. grid-item-card:: :octicon:`book` Technical Articles
         :link: articles/index

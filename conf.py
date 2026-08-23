@@ -29,6 +29,7 @@ extensions = [
     'sphinxcontrib.mermaid',
     'rss_feed',
     'jsonld',
+    'head_fixups',
 ]
 
 # RSS feed configuration
@@ -66,6 +67,10 @@ ogp_type = "website"
 
 html_theme = 'furo'
 html_static_path = ['_static']
+
+# No .txt source copies: they duplicate content for crawlers and the
+# "view source" links point at GitHub via source_repository anyway.
+html_copy_source = False
 
 # Add custom CSS
 html_css_files = ['custom.css']
