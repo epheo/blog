@@ -30,7 +30,11 @@ extensions = [
     'rss_feed',
     'jsonld',
     'head_fixups',
+    'notfound.extension',
 ]
+
+# 404 page served by kiss from the site root; links must be absolute
+notfound_urls_prefix = '/'
 
 # RSS feed configuration
 feed_base_url = 'https://blog.epheo.eu'
@@ -56,6 +60,7 @@ sitemap_url_scheme = '{link}'
 sitemap_excludes = [
     'search.html',
     'genindex.html',
+    '404.html',
 ]
 
 # OpenGraph and social media settings

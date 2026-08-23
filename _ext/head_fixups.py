@@ -5,7 +5,6 @@
   ``.. meta:: :description:`` when the page has one.
 - og:type stays "website" everywhere; dated pages are articles and
   deserve article:published_time.
-- twitter:card so shares render a card outside the OpenGraph world.
 - sphinxcontrib-mermaid 1.2 injects its CDN loader even when
   diagrams are pre-rendered to SVG; drop the useless module scripts.
 """
@@ -29,7 +28,7 @@ def fix_head(app, pagename, templatename, context, doctree):
             '<meta property="og:type" content="website" />',
             '<meta property="og:type" content="article" />\n'
             f'<meta property="article:published_time" content="{date}" />')
-    context['metatags'] = metatags + '\n<meta name="twitter:card" content="summary" />'
+    context['metatags'] = metatags
     context['script_files'] = [
         s for s in context.get('script_files', [])
         if 'mermaid' not in str(s) and 'd3.min.js' not in str(s)]

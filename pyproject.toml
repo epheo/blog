@@ -19,6 +19,7 @@ dependencies = [
     "sphinx-copybutton>=0.5.2,<1.0.0",
     "sphinx-reredirects>=0.1.6,<1.0.0",
     "sphinxcontrib-mermaid>=1.0.0,<2.0.0",
+    "sphinx-notfound-page>=1.0.0,<2.0.0",
 ]
 
 # dependency spec only, nothing to build or install
