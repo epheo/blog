@@ -53,7 +53,6 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "furo" },
-    { name = "pyaml" },
     { name = "sphinx" },
     { name = "sphinx-autobuild" },
     { name = "sphinx-copybutton" },
@@ -68,7 +67,6 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "furo", specifier = ">=2023.9.10,<2027.0.0" },
-    { name = "pyaml", specifier = ">=23.9.6,<26.0.0" },
     { name = "sphinx", specifier = ">=7.2.6,<8.0.0" },
     { name = "sphinx-autobuild", specifier = ">=2024.10.3,<2027.0.0" },
     { name = "sphinx-copybutton", specifier = ">=0.5.2,<1.0.0" },
@@ -392,18 +390,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/a1/d4/1fc4078c65507b51b96ca8f8c3ba19e6a61c8253c72794544580a7b6c24d/packaging-25.0.tar.gz", hash = "sha256:d443872c98d677bf60f6a1f2f8c1cb748e8fe762d2bf9d3148b5599295b0fc4f", size = 165727, upload-time = "2025-04-19T11:48:59.673Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/20/12/38679034af332785aac8774540895e234f4d07f7545804097de4b666afd8/packaging-25.0-py3-none-any.whl", hash = "sha256:29572ef2b1f17581046b3a2227d5c611fb25ec70ca1ba8554b24b0e69331a484", size = 66469, upload-time = "2025-04-19T11:48:57.875Z" },
-]
-
-[[package]]
-name = "pyaml"
-version = "23.12.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "pyyaml" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/d0/3d/ddd68d7e8e0173f4ce450056835b759d986fa1cab7bf1a0fa142feed93cd/pyaml-23.12.0.tar.gz", hash = "sha256:ce6f648efdfb1b3a5579f8cedb04facf0fa1e8f64846b639309b585bb322b4e5", size = 26308, upload-time = "2023-12-25T17:44:17.128Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/25/ec/8aaf0d127751f84d8b10395fe47def9ac3552990b70abffdd92714836d39/pyaml-23.12.0-py3-none-any.whl", hash = "sha256:90407d74c95a55d9b41d3860fcc1759640444d2795df748a328d077bc4f58393", size = 23218, upload-time = "2023-12-25T17:44:14.748Z" },
 ]
 
 [[package]]

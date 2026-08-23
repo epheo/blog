@@ -45,8 +45,8 @@ COPY . .
 # Add virtual environment to PATH for build
 ENV PATH="/app/.venv/bin:$PATH"
 
-# Build the blog HTML
-RUN make clean html
+# -W: a build that silently drops diagrams or pages must not ship
+RUN make clean html SPHINXOPTS="-W --keep-going"
 
 # =============================================================================
 # Stage 2: Production - Static content with quay.io/epheo/kiss
