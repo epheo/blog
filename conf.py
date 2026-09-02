@@ -144,3 +144,16 @@ autosectionlabel_maxdepth = 2
 mermaid_output_format = 'svg'
 mermaid_params = ['--puppeteerConfigFile', 'puppeteer-config.json', '--configFile', 'mermaid-config.json']
 mermaid_init_js = ""
+# Linkcheck: run weekly by .github/workflows/linkcheck.yml
+# Red Hat's bot filter rejects the Sphinx default UA because it
+# claims to be Firefox from a non-browser client.
+user_agent = "blog.epheo.eu linkcheck (+https://blog.epheo.eu)"
+linkcheck_retries = 2
+linkcheck_ignore = [
+    r"^/",                         # site-root paths such as /rss.xml
+    r"https://www\.reddit\.com/",  # blocks GitHub runner IPs
+]
+linkcheck_anchors_ignore_for_url = [
+    r"https://github\.com/",        # line anchors are JS-rendered
+    r"https://docs\.redhat\.com/",  # page body is client-rendered from JSON
+]

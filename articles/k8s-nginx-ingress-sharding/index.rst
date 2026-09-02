@@ -27,7 +27,7 @@ enable isolation between public and private services.
 
 .. seealso::
 
-    https://kubernetes.io/docs/concepts/services-networking/service/#externalips
+    https://kubernetes.io/docs/concepts/services-networking/service/#external-ips
 
 
 Architecture Overview

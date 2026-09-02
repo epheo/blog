@@ -165,7 +165,7 @@ clusters, these would apply to workers instead.
 
 .. seealso::
 
-    https://github.com/openshift/machine-config-operator/blob/master/docs/SingleNodeOpenShift.md
+    https://github.com/openshift/machine-config-operator/blob/main/docs/SingleNodeOpenShift.md
 
 
 Setting Kernel Boot Arguments
@@ -408,8 +408,7 @@ Adding the USB Controller as a Permitted Device
 
 .. seealso::
 
-    https://access.redhat.com/solutions/6250271
-    https://kubevirt.io/user-guide/virtual_machines/host-devices/#listing-permitted-devices
+    https://kubevirt.io/user-guide/compute/host-devices/#listing-permitted-devices
 
 
 Add the controller's Vendor and Product IDs to permitted host devices:
@@ -505,7 +504,7 @@ Key configuration elements for desktop VMs with GPU passthrough:
 1. **GPU Passthrough**: Pass the entire physical GPU to the VM
    
    .. seealso::
-      https://kubevirt.io/user-guide/virtual_machines/host-devices/#pci-passthrough
+      https://kubevirt.io/user-guide/compute/host-devices/#host-devices-assignment
 
 2. **Disable Virtual VGA**: Remove the emulated VGA device
    

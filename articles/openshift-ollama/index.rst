@@ -19,7 +19,7 @@ Running Mistral:7b LLM on OpenShift
 
 Running your local LLM model with Ollama on your OpenShift cluster.
 
-`Ollama <https://ollama.ai/>`_ is an open-source tool that simplifies running and managing Large Language Models (LLMs) locally. It provides a simple API for managing model lifecycles and making inference requests.
+`Ollama <https://ollama.com/>`_ is an open-source tool that simplifies running and managing Large Language Models (LLMs) locally. It provides a simple API for managing model lifecycles and making inference requests.
 
 .. seealso::
 
@@ -251,7 +251,7 @@ With our Ollama service running, we can integrate it with various development to
 
     https://github.com/continuedev/continue
 
-.. figure:: https://github.com/continuedev/continue/raw/main/media/readme.gif
+.. figure:: https://github.com/continuedev/continue/raw/main/media/readme.png
    :width: 100%
    :align: center
 
@@ -282,7 +282,7 @@ You can install Continue directly from the VSCode extension marketplace. After i
 
 .. seealso::
 
-    https://github.com/JepriCreations/commitollama
+    https://github.com/anjerodev/commitollama
 
 Configuration is straightforward through your VSCode settings:
 
@@ -307,7 +307,7 @@ For on-the-go access to your self-hosted LLM, you can use Enchanted, an open-sou
 
 .. seealso::
 
-    https://github.com/AugustDev/enchanted
+    https://github.com/gluonfield/enchanted
 
 Enchanted offers a ChatGPT-like interface for interacting with your self-hosted models, providing a clean, intuitive mobile experience with features like:
 
@@ -358,8 +358,6 @@ Typical memory requirements for a 7B parameter model:
 
 Troubleshooting
 ===============
-
-For common issues and their solutions, refer to the `troubleshooting guide <https://github.com/epheo/openshift-ollama/blob/main/troubleshooting.md>`_.
 
 Common challenges include:
 
