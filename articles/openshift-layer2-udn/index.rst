@@ -22,7 +22,7 @@ Learn how to set up Layer 2 User Defined Networks (UDN) for VMs in OpenShift Vir
 This guide shows how to implement UDNs in OpenShift Virtualization for network isolation between VMs within or across namespaces. UDNs create isolated tenant networks separate from the default pod network, enabling complex network layouts and better security.
 
 .. seealso::
-   Learn more about OpenShift Virtualization networking in the official `OpenShift Virtualization Documentation <https://docs.openshift.com/container-platform/latest/virt/virtual_machines/vm_networking/>`_.
+   Learn more about OpenShift Virtualization networking in the official `OpenShift Virtualization Documentation <https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/virtualization/networking>`_.
 
 .. note::
    This is compatible with OpenShift 4.18 and newer versions.

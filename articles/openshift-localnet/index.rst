@@ -20,7 +20,7 @@ OpenShift Virtualization with Localnet Configuration
 This use case demonstrates how to configure OpenShift Virtualization to leverage the existing ``br-ex`` OVS bridge for direct north/south connectivity of virtual machines. Instead of using a dedicated interface, this approach reuses the main OpenShift interface to provide IP addresses from your baremetal network to your KubeVirt virtual machines.
 
 .. seealso::
-   For more information about OpenShift Virtualization networking, check out the official `OpenShift Virtualization Documentation <https://docs.openshift.com/container-platform/4.18/virt/virtual_machines/vm_networking/>`_.
+   For more information about OpenShift Virtualization networking, check out the official `OpenShift Virtualization Documentation <https://docs.redhat.com/en/documentation/openshift_container_platform/4.18/html/virtualization/networking>`_.
 
 .. note::
    This is compatible with OpenShift 4.18 and newer versions.

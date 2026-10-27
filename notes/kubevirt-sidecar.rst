@@ -184,5 +184,5 @@ References
 .. _kubevirt_docs:
 
 * `KubeVirt Documentation <https://kubevirt.io/user-guide/>`_
-* `OpenShift CNV Documentation <https://docs.openshift.com/container-platform/latest/virt/about-virt.html>`_
+* `OpenShift CNV Documentation <https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/virtualization/about>`_
 * `Kubernetes Sidecar Patterns <https://kubernetes.io/docs/concepts/workloads/pods/#how-pods-manage-multiple-containers>`_
