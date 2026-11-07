@@ -23,6 +23,7 @@ Categories
    :open:
 
    * :doc:`Linux File Permissions and ACLs </notes/linux/droits-multiples-et-acl/index>` - setfacl, getfacl, masks, default ACLs, and Samba integration
+   * :doc:`Mad Catz R.A.T. 8+ LEDs on Linux </notes/linux/madcatz-rat8-leds>` - Turn the rainbow off without Windows, with a small hidraw tool
 
 .. dropdown:: AI & GPU
    :icon: cpu
@@ -117,5 +118,6 @@ Quick Reference
    podman
    defms/index
    linux/droits-multiples-et-acl/index
+   linux/madcatz-rat8-leds
    strix-halo/index
    openstack-bgp/index
